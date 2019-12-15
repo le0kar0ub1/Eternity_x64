@@ -5,14 +5,6 @@
 ; MACRO ASM x86_64
 ;
 
-%macro printf 0
-    call printf
-%endmacro
-
-%macro printk 0
-    call printk
-%endmacro
-
 %macro push_base_reg 0
     push rdi
     push rsi

@@ -1,10 +1,12 @@
 %include "memory.inc"
 %include "boot.inc"
 
-bits 32
+bits 64
+
+global tlbFlush
 
 [section .text]
 ; reset TLB
 tlbFlush:
-    mov eax, cr3
-    mov cr3, eax
+    mov rax, cr3
+    mov cr3, rax

@@ -12,13 +12,6 @@
 ; Should be in eax at boot
 %define MAGIC_BOOTLOADER_MB2      0x36d76289
 
-; SEGMENTS SELECTORS
-%define NULL_SELECTOR           0x00
-%define KERNEL_CODE_SELECTOR    0x08
-%define KERNEL_DATA_SELECTOR    0x10
-%define USER_CODE_SELECTOR      0x18
-%define USER_DATA_SELECTOR      0x20
-
 ; serial port
 %define PORT 0x3f8   /* COM1 */
 

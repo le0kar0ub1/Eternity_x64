@@ -1,0 +1,14 @@
+%ifndef _INTERRUPT_INC_
+%define _INTERRUPT_INC_
+
+; SEGMENTS SELECTORS
+%define NULL_SELECTOR           0x00
+%define KERNEL_CODE_SELECTOR    0x08
+%define KERNEL_DATA_SELECTOR    0x10
+%define USER_CODE_SELECTOR      0x18
+%define USER_DATA_SELECTOR      0x20
+
+%define IDT_ENTRY_SIZE  0x10
+%define IDT_ENTRY_NBR   0x100
+
+%endif

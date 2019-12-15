@@ -9,7 +9,6 @@
 #define CMP_H_
 
 #include <stdbool.h>
-#include <stdio.h>
 
 static inline bool is_num(char c)
 {
