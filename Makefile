@@ -10,10 +10,10 @@ project_dir := boot/ drivers/ lib/ interrupt/ memory/ CPU/ network/ /
 
 ld := ld
 ldflags := -n						\
-           -z max-page-size=0x1000	\
-	   	   -g						\
 	   	   -nostdlib				\
-	   	   -entry=init				\
+	   	   -entry=_start			\
+		   -z max-page-size=0x1000	\
+		   -g						\
 	   	  #$(ldflags_debug)
 
 ldflags_debug := --cref			\
@@ -21,7 +21,7 @@ ldflags_debug := --cref			\
 	   	 		#--relocatable	\
 
 nasm := nasm
-asflags := -felf64 $(include) -g
+asflags := -felf64 $(include)
 
 qemuarch := qemu-system-x86_64
 qemu_networking :=   -net nic,vlan=0,model=rtl8139 -net user,vlan=0 #-net nic,model=rtl8139 -net user #-netdev user,id=n1 -device rtl8139,netdev=n1
@@ -33,16 +33,15 @@ qemu_basic_device := -usb		\
 		     -soundhw pcspk
 		     #-no-kvm-irqchip
 ## now run as ROOT So Take Care Of that ##
-qemuflags := -m 4G                \
-	         -cdrom $(iso)        \
+qemuflags := -cdrom $(iso)        \
 	         -enable-kvm          \
-		     -boot menu=on        \
-		     $(qemu_basic_device)
+			 #-m 4G                \
+		     #-boot menu=on        \
+		     #$(qemu_basic_device)
 	     	 #-full-screen
 
 gcc := ~/Personnal/OSdev/cross-gcc/x86_64-elf-4.9.1-target/bin/x86_64-elf-gcc-4.9.1
 cflags := -nostdlib		 			\
-          -nostartfiles          	\
 	  	  -fno-builtin           	\
 	  	  -fno-stack-protector   	\
 	  	  -W 			 			\
@@ -59,10 +58,17 @@ cflags := -nostdlib		 			\
           -Wwrite-strings        	\
           -fno-omit-frame-pointer	\
 	  	  -mno-red-zone				\
-	  	  -msse4.1					\
 	  	  -g3						\
-	  	  -mcmodel=large 			\
-	  	  #-Werror					\
+	  	  -mcmodel=kernel 			\
+		  -no-pie					\
+		  -nostartfiles          	\
+	  	  -Werror					\
+		  -static					\
+		  -mno-rtti					\
+		  -mno-mmx 					\
+		  -mno-sse 					\
+		  -mno-sse2					\
+		  # -msse4.1				\
 	  	  #-Wpadded					\
 
 asm_src := $(wildcard src/$(arch)/*.asm src/$(arch)/**/*.asm)

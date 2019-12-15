@@ -1,8 +1,15 @@
-; %include "boot.inc"
-; bits 64
-;
-; global kernel_main
-;
+%include "boot.inc"
+%include "memory.inc"
+
+bits 64
+
+extern kernel_setup
+
+kernel_setup:
+    add rbx, KERNEL_VIRT_BASE ; address struct multiboot
+    push rbx
+    hlt
+
 ; extern idt_setup
 ; extern load_idt
 ; extern init_serial_port
@@ -17,22 +24,6 @@
 ; extern init_PCI
 ; extern init_rtl8139
 ; extern user_space
-;
-; extern GDT_start.KernelData ; data part for segment registers
-; [section .text]
-; ; https://en.wikipedia.org/wiki/X86_memory_segmentation
-; set_seg_reg:
-;     mov ax, GDT_start.KernelData
-;     mov ds, ax              ; data segment
-;     mov es, ax              ; extra segment
-;     mov fs, ax              ; F-segment
-;     mov gs, ax              ; G-segment
-;     mov ss, ax              ; stack segment
-;     ret
-;
-; kernel_main:
-;     cli
-;     call set_seg_reg
 ;
 ;     mov ebx, DWORD [rsp] ; address struct multiboot
 ;     push rbx

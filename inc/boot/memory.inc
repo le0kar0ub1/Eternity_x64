@@ -3,22 +3,26 @@
 
 ; QEMU MONITOR : https://en.wikibooks.org/wiki/QEMU/Monitor
 
-%define PDE_INDEX        (KERNEL_VIRT_BASE >> 22)
-
 ; identity paging at start
 %define PAGE_SIZE        0x1000
 %define PAGE_ENTRY       0x200
 %define PAGE_ENTRY_SIZE  0x8
 %define SIZEOF_ENTRY     (PAGE_SIZE / PAGE_ENTRY)
 
-%define TWO_MEGABYTES_SHIFT 21
-%define TWO_MEGABYTES       (1 << TWO_MEGABYTES_SHIFT)
+%define KERNEL_PHYS_START 0x0000000000100000
+%define KERNEL_VIRT_LINK  0xFFFFFFFF80100000
+%define KERNEL_VIRT_BASE  0xFFFFFFFF80000000
 
-%define KERNEL_PHYS_START 0x0000000000400000
-%define KERNEL_VIRT_START 0xFFFFC00000100000
+%define PAGE_ADDR_BITSIZE 0x9
+%define PML4_ADDR_INDEX   0x27
+%define PML4_ENTRY_INDEX ((KERNEL_VIRT_LINK >> PML4_ADDR_INDEX) & ((0x1 << PAGE_ADDR_BITSIZE) - 0x1))
+%define PDPT_ADDR_INDEX   0x1E
+%define PDPT_ENTRY_INDEX ((KERNEL_VIRT_LINK >> PDPT_ADDR_INDEX) & ((0x1 << PAGE_ADDR_BITSIZE) - 0x1))
 
-%define PML4_ADDR_TO_INDEX(addr) ((addr >> 39) & 0x1FF) ; skip 39 first bits & set the rest
-%define PDPT_ADDR_TO_INDEX(addr) ((addr >> 30) & 0x1FF) ; skip 30 first bits & set the rest
+
+%define P2V(x)           ((x) + KERNEL_VIRT_BASE)
+%define V2P(x)           ((x) - KERNEL_VIRT_BASE)
+
 %define MMU_PRESENT     (1 << 0)
 %define MMU_WRITABLE    (1 << 1)
 %define MMU_USER_MEMORY (1 << 2)

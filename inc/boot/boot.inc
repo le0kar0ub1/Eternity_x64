@@ -5,11 +5,6 @@
 
 %define KERNEL_STACK_SIZE         (0x10 * 0x400)
 
-; LINKER VALUE (link.ld)
-%define KERNEL_VIRT_BASE 0xFFFFC00000000000
-%define P2V(x)           ((x) + KERNEL_VIRT_BASE)
-%define V2P(x)           ((x) - KERNEL_VIRT_BASE)
-
 %define MAGIC_HEADER_MB2          0xE85250D6
 %define PROTECTED_MODE            0x0
 %define MULTIBOOT_HEADER_TAG_END  0x0

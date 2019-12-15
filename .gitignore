@@ -1,6 +1,8 @@
 reated by https://www.gitignore.io/api/c
 # Edit at https://www.gitignore.io/?templates=c
 
+build/
+
 ### C ###
 # Prerequisites
 *.d
@@ -56,4 +58,3 @@ Mkfile.old
 dkms.conf
 
 # End of https://www.gitignore.io/api/c
-

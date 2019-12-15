@@ -1,37 +1,145 @@
 %include "boot.inc"
 %include "memory.inc"
 
-extern KERNEL_PHYS_END
-
-global init
-
 bits 32
 
-[section .multiboot]
-align 8
-mb_header:
-    dd MAGIC_HEADER_MB2
-    dd PROTECTED_MODE       ; architecture 0 (protected mode i386) only 32-bit instructions and up to 4GiB memory
-    dd mb_header_end - mb_header  ; mb_header length
-    ; checksum
-    dd - (MAGIC_HEADER_MB2 + PROTECTED_MODE + (mb_header_end - mb_header))
+[global _start]
+[global stack_top]
 
-    dw MULTIBOOT_HEADER_TAG_END    ; type
-    dw 0x0    ; flags
-    dd 0x8    ; size
-mb_header_end:
+[extern gdtptr]
+[extern gdtKernelCode]
+[extern gdt]
+[extern initLM]
 
 [section .text]
-init:
+_start:
     cli
-    mov esp, (stack_top)
+    mov esp, V2P(stack_top)
 
     push ebx ; address struct multiboot
 
+    ; sanity checkup
+    call check_multiboot
+    call check_cpuid
+    call check_long_mode
+
+    ; memory mapping
+    call vmm_pmm_mapping
+    call enable_paging
+
+    ; gdt loading
+    mov eax, V2P(gdtptr)
+    lgdt [eax]
+
+    pop ebx ; address struct multiboot
+    ; far jump & load kernel code gdt
+    jmp gdtKernelCode:V2P(initLM)
+    mov esi, V2P(jumpFailed)
+    call EARLY_CRASH
+    hlt
+
+vmm_pmm_mapping:
+    mov eax, V2P(PDPT)
+    or eax, (MMU_PRESENT | MMU_WRITABLE | MMU_USER_MEMORY)
+    mov DWORD [V2P(PML4)], eax
+    mov DWORD [V2P(PML4) + (PML4_ENTRY_INDEX * PAGE_ENTRY_SIZE)], eax
+
+    mov eax, V2P(PDT)
+    or eax, (MMU_PRESENT | MMU_WRITABLE | MMU_USER_MEMORY)
+    mov DWORD [V2P(PDPT)], eax
+    mov DWORD [V2P(PDPT) + (PDPT_ENTRY_INDEX * PAGE_ENTRY_SIZE)], eax
+
+    xor ecx, ecx
+    mapping_loop:
+        mov eax, 0x200000 ; 2 MIB page
+        mul ecx
+        or eax, (MMU_PRESENT | MMU_WRITABLE | MMU_USER_MEMORY | MMU_PDE_TWO_MB)
+        mov DWORD [V2P(PDT) + (ecx * PAGE_ENTRY_SIZE)], eax
+        inc ecx
+        cmp ecx, PAGE_ENTRY
+        jne mapping_loop
+    ret
+
+enable_paging:
+    mov eax, V2P(PML4)
+    mov cr3, eax
+
+    ; PAE flag
+    mov eax, cr4
+    or eax, 0x1 << 0x5
+    mov cr4, eax
+
+    ; set long mode in EFER MSR
+    mov ecx, 0xC0000080
+    rdmsr
+    or eax, 0x1 << 0x8
+    wrmsr
+
+    mov eax, cr0
+    or eax, 0x80000000
+    mov cr0, eax
+    ret
+
+[section .bss]
+align 1024
+stack_bottom:
+    RESB KERNEL_STACK_SIZE
+stack_top:
+
+[section .bss]
+align 0x1000
+PML4:
+    RESB 0x1000
+PDPT:
+    RESB 0x1000
+PDT:
+    RESB 0x1000
+
+; error debu information
+[section .rodata]
+    noMultiboot   db 'No multiboot detected', 0x0
+    noCPUID       db 'No CPUID detected', 0x0
+    longModeError db 'No long mode', 0x0
+    jumpFailed    db 'Far jumb failed', 0x0
+
+[section .text]
+; print error to screen
+directPrint:
+    push edi
+    push eax
+    mov edi, 0xb8000
+
+    directPrintLoop:
+        mov al, BYTE [esi]
+        cmp al, 0x0
+        je endDirectPrintLoop
+        mov BYTE [edi + 1], 0x4F
+        mov BYTE [edi], al
+        inc esi
+        add edi, 0x2
+        jmp directPrintLoop
+    endDirectPrintLoop:
+
+    pop eax
+    pop edi
+    ret
+
+; crash in early step
+EARLY_CRASH:
+    call directPrint
+    hlt
+    ret
+
+; sanity checks multiboot
 check_multiboot:
     cmp eax, MAGIC_BOOTLOADER_MB2
-    jne EARLY_CRASH
+    je multibootDetect
+    mov esi, V2P(noMultiboot)
+    call EARLY_CRASH
+multibootDetect:
+    ret
 
+; sanity check cpuid detect
 check_cpuid:
     pushfd   ; keep flags
     pop eax
@@ -42,92 +150,28 @@ check_cpuid:
     popfd
     pushfd
     pop eax
-
     ; Restore flags
     push ecx
     popfd
-
     cmp eax, ecx
-    je EARLY_CRASH
+    jne cpuidDetect
 
-global_mmap:
-    mov eax, (LPDPT)
-    or eax, (MMU_PRESENT | MMU_WRITABLE)
-    mov [PML4_ADDR_TO_INDEX(KERNEL_PHYS_START) * PAGE_ENTRY_SIZE], eax
+    mov esi, V2P(noCPUID)
+    call EARLY_CRASH
+cpuidDetect:
+    ret
 
-    mov eax, (HPDPT)
-    or eax, (MMU_PRESENT | MMU_WRITABLE)
-    mov [PML4_ADDR_TO_INDEX(KERNEL_VIRT_START) * PAGE_ENTRY_SIZE], eax
+check_long_mode:
+    mov eax, 0x80000000
+    cpuid
+    cmp eax, 0x80000001
+    jb longModeError
 
-    mov eax, (LPDT)
-    or eax, (MMU_PRESENT | MMU_WRITABLE)
-    mov [PDPT_ADDR_TO_INDEX(KERNEL_PHYS_START) * PAGE_ENTRY_SIZE], eax
-
-    mov eax, (HPDT)
-    or eax, (MMU_PRESENT | MMU_WRITABLE)
-    mov [PDPT_ADDR_TO_INDEX(KERNEL_VIRT_START) * PAGE_ENTRY_SIZE], eax
-
-    mov ecx, 0x0
-    mov esi, KERNEL_PHYS_END
-    shr esi, TWO_MEGABYTES_SHIFT
-    inc esi
-mapping_loop:
-    mov eax, 0x0000000000100000;TWO_MEGABYTES
-    mul ecx
-    or eax, (MMU_PRESENT | MMU_WRITABLE | MMU_PDE_TWO_MB)
-    mov ebx, (LPDT)
-    mov [ebx + (ecx * PAGE_ENTRY_SIZE)], eax
-    mov ebx, (HPDT)
-    mov [ebx + (ecx * PAGE_ENTRY_SIZE)], eax
-    inc ecx
-    cmp ecx, esi
-    jne mapping_loop
-
-    mov eax, (PML4)
-    mov cr3, eax
-
-    mov eax, 1 << 5
-    mov cr4, eax
-
-    mov ecx, 0xC0000080
-    rdmsr
-    or eax, (1 << 8)
-    wrmsr
-
-    mov eax, 1 << PE
-    or eax, 1 << ET
-    or eax, 1 << PG
-    mov cr0, eax
-    hlt
-
-[section .bss]
-align 1024
-stack_bottom:
-    RESB KERNEL_STACK_SIZE
-stack_top:
-
-global PML4
-global LPDPT
-global HPDPT
-global LPDT
-global HPDT
-[section .bss]
-align 0x1000
-PML4:
-    RESB 0x1000
-LPDPT:
-    RESB 0x1000
-HPDPT:
-    RESB 0x1000
-LPDT:
-    RESB 0x1000
-HPDT:
-    RESB 0x1000
-
-[section .text]
-EARLY_CRASH:
-    mov DWORD [0xb8000], 0x4f524f43
-    mov DWORD [0xb8004], 0x4f534f41
-    mov DWORD [0xb8008], 0x4f454f48
-    mov WORD [0xb800C], 0x4f44
-    hlt
+    mov eax, 0x80000001
+    cpuid
+    test edx, 1 << 29
+    jz longModeError
+    ret
+    noLongMode:
+        mov esi, V2P(longModeError)
+        call EARLY_CRASH
