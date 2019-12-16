@@ -1,11 +1,11 @@
 #ifndef _PORTS_H_
 #define _PORTS_H_
 // https://wiki.osdev.org/8259_PIC
+#include "eternity.h"
 
 /* PORT serial to managing communication */
 #define COM1 0x3f8 /* COM1 */
 void serial_putstr(char *s);
-void serial_putnbr(long nbr);
 void write_serial(char a);
 char read_serial(void);
 

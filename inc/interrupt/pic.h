@@ -3,7 +3,7 @@
 #ifndef _PIC_H_
 #define _PIC_H_
 
-void PIC_remap(void);
+void remap_PIC(void);
 void pic_outb(uchar port, uchar data);
 
 /* PIC int and shift */
@@ -31,7 +31,7 @@ void pic_outb(uchar port, uchar data);
 #define PIC_EOI 0x20 /* data end of interrupt */
 static inline void pic_eoi(uchar irq)
 {
-    if(irq > 0x7)
+    if(irq > 0x28)
         outb(PORT_PIC_SLAVE_CMD, PIC_EOI);
     outb(PORT_PIC_MASTER_CMD, PIC_EOI);
 }

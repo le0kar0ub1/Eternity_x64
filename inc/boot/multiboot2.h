@@ -1,5 +1,3 @@
-#include "blackout.h"
-
 #ifndef MULTIBOOT_HEADER
 #define MULTIBOOT_HEADER
 

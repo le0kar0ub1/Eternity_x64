@@ -1,7 +1,7 @@
+#include "eternity.h"
+
 #ifndef _REGISTERS_H_
 #define _REGISTERS_H_
-
-#include "blackout.h"
 
 struct regs {
     uint64 flags;

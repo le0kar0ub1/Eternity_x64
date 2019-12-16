@@ -1,10 +1,7 @@
-#ifndef _INTERRUPTS_HANDLER_H_
-#define _INTERRUPTS_HANDLER_H_
-
-/* personnal header */
 #include "eternity.h"
 
-// typedef int_handler (void (*fnct[256])(struct frame *));
+#ifndef _INTERRUPTS_HANDLER_H_
+#define _INTERRUPTS_HANDLER_H_
 
 /*  x86_64 interrupts vectors */
 enum x86_64_interrupts
@@ -81,8 +78,6 @@ struct frame {
 };
 
 /* declaration functions */
-void page_fault_handler(struct frame *frame);
-uintptr syscall_handler(struct frame *frame);
-void keyboard_handler(struct frame *frame);
+void exceptions_handler(uintptr int_num);
 
 #endif
