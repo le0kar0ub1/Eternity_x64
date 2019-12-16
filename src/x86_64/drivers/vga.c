@@ -101,7 +101,7 @@ void scroll(void) {
 
     if(vga.posy < VGA_HEIGHT - 0x1)
         return;
-    memcpyb(VGA_BUFFER_ADDRESS, start, size);
+    memcpy(VGA_BUFFER_ADDRESS, start, size);
     start = (void *)VGA_BUFFER_ADDRESS + size;
     memsetw(start, vgaFont(0x20, vga.attrib), VGA_WIDTH);
 }

@@ -1,0 +1,7 @@
+#ifndef _SYSDEF_H_
+#define _SYSDEF_H_
+
+#define MAX_ADDR_32B_SYS 0xFFFFFFFF
+#define MAX_ADDR_64B_SYS 0xFFFFFFFFFFFFFFFF
+
+#endif

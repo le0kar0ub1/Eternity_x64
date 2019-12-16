@@ -2,9 +2,14 @@
 #define _PMM_H
 
 #include "eternity.h"
+#include "sysdef.h"
 
 #define BLOCK_SIZE  0x1000
-#define BLOCK_GROUP 0x8
+
+/* this is the total hardcode pmm available */
+#define PMM_SIZE    (M * BLOCK_SIZE)
+
+#define ALIGN_BLOCK(addr) (((addr) & (MAX_ADDR_64B_SYS - (BLOCK_SIZE - 0x1))) + 0x1000)
 
 /* Physical memory types */
 enum PMM_TYPE

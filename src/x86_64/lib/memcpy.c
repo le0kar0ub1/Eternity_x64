@@ -1,6 +1,6 @@
 #include "eternity.h"
 
-void *memcpyb(void *dest, void *src, size_t size)
+void *memcpy(void *dest, void *src, size_t size)
 {
     uint8 *d = dest;
     uint8 *s = src;

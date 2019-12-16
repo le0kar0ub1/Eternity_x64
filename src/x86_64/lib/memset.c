@@ -1,6 +1,6 @@
 #include "eternity.h"
 
-void *memsetb(void *ptr, uint8 value, size_t size)
+void *memset(void *ptr, uint8 value, size_t size)
 {
     uint8 *tmp = ptr;
 
