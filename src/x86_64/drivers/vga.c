@@ -46,10 +46,11 @@ void vga_putchar(char c)
 
     switch (c) {
         case 0xA: /* new line */
-            if (vga.posy < VGA_HEIGHT - 1) {
+            vga.posx = 0x0;
+            if (vga.posy < VGA_HEIGHT - 0x1)
                 vga.posy += 0x1;
-                vga.posx = 0x0;
-            }
+            else
+                scroll();
             break;
         case 0x9: /* tabulation */
             vga.posx += 0x4;
@@ -94,26 +95,31 @@ void movptr_vgabuff(int x, int y)
     mov_cursor(vga.posx, vga.posy);
 }
 
-void reset_vga_buff(void)
+void scroll(void) {
+    void* start = (void *)VGA_BUFFER_ADDRESS + (1 * VGA_WIDTH * 2);
+    uint32_t size = vga.posy * VGA_WIDTH * 2;
+
+    if(vga.posy < VGA_HEIGHT - 0x1)
+        return;
+    memcpyb(VGA_BUFFER_ADDRESS, start, size);
+    start = (void *)VGA_BUFFER_ADDRESS + size;
+    memsetw(start, vgaFont(0x20, vga.attrib), VGA_WIDTH);
+}
+
+void vga_clear(void)
 {
-    // memsetw(VGA_BUFFER_ADDRESS, vgaFont(0x20, DEFAULT_COLOR), WIDTH * HEIGHT / 2);
+    memsetd(VGA_BUFFER_ADDRESS, vgaFont(0x20, vga.attrib), VGA_WIDTH * VGA_HEIGHT);
     movptr_vgabuff(vga.posx, vga.posy);
 }
 
-/* inline function describe in vga.h use to set color */
-// uint8 vga_return_color($write, $background)
-void vga_set_color(int fg, int bg)
+/* vga_attrib($write, $background) */
+void vga_set_attrib(int fg, int bg)
 {
-    vga.attrib = vga_return_color(fg, bg);
+    vga.attrib = vga_attrib(fg, bg);
 }
 
 void init_vga(void)
 {
-    vga.attrib = vga_return_color(VGA_WHITE, VGA_BLACK);
-    for (intptr y = 0x0; y < VGA_HEIGHT; y++) {
-        for (intptr x = 0X0; x < VGA_WIDTH; x++) {
-            const intptr index = y * VGA_WIDTH + x;
-            vga.buff[index] = vgaFont(0x20, vga.attrib);
-        }
-    }
+    vga_set_attrib(VGA_WHITE, VGA_BLACK);
+    vga_clear();
 }

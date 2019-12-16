@@ -31,7 +31,7 @@ void pic_outb(uchar port, uchar data);
 #define PIC_EOI 0x20 /* data end of interrupt */
 static inline void pic_eoi(uchar irq)
 {
-    if(irq > 0x28)
+    if(irq > 0x8)
         outb(PORT_PIC_SLAVE_CMD, PIC_EOI);
     outb(PORT_PIC_MASTER_CMD, PIC_EOI);
 }

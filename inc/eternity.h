@@ -11,15 +11,13 @@
 /* personnal headers */
 #include "types_shortcut.h"
 #include "macro.h"
-// #include "vga.h"
+#include "vga.h"
 #include "bitfield.h"
 #include "assembly_inlineInstruction.h"
 
 #define asmv __asm__ volatile
-#define printk printf
 #define syscall int 0x80
-#define clear reset_vga_buff
-#define DEBUG while (0b1) hlt();
+#define KERNEL_VIRT_LINK  0xFFFFFFFF80100000
 
 void PANIC(char const *panic);
 

@@ -62,10 +62,7 @@ cflags := -nostdlib		 			\
 	  	  -mcmodel=kernel 			\
 		  -nostartfiles          	\
 		  -static					\
-		  -mno-mmx 					\
-		  -mno-sse 					\
-		  -mno-sse2					\
-		  # -msse4.1				\
+		  -msse4.1				    \
 	  	  #-Wpadded					\
 
 asm_src := $(wildcard src/$(arch)/*.asm src/$(arch)/**/*.asm)

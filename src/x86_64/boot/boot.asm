@@ -10,6 +10,7 @@ bits 32
 [extern gdtKernelCode]
 [extern gdt]
 [extern initLM]
+[extern check_enable_sse]
 
 [section .text]
 _start:
@@ -22,6 +23,9 @@ _start:
     call check_multiboot
     call check_cpuid
     call check_long_mode
+
+    ; sse check and enable if possible
+    call check_enable_sse
 
     ; memory mapping
     call vmm_pmm_mapping

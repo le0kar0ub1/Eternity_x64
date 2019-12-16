@@ -12,10 +12,10 @@
 /* struct use to managing vga */
 struct vga
 {
-    uint8 attrib;     // AKA the color
+    uint8  attrib;     // AKA the color
     uint16 *buff;     // located at physical address 0xB8000
-    uint posx;        // current pos in vga buffer x
-    uint posy;        // current pos in vga buffer y
+    uint   posx;        // current pos in vga buffer x
+    uint   posy;        // current pos in vga buffer y
 };
 
 // https://en.wikipedia.org/wiki/Enumerated_type enum info
@@ -46,12 +46,13 @@ void give_cur_pos(int *posx, int *posy);
 void vga_putstr(char const *str);
 void vga_putchar(char c);
 void movptr_vgabuff(int x, int y);
-void reset_vga_buff(void);
+void vga_clear(void);
 void init_vga(void);
-void vga_set_color(int fg, int bg);
+void vga_set_attrib(int fg, int bg);
+void scroll(void);
 
 /* change color write and background (in order) */
-static inline uint8 vga_return_color(enum vga_color fg, enum vga_color bg)
+static inline uint8 vga_attrib(enum vga_color fg, enum vga_color bg)
 {
     return (fg | bg << 0x4);
 }

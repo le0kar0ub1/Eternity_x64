@@ -79,5 +79,6 @@ struct frame {
 
 /* declaration functions */
 void exceptions_handler(uintptr int_num);
+void register_int_handler(int nbr, void *fnct);
 
 #endif
