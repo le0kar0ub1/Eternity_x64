@@ -1,6 +1,6 @@
 #include "eternity.h"
 
-void *memsetb(void *ptr, int value, size_t size)
+void *memsetb(void *ptr, uint8 value, size_t size)
 {
     uint8 *tmp = ptr;
 
@@ -11,7 +11,7 @@ void *memsetb(void *ptr, int value, size_t size)
     return (ptr);
 }
 
-void *memsetw(void *ptr, int value, size_t size)
+void *memsetw(void *ptr, uint16 value, size_t size)
 {
     uint16 *tmp = ptr;
 
@@ -22,7 +22,7 @@ void *memsetw(void *ptr, int value, size_t size)
     return (ptr);
 }
 
-void *memsetd(void *ptr, int value, size_t size)
+void *memsetd(void *ptr, uint32 value, size_t size)
 {
     uint32 *tmp = ptr;
 
@@ -33,7 +33,7 @@ void *memsetd(void *ptr, int value, size_t size)
     return (ptr);
 }
 
-void *memsetq(void *ptr, int value, size_t size)
+void *memsetq(void *ptr, uint64 value, size_t size)
 {
     uint64 *tmp = ptr;
 

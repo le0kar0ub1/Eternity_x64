@@ -1,10 +1,12 @@
 #ifndef _PROTOTYPES_H_
 #define _PROTOTYPES_H_
 
-void *memsetb(void *ptr, int value, size_t size);
-void *memsetw(void *ptr, int value, size_t size);
-void *memsetd(void *ptr, int value, size_t size);
-void *memsetq(void *ptr, int value, size_t size);
+#include "types_shortcut.h"
+
+void *memsetb(void *ptr, uint8 value, size_t size);
+void *memsetw(void *ptr, uint16 value, size_t size);
+void *memsetd(void *ptr, uint32 value, size_t size);
+void *memsetq(void *ptr, uint64 value, size_t size);
 
 void *memcpyb(void *dest, void *src, size_t size);
 void *memcpyw(void *dest, void *src, size_t size);

@@ -16,8 +16,8 @@ void helloFromEternity(void)
     kprint("\nEternity_x64 project is restricted by the GNU V3 License\n\n");
     kprint("Kernel has been loaded at virtual address %x\n", KERNEL_VIRT_LINK);
     kprint("Mapping VMM to PMM\n");
-    kprint("GDT & IDT set up and fonctionnal");
-    kprint("Default interrupt handler registered\n");
+    kprint("GDT & IDT set up and fonctionnal\n");
+    kprint("Exceptions handler & default handler\n");
     kprint("Serial ports...\n");
     kprint("PIC driver....\n");
     kprint("VGA driver...\n");

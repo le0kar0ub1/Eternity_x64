@@ -13,6 +13,7 @@ extern init_serial
 extern init_vga
 extern remap_PIC
 extern init_keyboard
+extern init_pmm
 
 global kernel_setup
 
@@ -40,10 +41,12 @@ kernel_setup:
     ; keyboard driver init
     call init_keyboard
 
-    sti
-kd:
-    hlt
-    jmp kd
+    ; pop rdi
+    ; extern get_multiboot_tag
+    ; call get_multiboot_tag
+
+    ; init phys memory manager
+    call init_pmm
 
     cli
     mov rax, 0x2f592f412f4b2f4f ; print OKAY on screen
