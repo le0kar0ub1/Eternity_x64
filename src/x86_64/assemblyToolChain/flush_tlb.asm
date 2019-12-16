@@ -1,6 +1,3 @@
-%include "memory.inc"
-%include "boot.inc"
-
 bits 64
 
 global tlbFlush

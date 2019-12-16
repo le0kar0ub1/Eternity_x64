@@ -1,7 +1,10 @@
 %ifndef _CONTEXT_INC_
 %define _CONTEXT_INC_
 
+%include "macro.inc"
+
 %macro baseRegPush 0
+    pushfq
     push r15
     push r14
     push r13
@@ -33,9 +36,11 @@
     pop r13
     pop r14
     pop r15
+    popfq
 %endmacro
 
 %macro context_save 0
+    pushfq
     push r15
     push r14
     push r13
@@ -50,6 +55,8 @@
     push rdx
     push rcx
     push rbx
+
+    push_seg_reg
 
     sub rsp, 256
     movdqu [rsp + 0],   xmm15
@@ -89,6 +96,8 @@
     movdqu xmm0,  [rsp + 240]
     add rsp, 256
 
+    pop_seg_reg
+
     pop rbx
     pop rcx
     pop rdx
@@ -103,6 +112,7 @@
     pop r13
     pop r14
     pop r15
+    popfq
 %endmacro
 
 %endif

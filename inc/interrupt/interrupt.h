@@ -2,8 +2,9 @@
 #define _INTERRUPTS_HANDLER_H_
 
 /* personnal header */
-#include "blackout.h"
-#include "ports.h"
+#include "eternity.h"
+
+// typedef int_handler (void (*fnct[256])(struct frame *));
 
 /*  x86_64 interrupts vectors */
 enum x86_64_interrupts

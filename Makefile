@@ -5,7 +5,7 @@ iso := build/eternity-$(arch).iso
 linker_script := src/link.ld
 grub_cfg := src/grub.cfg
 
-include := $(addprefix -Iinc/, boot/ interrupt/ def/ drivers/ memory/ / lib/ system/ network/)
+include := $(addprefix -Iinc/, descriptors/ boot/ interrupt/ def/ drivers/ memory/ / lib/ system/ network/)
 project_dir := boot/ drivers/ lib/ interrupt/ memory/ CPU/ network/ /
 
 ld := ld
@@ -60,11 +60,8 @@ cflags := -nostdlib		 			\
 	  	  -mno-red-zone				\
 	  	  -g3						\
 	  	  -mcmodel=kernel 			\
-		  -no-pie					\
 		  -nostartfiles          	\
-	  	  -Werror					\
 		  -static					\
-		  -mno-rtti					\
 		  -mno-mmx 					\
 		  -mno-sse 					\
 		  -mno-sse2					\

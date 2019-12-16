@@ -1,35 +1,20 @@
 %include "contextSwitch.inc"
 %include "boot.inc"
-%include "interrupt.inc"
+%include "descriptors.inc"
 
 bits 64
 
 global idt_setup
 global idtptr
+global load_idt
 global register_int_handler
 
-extern default_int_handler
+extern isr
 
 [section .text]
-; used to register known particular interrupt handler to overhead default
-register_int_handler:
-    baseRegPush
-    mov rbx, idt
-    add rbx, (rdi * IDT_ENTRY_SIZE) ; go to int number
-
-    mov rbx, idt                ; fill in 64b idt with isr address
-    mov WORD [rdi], bx          ; low 16 bits
-    shr rbx, 0x10
-    mov WORD [rdi + 0x6], bx    ; middle/low 16 bits
-    shr rbx, 0x10
-    mov DWORD [rdi + 0x8], ebx  ; high 32 bits
-
-    baseRegPop
-    ret
-
 idt_setup:
     baseRegPush
-    mov rsi, default_int_handler
+    mov rsi, isr
     mov rdi, idt
     mov rcx, IDT_ENTRY_NBR
 
@@ -48,6 +33,10 @@ handler_in_idt:
     jne handler_in_idt
 
     baseRegPop
+    ret
+
+load_idt:
+    lidt [idtptr]
     ret
 
 [section .data]

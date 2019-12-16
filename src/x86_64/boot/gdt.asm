@@ -56,6 +56,22 @@ gdtUserData: equ $ - gdt_start     ; The Kernel data descriptor.
     db 11001111b                 ; Granularity.
     db 0                         ; Base (high).
 
+gdtTSS: equ $ - gdt_start
+    dw 0x0
+    dw 0x0
+    db 0
+    db 0
+    db 0
+    db 0
+
     dd 0
     dd 0
 gdt_end:
+
+
+; [section .text]
+; gdt_set_entry:
+;     mov rax, rdi ; index
+;     mov ecx, 8
+;     mul ecx
+;     add rax, gdt
