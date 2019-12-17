@@ -11,9 +11,13 @@
 #define PMM_SIZE    ((uint64)M * BLOCK_SIZE)
 
 /* bitmap chirurgical operation */
-#define SETBITMAP(addr)   (bitmapManager[addr] |= (1 << (addr % BLOCK_SIZE)))
-#define CLEARBITMAP(addr) (bitmapManager[addr] &= (~(1 << (addr % BLOCK_SIZE))))
-#define BITSTATE(addr)    ((bitmapManager[addr] >> (addr % BLOCK_SIZE)) & 0x1)
+// #define SETBITMAP(addr)   (bitmapManager[addr] |= (1 << (addr % BLOCK_SIZE)))
+// #define CLEARBITMAP(addr) (bitmapManager[addr] &= (~(1 << (addr % BLOCK_SIZE))))
+// #define BITSTATE(addr)    ((bitmapManager[addr] >> (addr % BLOCK_SIZE)) & 0x1)
+
+#define SETBITMAP(x, v) (bitmapManager[x] = v)
+#define CLEARBITMAP(x)  (bitmapManager[x] = 0x0)
+#define BITSTATE(x)     (bitmapManager[x])
 
 /* aligne block address */
 #define ALIGN_BLOCK(addr) (((addr) & (MAX_ADDR_64B_SYS - (BLOCK_SIZE - 0x1))) + 0x1000)
@@ -30,13 +34,10 @@ enum PMM_TYPE
     PMM_TYPE_UNMAPPED = 0x7,   /* Marked as "do not map" */
 };
 
-void *frame_allocator(uint64 size);
-uint64 allocate_consecutive_frame(uint nbr);
-uint64 allocate_frame(void);
-uint64 find_free_frame(void);
-uint64 find_consecutive_free_frame(uint frameNbr);
-void free_frame(uint64 block);
-void free_consecutive_frame(uint64 block);
-void init_pmm(uint64 size);
+void *frame_allocator(uint64);
+uint64 allocate_frame(uint);
+uint64 find_free_frame(uint);
+void free_frame(uint64);
+void init_pmm(void);
 
 #endif
