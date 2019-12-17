@@ -14,8 +14,8 @@ void helloFromEternity(void)
     vga_putstr(kernelName);
     vga_set_attrib(VGA_WHITE, VGA_BLACK);
     kprint("\nEternity_x64 project is restricted by the GNU V3 License\n\n");
-    kprint("Kernel has been loaded at virtual address %x\n", KERNEL_VIRT_LINK);
-    kprint("Boot sanity check...");
+    kprint("Kernel has been loaded at virtual address %x\n", LOAD_VIRT_ADDR);
+    kprint("Boot sanity check...\n");
     kprint("Mapping VMM to PMM\n");
     kprint("Loading GDT...\n");
     kprint("jumping into long mode...\n");
@@ -26,5 +26,7 @@ void helloFromEternity(void)
     kprint("Initializing Serial ports...\n");
     kprint("Initializing PIC driver....\n");
     kprint("Initializing Keyboard driver...");
-    kprint("Initializing PMM...\n");
+    kprint("Initializing PMM manager...\n");
+    kprint("Initializing VMM manager...\n");
+    kprint("Initializing kernel heap...\n");
 }

@@ -14,10 +14,10 @@
 #include "vga.h"
 #include "bitfield.h"
 #include "assembly_inlineInstruction.h"
+#include "memory.h"
 
 #define asmv __asm__ volatile
 #define syscall int 0x80
-#define KERNEL_VIRT_LINK  0xFFFFFFFF80100000
 
 void PANIC(char const *panic);
 

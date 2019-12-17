@@ -6,31 +6,25 @@
 /* https://os.phil-opp.com/paging-introduction/ */
 /* http://www.jamesmolloy.co.uk/tutorial_html/6.-Paging.html */
 
+extern uint64 __KERNEL_VIRT_BASE;
+extern uint64 __KERNEL_VIRT_LINK;
+extern uint64 __KERNEL_VIRT_END;
+extern uint64 __KERNEL_PHYS_START;
+extern uint64 __KERNEL_PHYS_END;
+
 #define INDEX_FROM_BIT(b)  (b / (0x8 * 0x20))
 #define OFFSET_FROM_BIT(b) (b % (0x8 * 0x20))
 
 typedef uintptr physaddr_t;
 typedef void    *virtaddr_t;
 
-extern uint64 __KERNEL_PHYS_END;
-
-/* VIRTUAL PAGE BITS SETTINGS */
-#define PE  0x0
-#define MP  0x1
-#define EM  0x2
-#define TS  0x3
-#define ET  0x4
-#define NE  0x5
-#define WP  0x10
-#define AM  0x12
-#define PG  0x1F
 
 #define K 0x400
 #define M (0x400 * K)
 #define G (0x400 * M)
 
-#define LOAD_PHYS_ADDR      0x100000
-#define LOAD_VIRT_ADDR      0xFFFFFFFF80100000
+#define LOAD_PHYS_ADDR      (&__KERNEL_PHYS_START)
+#define LOAD_VIRT_ADDR      (&__KERNEL_VIRT_LINK)
 #define PHYS_MM_START_USED  (PAGE_ALIGN((uint64)&__KERNEL_PHYS_END))
 
 /* paging memory */
@@ -49,6 +43,19 @@ static inline uintptr read_cr2(void)
     uintptr out;
     asmv("mov %%cr3, %0" : "=a"(out));
     return (out);
+}
+
+/* memory specification */
+static inline uintptr read_cr4(void)
+{
+    uintptr out;
+    asmv("mov %%cr4, %0" : "=a"(out));
+    return (out);
+}
+
+static inline void write_cr4(uintptr cr4)
+{
+    asmv("mov %0, %%cr4" :: "r"(cr4));
 }
 
 /* containing the PAGE MAX LVL of pagination */

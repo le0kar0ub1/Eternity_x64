@@ -3,12 +3,19 @@
 
 #include "eternity.h"
 #include "sysdef.h"
+#include "memory.h"
 
 #define BLOCK_SIZE  0x1000
 
 /* this is the total hardcode pmm available */
-#define PMM_SIZE    (M * BLOCK_SIZE)
+#define PMM_SIZE    ((uint64)M * BLOCK_SIZE)
 
+/* bitmap chirurgical operation */
+#define SETBITMAP(addr)   (bitmapManager[addr] |= (1 << (addr % BLOCK_SIZE)))
+#define CLEARBITMAP(addr) (bitmapManager[addr] &= (~(1 << (addr % BLOCK_SIZE))))
+#define BITSTATE(addr)    ((bitmapManager[addr] >> (addr % BLOCK_SIZE)) & 0x1)
+
+/* aligne block address */
 #define ALIGN_BLOCK(addr) (((addr) & (MAX_ADDR_64B_SYS - (BLOCK_SIZE - 0x1))) + 0x1000)
 
 /* Physical memory types */
@@ -23,10 +30,13 @@ enum PMM_TYPE
     PMM_TYPE_UNMAPPED = 0x7,   /* Marked as "do not map" */
 };
 
-void alloc_first_page(void);
-struct PageFrame *alloc_page(void);
-void *phys_allok(uint64 size);
+void *frame_allocator(uint64 size);
+uint64 allocate_consecutive_frame(uint nbr);
+uint64 allocate_frame(void);
+uint64 find_free_frame(void);
+uint64 find_consecutive_free_frame(uint frameNbr);
+void free_frame(uint64 block);
+void free_consecutive_frame(uint64 block);
 void init_pmm(uint64 size);
-void phys_kfree(void *free);
 
 #endif

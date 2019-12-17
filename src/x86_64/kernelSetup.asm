@@ -14,6 +14,7 @@ extern init_vga
 extern remap_PIC
 extern init_keyboard
 extern init_pmm
+extern init_vmm
 
 global kernel_setup
 
@@ -48,6 +49,10 @@ kernel_setup:
     ; init phys memory manager
     call init_pmm
 
+    ; init virtual memory
+    call init_vmm
+
+    ; print if all comes good
     cli
     mov rax, 0x2f592f412f4b2f4f ; print OKAY on screen
     mov QWORD [0xb8000], rax

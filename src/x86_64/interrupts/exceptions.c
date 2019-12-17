@@ -38,6 +38,13 @@ char const *exception_message[MAX_INT] =
     "Reserved"
 };
 
+void PANIC(char const *panic)
+{
+    kprint("%s\n", panic);
+    cli();
+    hlt();
+}
+
 void exceptions_handler(uintptr int_num)
 {
     /* if this is not an exception, kick it */

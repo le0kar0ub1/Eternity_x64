@@ -27,7 +27,7 @@ void hexa_put(ulong n)
 
     puts("0x");
     for (; n / 0x10 > 0; n /= 0x10, max++);
-    for (; max > 0; max--) {
+    for (; (long)max >= 0; max--) {
         ch = n % 0x10;
         if (ch > 0x9)
             putchar(0x41 + (ch - 0xA));

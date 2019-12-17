@@ -90,6 +90,9 @@ stack_bottom:
     RESB KERNEL_STACK_SIZE
 stack_top:
 
+global PML4
+global PDPT
+global PDT
 [section .bss]
 align 0x1000
 PML4:
