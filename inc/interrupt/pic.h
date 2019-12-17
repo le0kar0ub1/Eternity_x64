@@ -1,7 +1,8 @@
-#include "eternity.h"
-
 #ifndef _PIC_H_
 #define _PIC_H_
+
+#include "eternity.h"
+#include "ports.h"
 
 void remap_PIC(void);
 void pic_outb(uchar port, uchar data);

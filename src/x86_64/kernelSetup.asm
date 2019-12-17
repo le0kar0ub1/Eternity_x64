@@ -15,6 +15,7 @@ extern remap_PIC
 extern init_keyboard
 extern init_pmm
 extern init_vmm
+extern init_timer
 
 global kernel_setup
 
@@ -27,7 +28,7 @@ kernel_setup:
     call load_idt
     call init_handler
 
-    ; serial port managing
+    ; serial port init
     call init_serial
 
     ; VGA driver init
@@ -51,6 +52,20 @@ kernel_setup:
 
     ; init virtual memory
     call init_vmm
+
+    cli
+    hlt
+
+
+
+
+    ; init PIT timer
+    call init_timer
+
+    sti
+inf:
+    hlt
+    jmp inf
 
     ; print if all comes good
     cli

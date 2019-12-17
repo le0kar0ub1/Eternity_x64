@@ -50,8 +50,9 @@ void exceptions_handler(uintptr int_num)
     /* if this is not an exception, kick it */
     if (int_num > 0x1F)
         return;
-    // vga_set_color(VGA_RED, VGA_BLACK);
+    vga_set_attrib(VGA_RED, VGA_BLACK);
     /* Kernel panic, reboot progress... */
-    // printk("Intern Panic: %s\n", exception_message[int_num]);
+    kprint("Intern Panic: %s\n", exception_message[int_num]);
+    cli();
     hlt();
 }

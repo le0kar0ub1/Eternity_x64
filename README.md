@@ -1,6 +1,6 @@
 # Eternity is a x86_64 kernel
 
-**Eternity is a kernel writing (with love) in C and assembly language.**
+**Eternity is a kernel wrote (with love) in C and x86 assembly.**
 
 ## DEPENDENCY:
     - QEMU/QEMU-KVM (need setting Virtualisation in BIOS)

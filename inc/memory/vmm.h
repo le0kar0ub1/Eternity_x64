@@ -23,7 +23,7 @@ struct pageTable {
     uint64 pdt_user[PAGE_ENTRY_NBR];
 };
 
-struct pageTable kernelPageTable;
+struct pageTable *kernelPageTable;
 
 /* VIRTUAL PAGE BITS SETTINGS */
 enum pageAttrib {
@@ -35,6 +35,6 @@ enum pageAttrib {
     STACK_GUARD_PAGE    = 0x200,  // page is a stack guard; together with "non present" allows for detection of stack overflows
 };
 
-void HVMmapping(struct pageTable *);
+void HVMmapping(void);
 
 #endif

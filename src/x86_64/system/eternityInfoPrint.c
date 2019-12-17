@@ -22,10 +22,10 @@ void helloFromEternity(void)
     kprint("Initializing ISR...\n");
     kprint("Loading IDT...\n");
     kprint("Exceptions handler operationnal\n");
-    kprint("Initializing VGA driver...");
+    kprint("Initializing VGA driver...\n");
     kprint("Initializing Serial ports...\n");
     kprint("Initializing PIC driver....\n");
-    kprint("Initializing Keyboard driver...");
+    kprint("Initializing Keyboard driver...\n");
     kprint("Initializing PMM manager...\n");
     kprint("Initializing VMM manager...\n");
     kprint("Initializing kernel heap...\n");
