@@ -53,8 +53,8 @@ kernel_setup:
     ; init virtual memory
     call init_vmm
 
-    cli
-    hlt
+    ; cli
+    ; hlt
 
 
 
