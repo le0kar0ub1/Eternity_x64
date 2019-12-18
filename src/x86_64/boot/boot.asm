@@ -79,6 +79,7 @@ enable_paging:
     or eax, 0x1 << 0x8
     wrmsr
 
+    ; protected mode
     mov eax, cr0
     or eax, 0x80000000
     mov cr0, eax
@@ -102,7 +103,7 @@ PDPT:
 PDT:
     RESB 0x1000
 
-; error debu information
+; error debug information
 [section .rodata]
     noMultiboot   db 'No multiboot detected', 0x0
     noCPUID       db 'No CPUID detected', 0x0

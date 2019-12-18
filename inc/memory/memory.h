@@ -12,12 +12,12 @@ extern uint64 __KERNEL_VIRT_END;
 extern uint64 __KERNEL_PHYS_START;
 extern uint64 __KERNEL_PHYS_END;
 
-#define INDEX_FROM_BIT(b)  (b / (0x8 * 0x20))
-#define OFFSET_FROM_BIT(b) (b % (0x8 * 0x20))
+/* page define at boot are accessed with translation */
+#define V2P(x) ((uint64)x - (uint64)(&__KERNEL_VIRT_BASE))
+#define P2V(x) ((uint64)x + (uint64)(&__KERNEL_VIRT_BASE))
 
 typedef uintptr physaddr_t;
 typedef void    *virtaddr_t;
-
 
 #define K 0x400
 #define M (0x400 * K)

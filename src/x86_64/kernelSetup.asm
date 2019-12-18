@@ -56,16 +56,16 @@ kernel_setup:
     ; cli
     ; hlt
 
+    sti
+inf:
+    hlt
+    jmp inf
 
 
 
     ; init PIT timer
     call init_timer
 
-    sti
-inf:
-    hlt
-    jmp inf
 
     ; print if all comes good
     cli
