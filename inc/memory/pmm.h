@@ -5,22 +5,22 @@
 #include "sysdef.h"
 #include "memory.h"
 
-#define BLOCK_SIZE  0x1000
+#define FRAME_SIZE  0x1000
 
 /* this is the total hardcode pmm available */
-#define PMM_SIZE    ((uint64)M * BLOCK_SIZE)
+#define PMM_SIZE    ((uint64)M * FRAME_SIZE)
 
 /* bitmap chirurgical operation */
-// #define SETBITMAP(addr)   (bitmapManager[addr] |= (1 << (addr % BLOCK_SIZE)))
-// #define CLEARBITMAP(addr) (bitmapManager[addr] &= (~(1 << (addr % BLOCK_SIZE))))
-// #define BITSTATE(addr)    ((bitmapManager[addr] >> (addr % BLOCK_SIZE)) & 0x1)
+// #define SETBITMAP(addr)   (bitmapManager[addr] |= (1 << (addr % FRAME_SIZE)))
+// #define CLEARBITMAP(addr) (bitmapManager[addr] &= (~(1 << (addr % FRAME_SIZE))))
+// #define BITSTATE(addr)    ((bitmapManager[addr] >> (addr % FRAME_SIZE)) & 0x1)
 
 #define SETBITMAP(x, v) (bitmapManager[x] = v)
 #define CLEARBITMAP(x)  (bitmapManager[x] = 0x0)
 #define BITSTATE(x)     (bitmapManager[x])
 
 /* aligne block address */
-#define ALIGN_BLOCK(addr) (((addr) & (MAX_ADDR_64B_SYS - (BLOCK_SIZE - 0x1))) + 0x1000)
+#define ALIGN_BLOCK(addr) (((addr) & (MAX_ADDR_64B_SYS - (FRAME_SIZE - 0x1))) + 0x1000)
 
 /* Physical memory types */
 enum PMM_TYPE

@@ -14,11 +14,13 @@ extern init_vga
 extern remap_PIC
 extern init_keyboard
 extern init_pmm
+extern init_kpaging
 extern init_vmm
 extern init_timer
 
 global kernel_setup
 
+[section .text]
 kernel_setup:
     add rbx, KERNEL_VIRT_BASE ; address struct multiboot
     push rbx
@@ -50,7 +52,10 @@ kernel_setup:
     ; init phys memory manager
     call init_pmm
 
-    ; init virtual memory
+    ; init new kpaging with static/dynamic
+    call init_kpaging
+
+    ; init vmm
     call init_vmm
 
     ; cli

@@ -2,6 +2,7 @@
 #include "eternity.h"
 
 /* PMM MANAGED BY A BIG BITMAP */
+
 extern uint64 __KERNEL_PHYS_END;
 
 /* start a the end of kernel phys */
@@ -11,11 +12,10 @@ uint64 pmmEnd;
 uint8 *bitmapManager = (uint8 *)(&__KERNEL_PHYS_END);
 uint64 blockNbr;
 
-void simple_test(void);
 /* pmm initialization */
 void init_pmm(void)
 {
-    blockNbr = PMM_SIZE / BLOCK_SIZE;
+    blockNbr = PMM_SIZE / FRAME_SIZE;
     bitmapManager = (uint8 *)ALIGN_BLOCK((uint64)bitmapManager);
     memset(bitmapManager, 0x0, blockNbr);
     /* start pmm at next aligned address after bitmap */
@@ -36,7 +36,7 @@ uint64 allocate_frame(uint frameRequest)
 {
     uint64 block = find_free_frame(frameRequest);
     SETBITMAP(block, frameRequest);
-    return ((block * BLOCK_SIZE) + pmmStart);
+    return ((block * FRAME_SIZE) + pmmStart);
 }
 
 
