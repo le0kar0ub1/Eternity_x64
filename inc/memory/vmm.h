@@ -7,13 +7,16 @@
 
 #define PAGE_SIZE  0x1000
 
-#define ALIGN_BLOCK(x) (((x) & (MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1))) + 0x1000)
+#define ALIGN_PAGE(x) (((x) & (MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1))) + 0x1000)
 
 struct vmmblock {
     struct vmmblock *next;
-    // uint;
+    void *page;
+    uint  involved;
     uint8 used;
 };
+
+#define SIZEOF_VMMBLOCK sizeof(struct vmmblock)
 
 struct vmmblock *vmmblock;
 

@@ -16,7 +16,10 @@ extern init_keyboard
 extern init_pmm
 extern init_kpaging
 extern init_vmm
+extern init_kalloc
 extern init_timer
+
+extern kmain
 
 global kernel_setup
 
@@ -58,8 +61,12 @@ kernel_setup:
     ; init vmm
     call init_vmm
 
+    ; init kheap allocation
+    call init_kalloc
+
     ; cli
     ; hlt
+    call kmain
 
     sti
 inf:
@@ -67,9 +74,9 @@ inf:
     jmp inf
 
 
-
     ; init PIT timer
     call init_timer
+
 
 
     ; print if all comes good

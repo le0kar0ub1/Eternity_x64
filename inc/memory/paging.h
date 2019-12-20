@@ -3,6 +3,13 @@
 
 #include "memory.h"
 
+/* KERNEL MAPPING INDEX VALUE */
+#define KERNEL_PML4_ENTRY 511
+#define KERNEL_PDPT_ENTRY 510
+#define KERNEL_STATIC_PDT_ENTRY    0x0
+#define KERNEL_MEMMANAGE_PDT_ENTRY 0x1
+#define KERNEL_DYNAMIC_PDT_ENTRY   0x2
+
 #define PML4_INDEX(x) ((((uint64)(x)) >> 0x27) & (PAGE_ENTRY_NBR - 0x1))
 #define PDPT_INDEX(x) ((((uint64)(x)) >> 0x1E) & (PAGE_ENTRY_NBR - 0x1))
 #define PD_INDEX(x)   ((((uint64)(x)) >> 0x15) & (PAGE_ENTRY_NBR - 0x1))
@@ -18,6 +25,7 @@ struct pageTable {
     uint64 pdpt[PAGE_ENTRY_NBR];
     uint64 pdt[PAGE_ENTRY_NBR];
     uint64 pt_kernel_static[PAGE_ENTRY_NBR];
+    uint64 pt_kernel_memmanage[PAGE_ENTRY_NBR];
     uint64 pt_kernel_dynamic[PAGE_ENTRY_NBR];
     uint64 pt_user[PAGE_ENTRY_NBR];
 };
@@ -34,6 +42,8 @@ enum pageAttrib {
     STACK_GUARD_PAGE = 0x200, // page is a stack guard; together with "non present" allows for detection of stack overflows
 };
 
+void init_kpaging(void);
 void kernelMapping(void);
+void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt);
 
 #endif

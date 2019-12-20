@@ -16,8 +16,8 @@ extern uint64 __KERNEL_PHYS_END;
 #define V2P(x) ((uint64)x - (uint64)(&__KERNEL_VIRT_BASE))
 #define P2V(x) ((uint64)x + (uint64)(&__KERNEL_VIRT_BASE))
 
-typedef uintptr physaddr_t;
-typedef void    *virtaddr_t;
+typedef uintptr physaddr;
+typedef void    *virtaddr;
 
 #define K 0x400
 #define M (0x400 * K)
@@ -30,6 +30,7 @@ typedef void    *virtaddr_t;
 /* paging memory */
 void identity_mapp(void);
 void map_memory(ulong addr);
+void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt);
 
 /* invalid a page of TLB (TLB increase speed if addr was already page) */
 static inline void invlpg(void *addr)

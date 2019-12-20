@@ -23,20 +23,20 @@ void init_pmm(void)
     pmmEnd = (uint64)(pmmStart + PMM_SIZE);
 }
 
-void *frame_allocator(uint64 size)
+physaddr frame_allocator(uint64 size)
 {
     if (size < 0x1)
         return (0x0);
     uint frameRequest = ALIGN_BLOCK(size);
-    return ((void *)allocate_frame(frameRequest));
+    return (allocate_frame(frameRequest));
 }
 
 /* allocate consecutive frame & set the bit in bitmapManager */
-uint64 allocate_frame(uint frameRequest)
+physaddr allocate_frame(uint frameRequest)
 {
     uint64 block = find_free_frame(frameRequest);
     SETBITMAP(block, frameRequest);
-    return ((block * FRAME_SIZE) + pmmStart);
+    return ((physaddr)(block * FRAME_SIZE) + pmmStart);
 }
 
 

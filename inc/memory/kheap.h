@@ -4,13 +4,22 @@
 #include "memory.h"
 #include "eternity.h"
 #include "sysdef.h"
+#include "paging.h"
+#include "vmm.h"
 
 struct kheap {
-    void *start;
     struct kheap *next;
-    uint32 sz;
+    uint size;
+    bool used;
 };
 
 struct kheap *kheap;
+
+#define SIZEOF_KHEAPBLOCK sizeof(kheap)
+
+void kfree(virtaddr ptr);
+void init_kalloc(void);
+virtaddr kalloc(uint size);
+void dump_kheap(void);
 
 #endif

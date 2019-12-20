@@ -20,5 +20,6 @@
 #define syscall int 0x80
 
 void PANIC(char const *panic);
+void kmain(void);
 
 #endif
