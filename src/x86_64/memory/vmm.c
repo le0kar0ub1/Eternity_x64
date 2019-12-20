@@ -11,19 +11,38 @@ virtaddr curVmmAddr;
 struct vmmblock *vmmblock;
 struct vmmblock *curblock;
 
+uint64 managerPageCycle = 0x0;
+uint64 vmmPageCycle = 0x0;
+
 extern struct pageTable *kpage; // mmap working needed
+
+virtaddr kmem_request(uint size)
+{
+    virtaddr page = allocate_page(size);
+    physaddr frame = frame_allocator(size);
+    mmap(page, frame, ALIGN_BLOCK(size));
+    return (page);
+}
 
 void init_vmm(void)
 {
-    managerVmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_MEMMANAGE_PDT_ENTRY, 0x0);
-    vmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_DYNAMIC_PDT_ENTRY, 0x0);
-    vmmblock = managerVmmStart; // start at the first address of the PDT reserved and mapped for that
-    vmmblock->next = NULL; //vmmblock + SIZEOF_VMMBLOCK;
-    hlt();
+    managerVmmStart = kmem_request(PAGE_SIZE);
+    vmmblock = kmem_request(PAGE_SIZE);
+    vmmblock->next = NULL;
     vmmblock->used = false;
     vmmblock->page = vmmStart + SIZEOF_VMMBLOCK;
     curblock = vmmblock;
     curVmmAddr += PAGE_SIZE;
+    hlt();
+    // managerVmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_MEMMANAGE_PDT_ENTRY, 0x0);
+    // vmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_DYNAMIC_PDT_ENTRY, 0x0);
+    // vmmblock = managerVmmStart; // start at the first address of the PDT reserved and mapped for that
+    // vmmblock->next = NULL; //vmmblock + SIZEOF_VMMBLOCK;
+    // hlt();
+    // vmmblock->used = false;
+    // vmmblock->page = vmmStart + SIZEOF_VMMBLOCK;
+    // curblock = vmmblock;
+    // curVmmAddr += PAGE_SIZE;
 }
 
 virtaddr allocate_page(uint size)
@@ -67,24 +86,15 @@ void free_page(virtaddr rect)
     PANIC("Invalid pointer in free_page\n");
 }
 
-// void map(uint64 pdIdx, struct pageTable *kpage)
-// {
-//     physaddr = frame_allocator(PAGE_SIZE);
-// }
-
-void mmap(virtaddr addr)
+void mmap(virtaddr virt, physaddr phys, uint off)
 {
-
-    pdIdx = PD_INDEX(addr);
-    switch (pdIdx) {
-        case KERNEL_DYNAMIC_PDT_ENTRY:
-            physaddr = frame_allocator(PAGE_SIZE);
-            kpage->pt_kernel_dynamic[];
-            map(pdIdx, kpage);
-        case KERNEL_MEMMANAGE_PDT_ENTRY:
-            map(pdIdx, kpage);
-        default:
-            kprint("mmap unrecognise this PD index...\n");
-            return;
+    uint pd = PD_INDEX(virt);
+    uint pt = PT_INDEX(virt);
+    off /= PAGE_SIZE;
+    for (; off > 0x0 && pt < PAGE_ENTRY_NBR;) {
+        kpage->pt_kernel_dynamic[pd][pt] = phys;
+        pt += 0x1;
+        phys += PAGE_SIZE;
+        off -= 0x1;
     }
 }

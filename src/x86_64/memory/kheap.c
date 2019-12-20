@@ -4,8 +4,6 @@
 struct kheap *kheap;
 uint64 kheapPageCycle;
 
-virtaddr kheapManagerStart;
-
 void dump_kheap(void)
 {
     for (struct kheap *root = kheap; kheap; kheap = kheap->next)
@@ -17,14 +15,17 @@ virtaddr kalloc(uint size)
     if (!size)
         return (NULL);
     struct kheap *root = kheap;
+    virtaddr new; // if all mem consumed;
     for (; root->next; root = root->next)
         if (root->size <= size && !root->used) {
             root->used = true;
             return ((virtaddr)root + SIZEOF_KHEAPBLOCK);
         }
-    if (kheapPageCycle + size + SIZEOF_KHEAPBLOCK > PAGE_SIZE)
-        PANIC("No VMM available\n");
-    root->next = root + root->size + SIZEOF_KHEAPBLOCK;
+    if (kheapPageCycle + size + SIZEOF_KHEAPBLOCK > PAGE_SIZE) {
+        new = kmem_request(size);
+        root->next = new;
+    } else
+        root->next = root + root->size + SIZEOF_KHEAPBLOCK;
     root = root->next;
     root->next = NULL;
     root->size = size;
@@ -35,8 +36,8 @@ virtaddr kalloc(uint size)
 
 void init_kalloc(void)
 {
-    kheapManagerStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_DYNAMIC_PDT_ENTRY, 0x0);
-    kheap = (struct kheap *)kheapManagerStart;
+    virtaddr begin = kmem_request(PAGE_SIZE);
+    kheap = (struct kheap *)begin;
     kheap->next = NULL;
     kheap->size = 0x10;
     kheap->used = false;

@@ -21,28 +21,28 @@
 #define TWOMIB_PAGESIZE  0x200000
 #define FOURKIB_PAGESIZE 0x1000
 
-struct pageTable {
-    uint64 pml4[PAGE_ENTRY_NBR];
-    uint64 pdpt[PAGE_ENTRY_NBR];
-    uint64 pdt[PAGE_ENTRY_NBR];
-    uint64 pt_kernel_static[PAGE_ENTRY_NBR];
-    uint64 pt_kernel_memmanage[PAGE_ENTRY_NBR];
-    uint64 pt_kernel_dynamic[PAGE_ENTRY_NBR];
-    uint64 pt_kernel_dynExtend[PAGE_ENTRY_NBR];
-    uint64 pt_user[PAGE_ENTRY_NBR];
-};
-
 // struct pageTable {
 //     uint64 pml4[PAGE_ENTRY_NBR];
 //     uint64 pdpt[PAGE_ENTRY_NBR];
 //     uint64 pdt[PAGE_ENTRY_NBR];
 //     uint64 pt_kernel_static[PAGE_ENTRY_NBR];
-//     uint64 pt_kernel_dynamic[PAGE_ENTRY_NBR - 0x2][PAGE_ENTRY_NBR];
+//     uint64 pt_kernel_memmanage[PAGE_ENTRY_NBR];
+//     uint64 pt_kernel_dynamic[PAGE_ENTRY_NBR];
+//     uint64 pt_kernel_dynExtend[PAGE_ENTRY_NBR];
 //     uint64 pt_user[PAGE_ENTRY_NBR];
 // };
 
+struct pageTable {
+    uint64 pml4[PAGE_ENTRY_NBR];
+    uint64 pdpt[PAGE_ENTRY_NBR];
+    uint64 pdt[PAGE_ENTRY_NBR];
+    uint64 pt_kernel_static[PAGE_ENTRY_NBR];
+    uint64 pt_kernel_dynamic[PAGE_ENTRY_NBR - 0x1][PAGE_ENTRY_NBR];
+    uint64 pt_user[PAGE_ENTRY_NBR];
+};
 
-struct pageTable *kernelPage;
+
+struct pageTable *kpage;
 
 /* VIRTUAL PAGE BITS SETTINGS */
 enum pageAttrib {

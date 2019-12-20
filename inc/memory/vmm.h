@@ -20,4 +20,10 @@ struct vmmblock {
 
 struct vmmblock *vmmblock;
 
+virtaddr allocate_page(uint size);
+void free_page(virtaddr rect);
+virtaddr kmem_request(uint size);
+void mmap(virtaddr virt, physaddr phys, uint off);
+void init_vmm(void);
+
 #endif
