@@ -11,12 +11,15 @@ virtaddr curVmmAddr;
 struct vmmblock *vmmblock;
 struct vmmblock *curblock;
 
+extern struct pageTable *kpage; // mmap working needed
+
 void init_vmm(void)
 {
     managerVmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_MEMMANAGE_PDT_ENTRY, 0x0);
     vmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_DYNAMIC_PDT_ENTRY, 0x0);
-    vmmblock = vmmStart; // start at the first address of the PDT reserved and mapped for that
+    vmmblock = managerVmmStart; // start at the first address of the PDT reserved and mapped for that
     vmmblock->next = NULL; //vmmblock + SIZEOF_VMMBLOCK;
+    hlt();
     vmmblock->used = false;
     vmmblock->page = vmmStart + SIZEOF_VMMBLOCK;
     curblock = vmmblock;
@@ -64,7 +67,24 @@ void free_page(virtaddr rect)
     PANIC("Invalid pointer in free_page\n");
 }
 
-// void mmap(physaddr frame, virtaddr page)
+// void map(uint64 pdIdx, struct pageTable *kpage)
 // {
-//
+//     physaddr = frame_allocator(PAGE_SIZE);
 // }
+
+void mmap(virtaddr addr)
+{
+
+    pdIdx = PD_INDEX(addr);
+    switch (pdIdx) {
+        case KERNEL_DYNAMIC_PDT_ENTRY:
+            physaddr = frame_allocator(PAGE_SIZE);
+            kpage->pt_kernel_dynamic[];
+            map(pdIdx, kpage);
+        case KERNEL_MEMMANAGE_PDT_ENTRY:
+            map(pdIdx, kpage);
+        default:
+            kprint("mmap unrecognise this PD index...\n");
+            return;
+    }
+}
