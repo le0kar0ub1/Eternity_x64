@@ -9,23 +9,28 @@ void init_handler(void)
 }
 
 /* used to register known particular interrupt handler to overhead default */
-void register_int_handler(int nbr, void *fnct)
+void register_int_handler(int inbr, void *fnct)
 {
-    int_handler[nbr] = fnct;
+    int_handler[inbr] = fnct;
 }
 
-bool interrupt_checkout(struct frame *frame)
+void unregister_int_handler(int inbr)
 {
-    frame->int_num = 0x0;
-    return (false);
+    int_handler[inbr] = NULL;
 }
+
+// bool interrupt_checkout(struct frame *frame)
+// {
+//     frame->int_num = 0x0;
+//     return (false);
+// }
 
 void interrupts_handler(struct frame *frame)
 {
     if (int_handler[frame->int_num])
         (int_handler[frame->int_num])(frame);
-    else if (interrupt_checkout(frame))
-        return;
+    // else if (interrupt_checkout(frame))
+    //     return;
     else
         exceptions_handler(frame->int_num);
 }

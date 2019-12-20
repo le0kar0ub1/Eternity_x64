@@ -13,6 +13,7 @@ extern init_serial
 extern init_vga
 extern remap_PIC
 extern init_keyboard
+extern init_pf_handler
 extern init_pmm
 extern init_kpaging
 extern init_vmm
@@ -51,6 +52,9 @@ kernel_setup:
     ; pop rdi
     ; extern get_multiboot_tag
     ; call get_multiboot_tag
+
+    ; register page fault handler
+    call init_pf_handler
 
     ; init phys memory manager
     call init_pmm

@@ -2,6 +2,7 @@
 #define _PAGING_H_
 
 #include "memory.h"
+#include "interrupt.h"
 
 /* KERNEL MAPPING INDEX VALUE */
 #define KERNEL_PML4_ENTRY 511
@@ -27,6 +28,7 @@ struct pageTable {
     uint64 pt_kernel_static[PAGE_ENTRY_NBR];
     uint64 pt_kernel_memmanage[PAGE_ENTRY_NBR];
     uint64 pt_kernel_dynamic[PAGE_ENTRY_NBR];
+    uint64 pt_kernel_dynExtend[PAGE_ENTRY_NBR];
     uint64 pt_user[PAGE_ENTRY_NBR];
 };
 
@@ -45,5 +47,8 @@ enum pageAttrib {
 void init_kpaging(void);
 void kernelMapping(void);
 void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt);
+
+void pageFault_handler(struct frame *frame);
+void init_pf_handler(void);
 
 #endif

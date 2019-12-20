@@ -51,12 +51,38 @@ void kernelMapping(void)
 
     for (uint16 i = 0; i < PAGE_ENTRY_NBR; i++) {
         kernelPage->pt_kernel_static[i]    = (FOURKIB_PAGESIZE *i) | PRESENT | WRITABLE; // | GLOBAL_PAGE;
-        kernelPage->pt_kernel_memmanage[i] = (FOURKIB_PAGESIZE *i) | PRESENT | WRITABLE;
-        kernelPage->pt_kernel_dynamic[i]   = (FOURKIB_PAGESIZE *i) | PRESENT | WRITABLE; // | GLOBAL_PAGE;
+        // kernelPage->pt_kernel_memmanage[i] = (FOURKIB_PAGESIZE *i) | PRESENT | WRITABLE;
+        // kernelPage->pt_kernel_dynamic[i]   = (FOURKIB_PAGESIZE *i) | PRESENT | WRITABLE; // | GLOBAL_PAGE;
     }
 }
 
 void userSpaceAccess_RemapVMM(void)
 {
     /* add a pdpt at pml4[1] for user access */
+}
+
+void pageFault_handler(struct frame *frame)
+{
+    /* Page faults in kernel space leads to death */
+     uint64 fault_addr = read_cr2(); /* read cr2 to get faulting address */
+
+     vga_set_attrib(VGA_RED, VGA_BLACK);
+     kprint("Page Fault at address : %x\n", fault_addr);
+     /* error num pushed by CPU give info on page fault */
+     if (!(frame->error & ERR_PF_PRES))
+         kprint("NO present in memory\n");
+     if (frame->error & ERR_PF_RW)
+         kprint("RDONLY\n");
+     if (frame->error & ERR_PF_USER)
+         kprint("CPU user-mode\n");
+     if (frame->error & ERR_PF_RES)
+         kprint("Overwritten CPU-reserved bits of page entry\n");
+     if (frame->error & ERR_PF_INST)
+         kprint("Instruction fetch\n");
+     hlt();
+}
+
+void init_pf_handler(void)
+{
+    register_int_handler(INT_PAGE_FAULT, pageFault_handler);
 }

@@ -2,7 +2,7 @@
 #include "kheap.h"
 
 struct kheap *kheap;
-uint64 kheapPageCycle = 0x0;
+uint64 kheapPageCycle;
 
 virtaddr kheapManagerStart;
 
@@ -22,13 +22,14 @@ virtaddr kalloc(uint size)
             root->used = true;
             return ((virtaddr)root + SIZEOF_KHEAPBLOCK);
         }
-    // if (kheapPageCycle > size + SIZEOF_KHEAPBLOCK)
-    //     //new page
+    if (kheapPageCycle + size + SIZEOF_KHEAPBLOCK > PAGE_SIZE)
+        PANIC("No VMM available\n");
     root->next = root + root->size + SIZEOF_KHEAPBLOCK;
     root = root->next;
     root->next = NULL;
     root->size = size;
     root->used = true;
+    kheapPageCycle += root->size + SIZEOF_KHEAPBLOCK;
     return ((virtaddr)root + SIZEOF_KHEAPBLOCK);
 }
 
@@ -39,7 +40,7 @@ void init_kalloc(void)
     kheap->next = NULL;
     kheap->size = 0x10;
     kheap->used = false;
-    kheapPageCycle += kheap->size + SIZEOF_KHEAPBLOCK;
+    kheapPageCycle = kheap->size + SIZEOF_KHEAPBLOCK;
 }
 
 /* for the moment just let the segment & set size to 0 == free */
@@ -47,8 +48,11 @@ void kfree(virtaddr ptr)
 {
     struct kheap *root = kheap;
 
-    for (; root; root = root->next)
-        if ((virtaddr)root + SIZEOF_KHEAPBLOCK == ptr)
+    for (; root; root = root->next) {
+        if ((virtaddr)root + SIZEOF_KHEAPBLOCK == ptr) {
             root->used = false;
+            return;
+        }
+    }
     PANIC("Invalid pointer in kfree\n");
 }
