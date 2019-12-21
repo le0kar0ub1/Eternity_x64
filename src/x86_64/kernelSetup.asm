@@ -12,13 +12,14 @@ extern init_handler
 extern init_serial
 extern init_vga
 extern remap_PIC
-extern init_keyboard
 extern init_pf_handler
 extern init_pmm
 extern init_kpaging
 extern init_vmm
 extern init_kalloc
 extern init_timer
+extern init_keyboard
+extern init_tty
 
 extern kmain
 
@@ -68,18 +69,14 @@ kernel_setup:
     ; keyboard driver init
     call init_keyboard
 
-    ; cli
-    ; hlt
-    ; call kmain
-
-    sti
-inf:
-    hlt
-    jmp inf
-
+    ; init tty
+    call init_tty
 
     ; init PIT timer
     call init_timer
+
+    sti
+    call kmain
 
 
 

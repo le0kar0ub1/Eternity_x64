@@ -5,8 +5,8 @@ iso := build/eternity-$(arch).iso
 linker_script := src/link.ld
 grub_cfg := src/grub.cfg
 
-include := $(addprefix -Iinc/, descriptors/ boot/ interrupt/ def/ drivers/  memory/ lib/ system/ /)
-project_dir := boot/ drivers/ lib/ interrupt/ memory/ CPU/ network/ system/ /
+include := $(addprefix -Iinc/, descriptors/ boot/ interrupt/ def/ drivers/  memory/ lib/ system/ tty/ /)
+project_dir := boot/ drivers/ lib/ interrupt/ memory/ CPU/ network/ system/ tty/ /
 
 ld := ld
 ldflags := -n						\

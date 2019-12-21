@@ -9,6 +9,7 @@ void init_keyboard(void);
 uchar read_scan_code(void);
 
 /* define some keys and values to set keyboard */
+#define KEYBOARD_PORT_EMPTY 0x9C
 // #define KEYBOARD_MAX_RETRY         10000
 // #define SC1_CAPSLOCK_PRESSED       0x3A
 //

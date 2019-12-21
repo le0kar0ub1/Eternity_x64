@@ -15,4 +15,18 @@ void *memcpyq(void *dest, void *src, size_t size);
 
 void kprint(char const *format, ...);
 
+/* A PART OF CLASSICAL LIB STDLIB.H */
+uint64 rand_uintptr(void);
+uint32 rand_uint32(void);
+uint16 rand_uint16(void);
+uint8 rand_uint8(void);
+int atoi(char const *s);
+long atol(char const *s);
+
+/* A PART OF CLASSICAL LIBC STRING.H */
+char *strcpy(char *d, char const *s);
+int strlen(char const *s);
+int strncmp(char const *s1, char const *s2, size_t size);
+int strcmp(char const *s1, char const *s2);
+
 #endif

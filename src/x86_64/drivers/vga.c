@@ -1,4 +1,5 @@
 #include "vga.h"
+#include "tty.h"
 
 static struct vga vga =
 {
@@ -56,7 +57,7 @@ void vga_putchar(char c)
             vga.posx += 0x4;
             break;
         case 0x8: /* backspace */
-            if (vga.posx == 0x0 && vga.posy == 0x0)
+            if ((vga.posx == 0x0 && vga.posy == 0x0) || vga.posx - 0x1 < PROMPTLEN)
                 break;
             if (vga.posx == 0x0 && vga.posy != 0x0)
                 replace_on_backspace();

@@ -12,7 +12,6 @@ void timer_handler(struct frame *frame)
     if (++subTicks == SUBTICKS_PER_TICK) {
         ticks++;
         subTicks = 0x0;
-        kprint("%d ", ticks);
     }
     frame->rax = 0x0;
     pic_eoi(IRQ0);

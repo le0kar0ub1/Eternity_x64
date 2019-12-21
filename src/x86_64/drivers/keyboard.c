@@ -206,7 +206,7 @@ void special_int_trig(uchar getch)
         caps_lock = !caps_lock;
     if (getch == 0xE0)
         altgr = !altgr;
-    if (getch == 0x29) { // "²" touch use for set color
+    if (getch == 0x29) { // '²' touch use for set color
         color = (color > 0xE) ? 0x0 : color + 1;
         vga_set_attrib(color, VGA_BLACK);
     }
@@ -237,13 +237,13 @@ void keyboard_handler(struct frame *frame)
     uchar getch = read_scan_code();
 
     if (getch < 60 && (azerty_keyset[getch] ||
-azerty_keyset_altgr[getch] ||  azerty_keyset_capslock[getch]))
+azerty_keyset_altgr[getch] ||  azerty_keyset_capslock[getch])) {
         classic_char_print(frame, getch);
-    else
+        interaction_handler(frame->rax);
+    } else
         special_int_trig(getch);
     // else if (getch == 75 || getch == 72 || getch == 80 || getch == 77)
     //     key_arrow_pressed(getch);
-    interaction_handler(frame->rax);
     pic_eoi(IRQ1);
 }
 
