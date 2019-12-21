@@ -22,4 +22,21 @@
 void PANIC(char const *panic);
 void kmain(void);
 
+
+/* facilities */
+static inline void debug(uint64 arg)
+{
+    kprint("debug address: %x\n", arg);
+    hlt();
+}
+
+static inline void fromCstToWr(char const *s, char *new)
+{
+    uint i = 0x0;
+
+    for (; s[i]; i++)
+        new[i] = s[i];
+    return (new);
+}
+
 #endif

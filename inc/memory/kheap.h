@@ -13,9 +13,7 @@ struct kheap {
     bool used;
 };
 
-struct kheap *kheap;
-
-#define SIZEOF_KHEAPBLOCK sizeof(kheap)
+#define SIZEOF_KHEAPBLOCK sizeof(struct kheap)
 
 void kfree(virtaddr ptr);
 void init_kalloc(void);

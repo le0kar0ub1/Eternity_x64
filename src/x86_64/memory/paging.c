@@ -48,6 +48,7 @@ void kernelMapping(void)
     kpage->pdt[KERNEL_STATIC_PDT_ENTRY]    = (uint64)(kpage->pt_kernel_static) | PRESENT | WRITABLE;
     for (uint16 i = KERNEL_STATIC_PDT_ENTRY + 0x1; i < PAGE_ENTRY_NBR; i++)
         kpage->pdt[i] = (uint64)(kpage->pt_kernel_dynamic[i - 0x1]) | PRESENT | WRITABLE;
+
     for (uint16 i = 0; i < PAGE_ENTRY_NBR; i++)
         kpage->pt_kernel_static[i] = (FOURKIB_PAGESIZE * i) | PRESENT | WRITABLE; // | GLOBAL_PAGE;
 }

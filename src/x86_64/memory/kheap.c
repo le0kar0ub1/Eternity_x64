@@ -6,7 +6,7 @@ uint64 kheapPageCycle;
 
 void dump_kheap(void)
 {
-    for (struct kheap *root = kheap; kheap; kheap = kheap->next)
+    for (struct kheap *root = kheap; root; root = root->next)
         kprint("BLOCK at %x sizeof %x used %d\n", root + SIZEOF_KHEAPBLOCK, root->size, root->used);
 }
 
@@ -26,12 +26,11 @@ virtaddr kalloc(uint size)
         root->next = new;
     } else
         root->next = root + root->size + SIZEOF_KHEAPBLOCK;
-    root = root->next;
-    root->next = NULL;
-    root->size = size;
-    root->used = true;
-    kheapPageCycle += root->size + SIZEOF_KHEAPBLOCK;
-    return ((virtaddr)root + SIZEOF_KHEAPBLOCK);
+    root->next->next = NULL;
+    root->next->size = size;
+    root->next->used = true;
+    kheapPageCycle += root->next->size + SIZEOF_KHEAPBLOCK;
+    return ((virtaddr)root->next + SIZEOF_KHEAPBLOCK);
 }
 
 void init_kalloc(void)

@@ -52,7 +52,7 @@ void exceptions_handler(uintptr int_num)
         return;
     vga_set_attrib(VGA_RED, VGA_BLACK);
     /* Kernel panic, reboot progress... */
-    kprint("Intern Panic: %s\n", exception_message[int_num]);
+    kprint("Internal Panic: %s\n", exception_message[int_num]);
     cli();
     hlt();
 }

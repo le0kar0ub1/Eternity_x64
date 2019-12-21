@@ -10,6 +10,7 @@ uint64 pmmStart;
 uint64 pmmEnd;
 /* a bitmap who manage pmm static memory */
 uint8 *bitmapManager = (uint8 *)(&__KERNEL_PHYS_END);
+// uint8 *bitmapManager = (uint8 *)(P2V(0x200000));
 uint64 blockNbr;
 
 /* pmm initialization */

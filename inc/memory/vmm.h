@@ -11,7 +11,7 @@
 
 struct vmmblock {
     struct vmmblock *next;
-    void *page;
+    virtaddr page;
     uint  involved;
     uint8 used;
 };

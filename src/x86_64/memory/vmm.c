@@ -11,9 +11,6 @@ virtaddr curVmmAddr;
 struct vmmblock *vmmblock;
 struct vmmblock *curblock;
 
-uint64 managerPageCycle = 0x0;
-uint64 vmmPageCycle = 0x0;
-
 extern struct pageTable *kpage; // mmap working needed
 
 virtaddr kmem_request(uint size)
@@ -26,34 +23,28 @@ virtaddr kmem_request(uint size)
 
 void init_vmm(void)
 {
-    managerVmmStart = kmem_request(PAGE_SIZE);
-    vmmblock = kmem_request(PAGE_SIZE);
+    vmmblock = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, 0x1, 0x0);
+    vmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, 0x2, 0x0);
+    mmap(vmmStart, frame_allocator(PAGE_SIZE), PAGE_SIZE);
+    mmap(vmmblock, frame_allocator(PAGE_SIZE), PAGE_SIZE);
     vmmblock->next = NULL;
     vmmblock->used = false;
     vmmblock->page = vmmStart + SIZEOF_VMMBLOCK;
     curblock = vmmblock;
-    curVmmAddr += PAGE_SIZE;
-    hlt();
-    // managerVmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_MEMMANAGE_PDT_ENTRY, 0x0);
-    // vmmStart = fromIndexToAdrr(KERNEL_PML4_ENTRY, KERNEL_PDPT_ENTRY, KERNEL_DYNAMIC_PDT_ENTRY, 0x0);
-    // vmmblock = managerVmmStart; // start at the first address of the PDT reserved and mapped for that
-    // vmmblock->next = NULL; //vmmblock + SIZEOF_VMMBLOCK;
-    // hlt();
-    // vmmblock->used = false;
-    // vmmblock->page = vmmStart + SIZEOF_VMMBLOCK;
-    // curblock = vmmblock;
-    // curVmmAddr += PAGE_SIZE;
+    curVmmAddr = vmmStart + PAGE_SIZE;
 }
 
 virtaddr allocate_page(uint size)
 {
-    uint block = (size / PAGE_SIZE) + 0x1;
+    uint block = !(size % PAGE_SIZE) ? (size / PAGE_SIZE) : ((size / PAGE_SIZE) + 0x1);
     uint keep = block;
-    struct vmmblock *vmm  = vmmblock;
+    struct vmmblock *vmm = vmmblock;
 
     for (; block == 0x1 && vmm; vmm = vmm->next)
-        if (!vmm->used)
-            return (vmm + SIZEOF_VMMBLOCK);
+        if (!vmm->used) {
+            vmm->used = true;
+            return (vmm->page);
+        }
     vmm = curblock;
     for (; block != 0x0; block--) {
         curblock->next = SIZEOF_VMMBLOCK + curblock;
@@ -88,11 +79,11 @@ void free_page(virtaddr rect)
 
 void mmap(virtaddr virt, physaddr phys, uint off)
 {
-    uint pd = PD_INDEX(virt);
+    uint pd = PD_INDEX(virt) - 0x1;
     uint pt = PT_INDEX(virt);
     off /= PAGE_SIZE;
     for (; off > 0x0 && pt < PAGE_ENTRY_NBR;) {
-        kpage->pt_kernel_dynamic[pd][pt] = phys;
+        kpage->pt_kernel_dynamic[pd][pt] = phys | PRESENT | WRITABLE;
         pt += 0x1;
         phys += PAGE_SIZE;
         off -= 0x1;
