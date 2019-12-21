@@ -66,22 +66,22 @@ kernel_setup:
     ; init kheap allocation
     call init_kalloc
 
+    ; init PIT timer
+    call init_timer
+
     ; keyboard driver init
     call init_keyboard
 
     ; init tty
     call init_tty
 
-    ; init PIT timer
-    call init_timer
-
     sti
     call kmain
 
 
 
-    ; print if all comes good
+    ; print 'OKAY' if all comes good
     cli
-    mov rax, 0x2f592f412f4b2f4f ; print OKAY on screen
+    mov rax, 0x2f592f412f4b2f4f
     mov QWORD [0xb8000], rax
     hlt

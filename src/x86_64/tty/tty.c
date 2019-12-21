@@ -2,6 +2,18 @@
 #include "keyboard.h"
 #include "cursor.h"
 
+char const *ttyCmdDef[0x40] = {
+    "uname",
+    "help",
+    NULL
+};
+
+void (*ttyCmdHandler[0x40])() = {
+    uname,
+    help,
+    NULL
+};
+
 static inline void prompt(void)
 {
     kprint(PROMPT);
@@ -21,7 +33,8 @@ void init_tty(void)
 
 void fire_cmd_line(char *buffer)
 {
-    if (strcmp(buffer, "hello"))
-        kprint("Enter in emergency mode\n");
+    for (uint i = 0x0; ttyCmdDef[i]; i++)
+        if (strcmp(buffer, ttyCmdDef[i]))
+            ttyCmdHandler[i]();
     prompt();
 }

@@ -1,5 +1,6 @@
 #include "keyboard.h"
 #include "pic.h"
+#include "tty.h"
 
 /* Scan code set for azerty keyboard */
 /* struct keys handle by the kernel driver */
@@ -154,29 +155,29 @@ static bool ctrl = false;
 static bool altgr = false;
 static int color = 0xF;
 
-// void key_arrow_pressed(uchar getch)
-// {
-//     int posx = 0x0, posy = 0x0;
-//
-//     give_cur_pos(&posx, &posy);
-//     if (getch == 75 && posx > 0) { // Left arrow
-//         posx--;
-//         mov_cursor(posx, posy);
-//     }
-//     else if (getch == 72 && posy > 0) {
-//         posy--;
-//         mov_cursor(posx, posy);
-//     }
-//     else if (getch == 80 && posy < 24) {
-//         posy++;
-//         mov_cursor(posx, posy);
-//     }
-//     else if (getch == 77 && posx < 79) {
-//         posx++;
-//         mov_cursor(posx, posy);
-//     }
-//     synchron_cursor_vga(posx, posy);
-// }
+void key_arrow_pressed(uchar getch)
+{
+    int posx = 0x0, posy = 0x0;
+
+    give_cur_pos(&posx, &posy);
+    if (getch == 75 && posx > (int)PROMPTLEN) { // Left arrow
+        posx--;
+        mov_cursor(posx, posy);
+    }
+    // else if (getch == 72 && posy > 0) {
+    //     posy--;
+    //     mov_cursor(posx, posy);
+    // }
+    // else if (getch == 80 && posy < 24) {
+    //     posy++;
+    //     mov_cursor(posx, posy);
+    // }
+    else if (getch == 77 && posx < 79) {
+        posx++;
+        mov_cursor(posx, posy);
+    }
+    synchron_cursor_vga(posx, posy);
+}
 
 void classic_char_print(struct frame *frame, uchar getch)
 {
@@ -240,10 +241,11 @@ void keyboard_handler(struct frame *frame)
 azerty_keyset_altgr[getch] ||  azerty_keyset_capslock[getch])) {
         classic_char_print(frame, getch);
         interaction_handler(frame->rax);
-    } else
+    } else if (getch == 75 || getch == 72 || getch == 80 || getch == 77) {
+        key_arrow_pressed(getch);
+    } else {
         special_int_trig(getch);
-    // else if (getch == 75 || getch == 72 || getch == 80 || getch == 77)
-    //     key_arrow_pressed(getch);
+    }
     pic_eoi(IRQ1);
 }
 
