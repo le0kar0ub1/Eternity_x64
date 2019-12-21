@@ -26,12 +26,6 @@ void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
 void init_kpaging(void)
 {
     kpage = (struct pageTable *)ALIGN_BLOCK((uint64)kpage);
-    // uint kernelVirtualBlock = ALIGN_BLOCK((uint64)&__KERNEL_VIRT_SIZE) / 0x1000;
-    // kprint("kernel virt block = %d for size %d\n", kernelVirtualBlock , (uint64)&__KERNEL_VIRT_SIZE);
-    // kprint("Starting at address %x and end at address %x\n", (uint64)&__KERNEL_VIRT_LINK, (uint64)&__KERNEL_VIRT_END);
-    // kprint("P4 %d  P3 %d  P2 %d  P1 %d\n", PML4_INDEX((uint64)&__KERNEL_VIRT_END), PDPT_INDEX((uint64)&__KERNEL_VIRT_END), PD_INDEX((uint64)&__KERNEL_VIRT_END), PT_INDEX((uint64)&__KERNEL_VIRT_END));
-    // kprint("Low memory Index\n");
-    // kprint("P4 %d  P3 %d  P2 %d  P1 %d\n", PML4_INDEX((uint64)0xb8000), PDPT_INDEX((uint64)0xb8000), PD_INDEX((uint64)0xb8000), PT_INDEX((uint64)0xb8000));
     kernelMapping();
     write_cr3((uint64)kpage->pml4);
 }

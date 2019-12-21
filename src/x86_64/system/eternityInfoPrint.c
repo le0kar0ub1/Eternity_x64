@@ -13,8 +13,8 @@ void helloFromEternity(void)
     vga_set_attrib(VGA_YELLOW, VGA_BLACK);
     vga_putstr(kernelName);
     vga_set_attrib(VGA_WHITE, VGA_BLACK);
-    kprint("\nEternity_x64 project is restricted by the GNU V3 License\n\n");
-    kprint("Kernel has been loaded at virtual address %x\n", LOAD_VIRT_ADDR);
+    // kprint("\nEternity_x64 project is restricted by the GNU V3 License\n");
+    kprint("\nKernel has been loaded at virtual address %x\n", LOAD_VIRT_ADDR);
     kprint("Boot sanity check...\n");
     kprint("Mapping VMM to PMM\n");
     kprint("Loading GDT...\n");

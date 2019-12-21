@@ -15,13 +15,14 @@
 #include "bitfield.h"
 #include "assembly_inlineInstruction.h"
 #include "memory.h"
+#include "tty.h"
 
 #define asmv __asm__ volatile
 #define syscall int 0x80
 
 void PANIC(char const *panic);
 void kmain(void);
-
+void *kalloc(uint size);
 
 /* facilities */
 static inline void debug(uint64 arg)
@@ -36,7 +37,6 @@ static inline void fromCstToWr(char const *s, char *new)
 
     for (; s[i]; i++)
         new[i] = s[i];
-    return (new);
 }
 
 #endif

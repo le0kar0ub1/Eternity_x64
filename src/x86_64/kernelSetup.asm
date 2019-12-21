@@ -46,9 +46,6 @@ kernel_setup:
     ; PIC init
     call remap_PIC
 
-    ; keyboard driver init
-    call init_keyboard
-
     ; pop rdi
     ; extern get_multiboot_tag
     ; call get_multiboot_tag
@@ -68,9 +65,12 @@ kernel_setup:
     ; init kheap allocation
     call init_kalloc
 
+    ; keyboard driver init
+    call init_keyboard
+
     ; cli
     ; hlt
-    call kmain
+    ; call kmain
 
     sti
 inf:

@@ -13,6 +13,12 @@ struct vmmblock *curblock;
 
 extern struct pageTable *kpage; // mmap working needed
 
+void dump_kpage(void)
+{
+    for (struct vmmblock *vmm = vmmblock; vmm; vmm = vmm->next)
+        kprint("Page at address: %x, used: %d", vmm->page, vmm->used);
+}
+
 virtaddr kmem_request(uint size)
 {
     virtaddr page = allocate_page(size);

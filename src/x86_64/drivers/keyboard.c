@@ -217,6 +217,21 @@ uchar read_scan_code(void)
     return (inb(PORT_PS2_KEYBOARD_CMD));
 }
 
+char *interactionBuffer;
+uint interactionBufferIndex;
+
+void interaction_handler(char getch)
+{
+    if (getch == 0xA) {
+        interactionBuffer[interactionBufferIndex] = 0x0;
+        interactionBufferIndex = 0x0;
+        fire_cmd_line(interactionBuffer);
+    } else {
+        interactionBuffer[interactionBufferIndex] = getch;
+        interactionBufferIndex += 0x1;
+    }
+}
+
 void keyboard_handler(struct frame *frame)
 {
     uchar getch = read_scan_code();
@@ -228,12 +243,15 @@ azerty_keyset_altgr[getch] ||  azerty_keyset_capslock[getch]))
         special_int_trig(getch);
     // else if (getch == 75 || getch == 72 || getch == 80 || getch == 77)
     //     key_arrow_pressed(getch);
+    interaction_handler(frame->rax);
     pic_eoi(IRQ1);
 }
 
 
 void init_keyboard(void)
 {
+    interactionBuffer = kalloc(0x80);
+    interactionBufferIndex = 0x0;
     /* register handler */
     register_int_handler(INT_IRQ1, keyboard_handler);
     /* unmask IRQ1 aka the keyboard */
