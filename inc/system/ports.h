@@ -30,7 +30,7 @@ enum port
     PORT_PS2_KEYBOARD_STATUS = 0x64,
 
     PORT_CMOS                = 0x70,
-    PORT_CMOS_RETURN         = 0x71,
+    PORT_CMOS_DATA           = 0x71,
     PORT_PIC_SLAVE_CMD       = 0xA0,
     PORT_PIC_SLAVE_DATA      = 0xA1,
 };

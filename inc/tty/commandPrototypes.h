@@ -3,5 +3,6 @@
 
 void uname(void);
 void help(void);
+void rtctime(void);
 
 #endif

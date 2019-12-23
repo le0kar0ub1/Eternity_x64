@@ -19,6 +19,8 @@ extern init_vmm
 extern init_kalloc
 extern init_timer
 extern init_keyboard
+extern init_pci
+extern init_rtc
 extern init_tty
 
 extern kmain
@@ -71,6 +73,12 @@ kernel_setup:
 
     ; keyboard driver init
     call init_keyboard
+
+    ; init pci
+    call init_pci
+
+    ; init CMOS RTC
+    call init_rtc
 
     ; init tty
     call init_tty

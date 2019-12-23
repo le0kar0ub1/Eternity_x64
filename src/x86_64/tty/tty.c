@@ -2,15 +2,19 @@
 #include "keyboard.h"
 #include "cursor.h"
 
+/* command list */
 char const *ttyCmdDef[0x40] = {
     "uname",
     "help",
+    "time",
     NULL
 };
 
+/* command handler list */
 void (*ttyCmdHandler[0x40])() = {
     uname,
     help,
+    rtctime,
     NULL
 };
 

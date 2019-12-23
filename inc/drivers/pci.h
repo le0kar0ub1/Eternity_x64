@@ -1,18 +1,18 @@
 #ifndef PCI_H
 #define PCI_H
 
-#include <stdint.h>
+#include "eternity.h"
 
 typedef union pci_dev {
-    uint32_t bits;
+    uint32 bits;
     struct {
-        uint32_t always_zero    : 2;
-        uint32_t field_num      : 6;
-        uint32_t function_num   : 3;
-        uint32_t device_num     : 5;
-        uint32_t bus_num        : 8;
-        uint32_t reserved       : 7;
-        uint32_t enable         : 1;
+        uint32 always_zero    : 2;
+        uint32 field_num      : 6;
+        uint32 function_num   : 3;
+        uint32 device_num     : 5;
+        uint32 bus_num        : 8;
+        uint32 reserved       : 7;
+        uint32 enable         : 1;
     };
 } pci_dev_t;
 
@@ -47,22 +47,22 @@ typedef union pci_dev {
 #define PCI_HEADER_TYPE_DEVICE  0
 #define PCI_HEADER_TYPE_BRIDGE  1
 #define PCI_HEADER_TYPE_CARDBUS 2
-#define PCI_TYPE_BRIDGE 0x0604
-#define PCI_TYPE_SATA   0x0106
-#define PCI_NONE 0xFFFF
+#define PCI_TYPE_BRIDGE         0x0604
+#define PCI_TYPE_SATA           0x0106
+#define PCI_NONE                0xFFFF
 
-#define DEVICE_PER_BUS           32
-#define FUNCTION_PER_DEVICE      32
+#define DEVICE_PER_BUS          0x20
+#define FUNCTION_PER_DEVICE     0x20
 
-uint32_t pci_read(pci_dev_t dev, uint32_t field);
-void pci_write(pci_dev_t dev, uint32_t field, uint32_t value);
-uint32_t get_device_type(pci_dev_t dev);
-uint32_t get_secondary_bus(pci_dev_t dev);
-uint32_t pci_reach_end(pci_dev_t dev);
-pci_dev_t pci_scan_function(uint16_t vendor_id, uint16_t device_id, uint32_t bus, uint32_t device, uint32_t function, int device_type);
-pci_dev_t pci_scan_device(uint16_t vendor_id, uint16_t device_id, uint32_t bus, uint32_t device, int device_type);
-pci_dev_t pci_scan_bus(uint16_t vendor_id, uint16_t device_id, uint32_t bus, int device_type);
-pci_dev_t pci_get_device(uint16_t vendor_id, uint16_t device_id, int device_type);
-void pci_init(void);
+uint32 pci_read(pci_dev_t dev, uint32 field);
+void pci_write(pci_dev_t dev, uint32 field, uint32 value);
+uint32 get_device_type(pci_dev_t dev);
+uint32 get_secondary_bus(pci_dev_t dev);
+uint32 pci_reach_end(pci_dev_t dev);
+pci_dev_t pci_scan_function(uint16 vendor_id, uint16 device_id, uint32 bus, uint32 device, uint32 function, int device_type);
+pci_dev_t pci_scan_device(uint16 vendor_id, uint16 device_id, uint32 bus, uint32 device, int device_type);
+pci_dev_t pci_scan_bus(uint16 vendor_id, uint16 device_id, uint32 bus, int device_type);
+pci_dev_t pci_get_device(uint16 vendor_id, uint16 device_id, int device_type);
+void init_pci(void);
 
 #endif

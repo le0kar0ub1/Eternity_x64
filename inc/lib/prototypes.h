@@ -28,5 +28,7 @@ char *strcpy(char *d, char const *s);
 int strlen(char const *s);
 int strncmp(char const *s1, char const *s2, size_t size);
 int strcmp(char const *s1, char const *s2);
+void itoa(char *buf, uint64 n, int base);
+void strcat(char *s1, char const *s2);
 
 #endif

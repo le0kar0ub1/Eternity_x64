@@ -23,6 +23,7 @@
 void PANIC(char const *panic);
 void kmain(void);
 void *kalloc(uint size);
+void kfree(void *ptr);
 
 /* facilities */
 static inline void debug(uint64 arg)

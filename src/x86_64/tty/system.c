@@ -1,4 +1,7 @@
 #include "eternity.h"
+#include "rtc.h"
+
+extern char const *ttyCmdDef[];
 
 void uname(void)
 {
@@ -7,8 +10,14 @@ void uname(void)
 
 void help(void)
 {
-    extern char const *ttyCmdDef[];
     kprint("Available commands:\n");
     for (uint i = 0x0; ttyCmdDef[i]; i++)
         kprint("    %s\n", ttyCmdDef[i]);
+}
+
+void rtctime(void)
+{
+    char *time = get_cmos_rtc_time();
+    kprint("%s\n", time);
+    kfree(time);
 }
