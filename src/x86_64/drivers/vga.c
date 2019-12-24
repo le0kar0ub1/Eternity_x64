@@ -58,7 +58,7 @@ void vga_putchar(char c)
             break;
         case 0x8: /* backspace */
             if ((vga.posx == 0x0 && vga.posy == 0x0) || vga.posx - 0x1 < PROMPTLEN)
-                break;
+                return;
             if (vga.posx == 0x0 && vga.posy != 0x0)
                 replace_on_backspace();
             else {

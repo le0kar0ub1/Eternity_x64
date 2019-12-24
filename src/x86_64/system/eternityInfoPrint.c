@@ -16,12 +16,11 @@ void helloFromEternity(void)
     // kprint("\nEternity_x64 project is restricted by the GNU V3 License\n");
     kprint("\nKernel has been loaded at virtual address %x\n", LOAD_VIRT_ADDR);
     kprint("Boot sanity check...\n");
-    kprint("Mapping VMM to PMM\n");
+    kprint("Early kmapping...\n");
     kprint("Loading GDT...\n");
     kprint("jumping into long mode...\n");
     kprint("Initializing ISR...\n");
     kprint("Loading IDT...\n");
-    kprint("Exceptions handler operationnal\n");
     kprint("Initializing VGA driver...\n");
     kprint("Initializing Serial ports...\n");
     kprint("Initializing PIC driver....\n");
@@ -29,4 +28,6 @@ void helloFromEternity(void)
     kprint("Initializing PMM manager...\n");
     kprint("Initializing VMM manager...\n");
     kprint("Initializing kernel heap...\n");
+    kprint("Initializing CMOS RTC...\n");
+    kprint("Initializing TTY...\n");
 }
