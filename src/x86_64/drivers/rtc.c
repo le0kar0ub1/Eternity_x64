@@ -45,10 +45,10 @@ void read_rtc(void)
     rtcTime.month = get_rtc_register(0x08);
     rtcTime.year = get_rtc_register(0x09);
 
-    uint8 registerB = get_rtc_register(0x0B);
+    uint8 regsSpec = get_rtc_register(0x0B);
 
     // Convert BCD to binary values if necessary
-    if (!(registerB & 0x04)) {
+    if (!(regsSpec & 0x04)) {
         rtcTime.second = (rtcTime.second & 0x0F) + ((rtcTime.second / 0x10) * 0xA);
         rtcTime.minute = (rtcTime.minute & 0x0F) + ((rtcTime.minute / 0x10) * 0xA);
         rtcTime.hour = ( (rtcTime.hour & 0x0F) + (((rtcTime.hour & 0x70) / 0x10) * 0xA) ) | (rtcTime.hour & 0x80);
@@ -72,20 +72,46 @@ char *get_cmos_rtc_time(void)
     memset(&hour, 0x0, 3);
     memset(&min, 0x0, 3);
 
-    itoa(month, rtc->month, 10);
-    itoa(day, rtc->day, 10);
-    itoa(hour, rtc->hour, 10);
-    itoa(min, rtc->minute, 10);
+    if (rtc->day) {
+        if (rtc->day < 10)
+            strcat(ret, "0");
+        itoa(day, rtc->day, 10);
+        for (uint i = 0x0; day[i]; i++)
+            ret[i] = day[i];
+        ret[strlen(day)] = 0x0;
+    } else
+        strcat(ret, "00");
 
-    for (uint i = 0x0; day[i]; i++)
-        ret[i] = day[i];
-    ret[strlen(day)] = 0x0;
     strcat(ret, "/");
-    strcat(ret, month);
+
+    if (rtc->month) {
+        if (rtc->month < 10)
+            strcat(ret, "0");
+        itoa(month, rtc->month, 10);
+        strcat(ret, month);
+    } else
+        strcat(ret, "00");
+
     strcat(ret, " ");
-    strcat(ret, hour);
+
+    if (rtc->hour) {
+        if (rtc->hour < 10)
+            strcat(ret, "0");
+        itoa(hour, rtc->hour, 10);
+        strcat(ret, hour);
+    } else
+        strcat(ret, "00");
+
     strcat(ret, ":");
-    strcat(ret, min);
+
+    if (rtc->minute) {
+        if (rtc->minute < 10)
+            strcat(ret, "0");
+        itoa(min, rtc->minute, 10);
+        strcat(ret, min);
+    } else
+        strcat(ret, "00");
+
     return (ret);
 }
 
