@@ -1,7 +1,7 @@
 #ifndef _GDT_H_
 #define _GDT_H_
 
-#define NUM_GDT_DESCRIPTORS 8
+#define NUM_GDT_DESCRIPTORS 0x6
 
 #define GDT_ENTRY_SIZE 0x8
 

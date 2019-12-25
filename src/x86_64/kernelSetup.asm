@@ -22,6 +22,9 @@ extern init_keyboard
 extern init_pci
 extern init_rtc
 extern init_syscall
+
+extern fire_userspace
+
 extern init_tty
 
 extern kmain
@@ -85,7 +88,9 @@ kernel_setup:
     call init_syscall
 
     ; init tty
-    call init_tty
+    ; call init_tty
+
+    call fire_userspace
 
     sti
     call kmain

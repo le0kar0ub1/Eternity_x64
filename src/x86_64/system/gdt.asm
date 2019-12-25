@@ -22,13 +22,9 @@ gdtptr:
 align 16
 gdt:
 gdt_start:
-gdtNull: equ $ - gdt_start       ; The null descriptor.
-    dw 0x0                       ; Limit (low).
-    dw 0x0                       ; Base (low).
-    db 0x0                       ; Base (middle)
-    db 0x0                       ; Access.
-    db 0x0                       ; Granularity.
-    db 0x0                       ; Base (high).
+    ; NULL SELECTOR
+    dd 0x0
+    dd 0x0
 
 gdtKernelCode: equ $ - gdt_start ; The Kernel code descriptor.
     dw 0                         ; Limit (low).
@@ -63,10 +59,15 @@ gdtUserData: equ $ - gdt_start   ; The user data descriptor.
     db 0                         ; Base (high).
 
 gdtTSS: equ $ - gdt_start
-    dw 0xFFFF
-    dw 0x0
     db 0x0
-    db 0x0
-    db 0x0
-    db 0x0
+    dw 0x0000       ; limit 15:0
+    dw 0x0000       ; base 15:0
+    db 0x00         ; base 23:16
+    db 11101001b    ; P(1) DPL(11) 0 C(1) E(0) W(0) 1
+    db 10000000b    ; G(1) 00 AVL(0) limit 19:16
+    db 0x00         ; base 31:24
+
+    ; NULL SELECTOR
+    dd 0x0
+    dd 0x0
 gdt_end:
