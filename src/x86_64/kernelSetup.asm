@@ -20,6 +20,7 @@ extern init_kalloc
 extern init_timer
 extern init_keyboard
 extern init_pci
+extern init_apic
 extern init_rtc
 extern init_syscall
 
@@ -63,7 +64,7 @@ kernel_setup:
     ; init phys memory manager
     call init_pmm
 
-    ; init new kpaging with static/dynamic
+    ; init new kpaging with static/dynamic part
     call init_kpaging
 
     ; init vmm
@@ -80,6 +81,9 @@ kernel_setup:
 
     ; init pci
     call init_pci
+
+    ; init apic
+    ; call init_apic
 
     ; init CMOS RTC
     call init_rtc

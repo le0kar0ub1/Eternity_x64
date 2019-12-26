@@ -5,8 +5,6 @@
 #include "sysdef.h"
 #include "memory.h"
 
-#define FRAME_SIZE  0x1000
-
 /* this is the total hardcode pmm available */
 #define PMM_SIZE    ((uint64)M * FRAME_SIZE)
 
@@ -20,7 +18,7 @@
 #define BITSTATE(x)     (bitmapManager[x])
 
 /* aligne block address */
-#define ALIGN_BLOCK(addr) (((addr) & (MAX_ADDR_64B_SYS - (FRAME_SIZE - 0x1))) + 0x1000)
+// #define ALIGN_BLOCK(addr) (((addr) & (MAX_ADDR_64B_SYS - (FRAME_SIZE - 0x1))) + 0x1000)
 
 /* Physical memory types */
 enum PMM_TYPE

@@ -47,6 +47,10 @@ enum x86_64_interrupts
     INT_IRQ14               = 0x2E,
     INT_IRQ15               = 0x2F,
 
+    INT_APIC_TIMER          = 0x32,
+    INT_APIC_ERROR          = 0x33,
+    INT_APIC_SPURIOUS       = 0xFF,
+
     INT_SYSCALL             = 0x80,
 
     MAX_INT                 = 0x100,

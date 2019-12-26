@@ -4,10 +4,20 @@ bits 64
 
 extern kalloc
 
+global execpuid
+
 global cpuVendorId
 global logicalCPUnumber
 
 [section .text]
+execpuid:
+    mov rax, rdi
+    mov r8, rdx
+    cpuid
+    mov QWORD [rsi], rcx
+    mov QWORD [r8], rdx
+    ret
+
 ; get the CPU Vendor ID
 cpuVendorId:
     mov rax, 0x0
@@ -45,23 +55,4 @@ cpuVendorId:
 
     mov BYTE [rax], 0x0
     mov rax, r10
-    ret
-
-
-; Get Features From CPUID
-cpuCheckHTT:
-    mov rax, 0x1
-    cpuid
-    ; and rdx, CPUID_FEAT_EDX_HTT
-    mov rax, rdx
-    ret
-
-logicalCPUnumber:
-    mov rax, 0x1
-    cpuid
-    call cpuCheckHTT
-    ret
-    shr rbx, 0x10
-    and rbx, 0b1111111
-    mov rax, rbx
     ret

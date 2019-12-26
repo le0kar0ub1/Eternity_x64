@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2018
-** inline_cmp.h
-** File description:
-** inline_cmp.h
-*/
-
 #ifndef CMP_H_
 #define CMP_H_
 
@@ -58,24 +51,6 @@ static inline bool endl(int x)
         return (false);
     return (true);
 }
-
-# define naloc(x) malloc(0x4 * x);
-
-# define paloc(x) malloc(0x8 * x);
-
-# define nput(x) printf("%d\n", x);
-
-# define sput(x) printf("%s\n", x);
-
-# define ret(x) return (x);
-
-# define err exit(0x54);
-
-# define in(x) int x = 0x0;
-
-# define loop(x) for (int i = 0x0; x[i]; i++)
-
-# define sloop(x, y) for (int i = 0x0; x[i] && x[i] != y; i++)
 
 # define FALSE false
 # define TRUE  true

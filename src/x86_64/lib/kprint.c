@@ -167,3 +167,15 @@ void kprint(char const *format, ...)
     }
     va_end(ap);
 }
+
+void kvprint(char const *format, va_list ap)
+{
+    for (int i = 0x0; format[i] ; i++) {
+        if (format[i] != '%')
+            putchar(format[i]);
+        else {
+            i++;
+            switch_types(format, ap, &i);
+        }
+    }
+}

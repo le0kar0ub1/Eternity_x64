@@ -14,6 +14,7 @@ void *memcpyd(void *dest, void *src, size_t size);
 void *memcpyq(void *dest, void *src, size_t size);
 
 void kprint(char const *format, ...);
+void kvprint(char const *format, va_list ap);
 
 /* A PART OF CLASSICAL LIB STDLIB.H */
 uint64 rand_uintptr(void);

@@ -5,12 +5,16 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdarg.h>
 /* recreate headers library */
 #include "prototypes.h"
 
-/* personnal headers */
+/* MACRO AND DEF HELPER */
 #include "types_shortcut.h"
-#include "macro.h"
+#include "eternityDef.h"
+#include "compare.h"
+
+/* personnal headers */
 #include "vga.h"
 #include "bitfield.h"
 #include "assembly_inlineInstruction.h"
@@ -18,13 +22,10 @@
 #include "tty.h"
 #include "kconfig.h"
 
-#define asmv __asm__ volatile
 #define syscall int 0x80
 
-void PANIC(char const *panic);
-void kmain(void);
-void *kalloc(uint size);
-void kfree(void *ptr);
+void PANIC(char const *panic, ...) __noreturn;
+void kmain(void) __noreturn;
 
 /* facilities */
 static inline void debug(uint64 arg)

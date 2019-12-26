@@ -38,11 +38,16 @@ char const *exception_message[MAX_INT] =
     "Reserved"
 };
 
-void PANIC(char const *panic)
+void PANIC(char const *panic, ...)
 {
-    kprint("%s\n", panic);
+    va_list ap;
+
     cli();
-    hlt();
+    va_start(ap, panic);
+    vga_set_attrib(VGA_RED, VGA_BLACK);
+    kvprint(panic, ap);
+    va_end(ap);
+    while (1) hlt();
 }
 
 void exceptions_handler(uintptr int_num)

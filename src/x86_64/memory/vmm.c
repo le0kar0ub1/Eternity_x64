@@ -23,7 +23,7 @@ virtaddr kmem_request(uint size)
 {
     virtaddr page = allocate_page(size);
     physaddr frame = frame_allocator(size);
-    mmap(page, frame, ALIGN_BLOCK(size));
+    mmap(page, frame, ALIGN_PAGE(size));
     return (page);
 }
 

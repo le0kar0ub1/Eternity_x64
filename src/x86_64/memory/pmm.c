@@ -1,7 +1,7 @@
 #include "pmm.h"
 #include "eternity.h"
 
-/* PMM MANAGED BY A BIG BITMAP */
+/* PMM IS MANAGED BY A BIG BITMAP */
 
 extern uint64 __KERNEL_PHYS_END;
 
@@ -16,10 +16,10 @@ uint64 blockNbr;
 void init_pmm(void)
 {
     blockNbr = PMM_SIZE / FRAME_SIZE;
-    bitmapManager = (uint8 *)ALIGN_BLOCK((uint64)bitmapManager);
+    bitmapManager = (uint8 *)ALIGN_FRAME((uint64)bitmapManager);
     memset(bitmapManager, 0x0, blockNbr);
     /* start pmm at next aligned address after bitmap */
-    pmmStart = (uint64)ALIGN_BLOCK(((uint64)(bitmapManager + blockNbr)));
+    pmmStart = (uint64)ALIGN_FRAME(((uint64)(bitmapManager + blockNbr)));
     pmmEnd = (uint64)(pmmStart + PMM_SIZE);
 }
 
@@ -27,7 +27,7 @@ physaddr frame_allocator(uint64 size)
 {
     if (size < 0x1)
         return (0x0);
-    uint frameRequest = ALIGN_BLOCK(size);
+    uint frameRequest = ALIGN_FRAME(size);
     return (allocate_frame(frameRequest));
 }
 
@@ -41,9 +41,16 @@ physaddr allocate_frame(uint frameRequest)
 
 
 /* free the frame & clear the bit in bitmapManager */
-void free_frame(uint64 block)
+void free_frame(physaddr addr)
 {
-    CLEARBITMAP(block);
+    if (!IS_PAGE_ALIGNED(addr))
+        return;
+    uint block = addr / FRAME_SIZE;
+    uint bitstate = BITSTATE(block);
+    for (; bitstate; bitstate--) {
+        CLEARBITMAP(block);
+        block++;
+    }
 }
 
 /* find consecutive free frame */

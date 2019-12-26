@@ -5,10 +5,6 @@
 #include "eternity.h"
 #include "sysdef.h"
 
-#define PAGE_SIZE  0x1000
-
-#define ALIGN_PAGE(x) (((x) & (MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1))) + 0x1000)
-
 struct vmmblock {
     struct vmmblock *next;
     virtaddr page;

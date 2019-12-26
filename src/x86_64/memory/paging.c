@@ -25,7 +25,7 @@ void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
 
 void init_kpaging(void)
 {
-    kpage = (struct pageTable *)ALIGN_BLOCK((uint64)kpage);
+    kpage = (struct pageTable *)ALIGN_PAGE((uint64)kpage);
     kernelMapping();
     write_cr3((uint64)kpage->pml4);
 }
