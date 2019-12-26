@@ -18,12 +18,22 @@
 _Eternity is running with KVM module, if this can't be set on your computer delete the flags "-enable-kvm" in (quemuflags) Makefile._
 
 ## INTERACTION:
-    - For the moment you can only write char on screen (azerty keyboard only)
-
+    - TTY (azerty keyboard only)
+    - Command line ("help" in to see available commands)
     - char '²' change the text coloration (yes, it's useless)
 
 ## BUILT:
     - Multiboot 2 boot
+    - VGA driver
+    - GDT
+    - IDT
+    - PIC
+    - 4KIB Paging
+    - PMM manager
+    - VMM manager
+    - PIT timer
+    - RTC (Real Time Clock)
+    - Keyboard driver
 
 ## EPILOGUE:
     - project is in development
