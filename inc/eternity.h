@@ -16,6 +16,7 @@
 #include "assembly_inlineInstruction.h"
 #include "memory.h"
 #include "tty.h"
+#include "kconfig.h"
 
 #define asmv __asm__ volatile
 #define syscall int 0x80

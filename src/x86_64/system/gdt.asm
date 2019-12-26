@@ -27,7 +27,7 @@ gdt_start:
     dd 0x0
 
 gdtKernelCode: equ $ - gdt_start ; The Kernel code descriptor.
-    dw 0                         ; Limit (low).
+    dw 0xFFFF                         ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 10011010b                 ; Access (exec/read).
@@ -35,7 +35,7 @@ gdtKernelCode: equ $ - gdt_start ; The Kernel code descriptor.
     db 0                         ; Base (high).
 
 gdtKernelData: equ $ - gdt_start ; The Kernel data descriptor.
-    dw 0                         ; Limit (low).
+    dw 0xFFFF                         ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 10010010b                 ; Access (read/write).

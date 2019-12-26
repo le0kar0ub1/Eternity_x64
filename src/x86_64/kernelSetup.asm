@@ -90,7 +90,9 @@ kernel_setup:
     ; init tty
     ; call init_tty
 
-    call fire_userspace
+    ; call fire_userspace
+
+
 
     sti
     call kmain

@@ -11,9 +11,9 @@
 #define GDT_USER_CODE_ENTRY   0x3
 #define GDT_USER_DATA_ENTRY   0x4
 #define GDT_TSS_ENTRY         0x5
+#define GDT_NULL_ENTRY2       0x6
 
-struct gdt_entry
-{
+struct gdt_entry {
     uint16 limit_low;
     uint16 base_low;
     uint8  base_middle;
