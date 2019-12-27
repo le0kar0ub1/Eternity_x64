@@ -1,12 +1,12 @@
-#ifndef _MACRO_H_
-#define _MACRO_H_
+#ifndef _ETERNITY_DEF_H_
+#define _ETERNITY_DEF_H_
 
 #define asmv __asm__ volatile
 
 #define fatalAssert(expr)   \
-        if (unexpected(!(expr)))    \
-            PANIC("assert(%s) failed in %s at line %d.\n",    \
-            #expr, __FILE__, __LINE__);
+            if (unexpected(!(expr))) \
+                PANIC("assert(%s) failed in %s at line %d.\n", \
+                #expr, __FILE__, __LINE__);
 
 /* PANIC IF ASSERT FAILED */
 #define assert_eq(a, b)  fatalAssert((a) == (b))

@@ -11,16 +11,16 @@ extern load_idt
 extern init_handler
 extern init_serial
 extern init_vga
-extern remap_PIC
+extern init_pic
 extern init_pf_handler
 extern init_pmm
 extern init_kpaging
 extern init_vmm
 extern init_kalloc
+extern init_multiProcessing
 extern init_timer
 extern init_keyboard
 extern init_pci
-extern init_apic
 extern init_rtc
 extern init_syscall
 
@@ -52,7 +52,7 @@ kernel_setup:
     call helloFromEternity
 
     ; PIC init
-    call remap_PIC
+    call init_pic
 
     ; pop rdi
     ; extern get_multiboot_tag
@@ -73,6 +73,14 @@ kernel_setup:
     ; init kheap allocation
     call init_kalloc
 
+    ; init SMP
+    call init_multiProcessing
+
+    ; init apic
+    ; call init_apic
+
+
+
     ; init PIT timer
     call init_timer
 
@@ -82,9 +90,6 @@ kernel_setup:
     ; init pci
     call init_pci
 
-    ; init apic
-    ; call init_apic
-
     ; init CMOS RTC
     call init_rtc
 
@@ -92,11 +97,9 @@ kernel_setup:
     call init_syscall
 
     ; init tty
-    ; call init_tty
+    call init_tty
 
     ; call fire_userspace
-
-
 
     sti
     call kmain

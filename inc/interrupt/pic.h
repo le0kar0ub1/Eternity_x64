@@ -4,7 +4,7 @@
 #include "eternity.h"
 #include "ports.h"
 
-void remap_PIC(void);
+void init_pic(void);
 void pic_outb(uchar port, uchar data);
 
 /* PIC int and shift */

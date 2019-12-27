@@ -7,7 +7,6 @@ extern kalloc
 global execpuid
 
 global cpuVendorId
-global logicalCPUnumber
 
 [section .text]
 execpuid:

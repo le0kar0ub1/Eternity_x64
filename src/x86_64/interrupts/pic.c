@@ -10,7 +10,7 @@ void pic_outb(uchar port, uchar data)
 }
 
 /* BASIC PIC REMAP */
-void remap_PIC(void)
+void init_pic(void)
 {
     pic_outb(PORT_PIC_MASTER_CMD, 0x11); // starts the initialization
     pic_outb(PORT_PIC_SLAVE_CMD, 0x11);

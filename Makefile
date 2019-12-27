@@ -5,8 +5,33 @@ iso := build/eternity-$(arch).iso
 linker_script := src/link.ld
 grub_cfg := src/grub.cfg
 
-include := $(addprefix -Iinc/, descriptors/ boot/ interrupt/ def/ drivers/  memory/ lib/ system/ tty/ CPU/ /)
-project_dir := boot/ drivers/ lib/ interrupt/ memory/ CPU/ network/ system/ tty/ abstractor/ CPU/ /
+includeDir := $(addprefix -Iinc/,			\
+                         	descriptors		\
+                         	boot			\
+                         	interrupt		\
+                         	def				\
+                         	drivers			\
+                         	memory			\
+                         	lib				\
+                         	system			\
+                         	tty				\
+                         	CPU				\
+                         	multiTasking  	\
+                         	/				\
+						 	)
+sourceDir := boot				\
+ 				drivers			\
+  				lib				\
+   				interrupt		\
+    			memory			\
+	 			CPU				\
+	  			network			\
+	   			system			\
+	    		tty				\
+		 		abstractor		\
+		  		CPU				\
+				multiTasking	\
+
 
 ld := ld
 ldflags := -n						\
@@ -21,7 +46,7 @@ ldflags_debug := --cref			\
 	   	 		#--relocatable	\
 
 nasm := nasm
-asflags := -felf64 $(include)
+asflags := -felf64 $(includeDir)
 
 qemuarch := qemu-system-x86_64
 qemu_networking :=   -net nic,vlan=0,model=rtl8139 -net user,vlan=0 #-net nic,model=rtl8139 -net user #-netdev user,id=n1 -device rtl8139,netdev=n1
@@ -32,7 +57,7 @@ qemu_basic_device := -usb		\
 		     -device usb-tablet \
 		     -soundhw pcspk
 		     #-no-kvm-irqchip
-## now run as ROOT So Take Care Of that ##
+
 qemuflags := -cdrom $(iso)        \
 	         -enable-kvm          \
 			 #-m 4G                \
@@ -50,7 +75,7 @@ cflags := -nostdlib		 			\
 	  	  -Wnested-externs 	 		\
 	  	  -Winline 		 			\
 	  	  --std=gnu11 		 		\
-	  	  $(include) 	         	\
+	  	  $(includeDir) 	         	\
 	  	  -Wuninitialized        	\
           -Wno-missing-braces    	\
 	      -ffreestanding         	\
@@ -113,7 +138,7 @@ $(kernel): $(objects) $(linker_script)
 
 build/arch/$(arch)/%.o: src/$(arch)/%.asm
 	@mkdir -p $(shell dirname $@)
-	@mkdir -p $(addprefix build/arch/$(arch)/, $(project_dir))
+	@mkdir -p $(addprefix build/arch/$(arch)/, $(sourceDir))
 	@$(nasm) $(asflags) $< -o $@
 	@-echo -e "\033[34m     NASM   $@\e[0m"
 
