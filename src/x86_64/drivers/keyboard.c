@@ -227,6 +227,11 @@ void interaction_handler(char getch)
         interactionBuffer[interactionBufferIndex] = 0x0;
         interactionBufferIndex = 0x0;
         fire_cmd_line(interactionBuffer);
+    } else if (getch == 0x8) { // backspace
+        if (!interactionBufferIndex)
+            return;
+        interactionBufferIndex -= 0x1;
+        interactionBuffer[interactionBufferIndex] = 0x0;
     } else {
         interactionBuffer[interactionBufferIndex] = getch;
         interactionBufferIndex += 0x1;
