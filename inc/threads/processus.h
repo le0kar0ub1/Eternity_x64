@@ -2,28 +2,26 @@
 #define _PROCESSUS_H_
 
 #include "eternity.h"
+#include "scheluder.h"
 
 #define SCHED_TOLERANCE 5
 
 enum threadState {
-    TASK_RUNNING          = 0,
-    TASK_INTERRUPTIBLE    = 1,
-    TASK_UNINTERRUPTIBLE  = 2,
-    TASK_ZOMBIE           = 4,
-    TASK_STOPPED          = 8,
-    TASK_SWAPPING         = 16,
-    TASK_EXCLUSIVE        = 32,
-    TASK_CREATED          = 64,
-    TASK_LOADING          = 128
+    THREAD_RUNNING          = 0,
+    THREAD_INTERRUPTIBLE    = 1,
+    THREAD_UNINTERRUPTIBLE  = 2,
+    THREAD_ZOMBIE           = 4,
+    THREAD_STOPPED          = 8,
+    THREAD_SWAPPING         = 16,
+    THREAD_EXCLUSIVE        = 32,
+    THREAD_CREATED          = 64,
+    THREAD_LOADING          = 128
 };
 
-typedef uint64 pid;
+typedef uint64 pid_t;
 
 struct context {
-    uint32 ds;
-    uint32 gs;
-    uint32 fs;
-    uint32 es;
+    uint64 eflags;
     uint64 r15;
     uint64 r14;
     uint64 r13;
@@ -32,15 +30,18 @@ struct context {
     uint64 r10;
     uint64 r9;
     uint64 r8;
+    uint64 rbp;
     uint64 rax;
-    uint64 rcx;
+    uint64 rdi;
+    uint64 rsi;
     uint64 rdx;
+    uint64 rcx;
     uint64 rbx;
     uint64 rsp;
-    uint64 rbp;
-    uint64 rsi;
-    uint64 rdi;
-    uint64 eflags;
+    uint32 ds;
+    uint32 gs;
+    uint32 fs;
+    uint32 es;
     uint64 cr3;
     uint64 rip;
     unsigned long long xmm15;
@@ -64,14 +65,14 @@ struct context {
 struct processDescriptor {
     char filename[0x100];
     struct context context;
-    pid pid;
-    virtaddr stack;
+    pid_t pid;
+    void *stack;
     uint32 state;
     uint32 lifeCycle;
-    virtaddr *page_dir;
+    // void *page_dir;
 };
 
 void init_process(void);
-pid new_pid(void);
+pid_t new_pid(void);
 
 #endif

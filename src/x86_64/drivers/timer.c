@@ -12,7 +12,7 @@ uint8  subTicks = 0x0;
 
 void timer_handler(struct frame *frame)
 {
-    if (++subTicks == SUBTICKS_PER_TICK) {
+    if (++subTicks == TIMER_FREQUENCY) {
         ticks++;
         subTicks = 0x0;
     }
@@ -25,6 +25,15 @@ void timer_handler(struct frame *frame)
         }
     }
     pic_eoi(IRQ0);
+}
+
+/* Really bad implementation */
+void sleep(uint8 sec)
+{
+    uint64 needTick = ticks + sec;
+    uint8 needSub = subTicks;
+    while (ticks < needTick);
+    while (needSub != subTicks);
 }
 
 void reset_timer(void)
@@ -40,9 +49,9 @@ uint64 getTime(void)
 
 void relative_time(uint64 seconds, uint64 subseconds, uint64 *out_seconds, uint64 *out_subseconds)
 {
-    if (subseconds + subTicks > SUBTICKS_PER_TICK) {
+    if (subseconds + subTicks > TIMER_FREQUENCY) {
         *out_seconds    = ticks + seconds + 0x1;
-        *out_subseconds = (subseconds + subTicks) - SUBTICKS_PER_TICK;
+        *out_subseconds = (subseconds + subTicks) - TIMER_FREQUENCY;
     } else {
         *out_seconds    = ticks + seconds;
         *out_subseconds = subTicks + subseconds;
@@ -87,7 +96,7 @@ void timer_phase(int freq)
 
 void init_timer(void)
 {
-    timer_phase(0x64); /* 100Hz */
+    timer_phase(TIMER_FREQUENCY); /* 100Hz */
     register_int_handler(INT_IRQ0, timer_handler);
     functionWakeUp = kalloc(sizeof(struct functionWakeUp));
     memset(functionWakeUp, 0x0, sizeof(struct functionWakeUp));

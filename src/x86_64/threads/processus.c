@@ -1,15 +1,17 @@
 #include "processus.h"
-// #include "timer.h"
+#include "interrupt.h"
+#include "timer.h"
 
 
-pid new_pid(void)
+pid_t new_pid(void)
 {
-    static pid pid = 0x0;
-    pid += 0x1;
-    return (pid);
+    static pid_t processId = 0x0;
+    processId += 0x1;
+    return (processId);
 }
+
 
 void init_process(void)
 {
-
+    register_functionWakeup(threadScheluder, 10); // subscribe a sheluder call all 0.1 sec
 }
