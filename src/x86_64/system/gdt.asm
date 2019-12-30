@@ -59,7 +59,6 @@ gdtUserData: equ $ - gdt_start   ; The user data descriptor.
     db 0                         ; Base (high).
 
 gdtTSS: equ $ - gdt_start
-    db 0x0
     dw 0x0000       ; limit 15:0
     dw 0x0000       ; base 15:0
     db 0x00         ; base 23:16

@@ -30,7 +30,7 @@ sourceDir := boot				\
 	    		tty				\
 		 		abstractor		\
 		  		CPU				\
-				multiTasking	\
+				multiTasking
 
 
 ld := ld

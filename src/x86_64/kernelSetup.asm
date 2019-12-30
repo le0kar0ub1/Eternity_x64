@@ -1,6 +1,7 @@
 %include "boot.inc"
 %include "memory.inc"
 %include "contextSwitch.inc"
+%include "descriptors.inc"
 
 bits 64
 
@@ -9,6 +10,7 @@ extern helloFromEternity
 extern idt_setup
 extern load_idt
 extern init_handler
+extern init_tss
 extern init_serial
 extern init_vga
 extern init_pic
@@ -17,7 +19,6 @@ extern init_pmm
 extern init_kpaging
 extern init_vmm
 extern init_kalloc
-extern init_multiProcessing
 extern init_timer
 extern init_keyboard
 extern init_pci
@@ -41,6 +42,12 @@ kernel_setup:
     call idt_setup
     call load_idt
     call init_handler
+
+    ; tss init
+    mov rdi, TSS_SELECTOR / GDT_ENTRY_SIZE ; index in gdt
+    mov rsi, 0x10
+    mov rdx, 0x0
+    call init_tss
 
     ; serial port init
     call init_serial
@@ -72,14 +79,6 @@ kernel_setup:
 
     ; init kheap allocation
     call init_kalloc
-
-    ; init SMP
-    call init_multiProcessing
-
-    ; init apic
-    ; call init_apic
-
-
 
     ; init PIT timer
     call init_timer
