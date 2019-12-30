@@ -3,6 +3,9 @@
 #include "interrupt.h"
 #include "timer.h"
 
+/* list of function call all x sec */
+struct functionWakeUp *functionWakeUp;
+
 /* Internal timer counters */
 uint64 ticks    = 0x0;
 uint8  subTicks = 0x0;
@@ -14,6 +17,13 @@ void timer_handler(struct frame *frame)
         subTicks = 0x0;
     }
     frame->rax = 0x0;
+    struct functionWakeUp *list = functionWakeUp;
+    for (; list; list = list->next) {
+        if (++list->current == list->cs) {
+            list->fnct();
+            list->current = 0x0;
+        }
+    }
     pic_eoi(IRQ0);
 }
 
@@ -39,6 +49,34 @@ void relative_time(uint64 seconds, uint64 subseconds, uint64 *out_seconds, uint6
     }
 }
 
+void register_functionWakeup(void *fnct, uint32 cs)
+{
+    struct functionWakeUp *list = functionWakeUp;
+
+    for (; list && list->next && list->fnct; list = list->next);
+    if (!(list->fnct)) {
+        list->fnct = fnct;
+        list->cs = cs;
+    } else {
+        list->next = kalloc(sizeof(struct functionWakeUp));
+        list->next->next = NULL;
+        list->next->cs = cs;
+        list->next->current = 0x0;
+        list->next->fnct = fnct;
+    }
+}
+
+void unregister_functionWakeup(void *fnct)
+{
+    struct functionWakeUp *list = functionWakeUp;
+
+    for (; list && list->fnct; list = list->next)
+        if (list->fnct == fnct) {
+            list->fnct = NULL;
+            break;
+        }
+}
+
 void timer_phase(int freq)
 {
     int div = PIT_SCALE / freq;
@@ -51,5 +89,7 @@ void init_timer(void)
 {
     timer_phase(0x64); /* 100Hz */
     register_int_handler(INT_IRQ0, timer_handler);
+    functionWakeUp = kalloc(sizeof(struct functionWakeUp));
+    memset(functionWakeUp, 0x0, sizeof(struct functionWakeUp));
     pic_unmask(IRQ0);
 }

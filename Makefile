@@ -16,7 +16,7 @@ includeDir := $(addprefix -Iinc/,			\
                          	system			\
                          	tty				\
                          	CPU				\
-                         	multiTasking  	\
+                         	threads       	\
                          	/				\
 						 	)
 sourceDir := boot				\
@@ -30,7 +30,7 @@ sourceDir := boot				\
 	    		tty				\
 		 		abstractor		\
 		  		CPU				\
-				multiTasking
+				threads
 
 
 ld := ld

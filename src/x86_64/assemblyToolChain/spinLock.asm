@@ -1,5 +1,6 @@
 global spinlock_lock
 global spinlock_unlock
+global spinlockJmp
 
 bits 64
 
@@ -7,8 +8,10 @@ bits 64
 spinlock_lock:
     mov rbx, [rsp + 0x8]
     mov rax, [rbx + 0x8]
+    ret
+
 spinlockJmp:
-    lock bts dword [rax], 0x0
+    lock bts QWORD [rax], 0x0
     pause
     jc spinlockJmp
     ret
@@ -16,5 +19,5 @@ spinlockJmp:
 spinlock_unlock:
     mov rbx, [rsp + 0x8]
     mov rax, [rbx + 0x8]
-    mov dword [rax], 0x0
+    mov QWORD [rax], 0x0
     ret

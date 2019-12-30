@@ -23,6 +23,7 @@ extern init_timer
 extern init_keyboard
 extern init_pci
 extern init_rtc
+extern init_process
 extern init_syscall
 
 extern fire_userspace
@@ -38,7 +39,7 @@ kernel_setup:
     add rbx, KERNEL_VIRT_BASE ; address struct multiboot
     push rbx
 
-    ; interruption and isr setup
+    ; interruption & isr & handler setup
     call idt_setup
     call load_idt
     call init_handler
@@ -91,6 +92,9 @@ kernel_setup:
 
     ; init CMOS RTC
     call init_rtc
+
+    ; init porcessus
+    call init_process
 
     ; init syscall handler
     call init_syscall

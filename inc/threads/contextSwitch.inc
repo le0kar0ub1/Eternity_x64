@@ -50,11 +50,13 @@
     push r9
     push r8
     push rbp
+    push rax
     push rdi
     push rsi
     push rdx
     push rcx
     push rbx
+    push rsp
 
     push_seg_reg
 
