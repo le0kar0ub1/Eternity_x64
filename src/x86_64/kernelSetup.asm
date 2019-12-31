@@ -94,17 +94,17 @@ kernel_setup:
     call init_rtc
 
     ; init porcessus
-    call init_process
+    ; call init_process
 
     ; init syscall handler
-    call init_syscall
+    ; call init_syscall
 
     ; init tty
     call init_tty
 
-    ; call fire_userspace
+    call fire_userspace
 
-    sti
+    ; sti
     call kmain
 
 

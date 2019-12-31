@@ -20,9 +20,10 @@ fire_userspace:
     push 0x1B
     lea rax, [userspaceJmp]
     push rax
-    iretq
+    iret
 
 userspaceJmp:
+    jmp userspaceJmp
     add rsp, 8
     ret
 

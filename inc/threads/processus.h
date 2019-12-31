@@ -61,17 +61,18 @@ struct context {
     unsigned long long  xmm2;
     unsigned long long  xmm1;
     unsigned long long  xmm0;
-};
+} __packed;
 
 struct threadDescriptor {
     char name[0x100];
-    struct context context;
     pid_t pid;
+    listnode_t *idx;
     void *stack;
     uint32 state;
     uint32 lifeCycle;
-    // void *page_dir;
-};
+    void *pdpt;
+    struct context context;
+} __packed;
 
 void init_process(void);
 pid_t new_pid(void);

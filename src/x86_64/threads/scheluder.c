@@ -1,25 +1,24 @@
 #include "scheluder.h"
 #include "processus.h"
 
-struct threadDescriptor *run;
-struct threadDescriptor *prev;
+struct threadDescriptor *threadRunning = NULL;
+struct threadDescriptor *threadPrev = NULL;
 
-struct list_t *threadList;
+list_t *threadList;
 
 struct context *savedContext;
 
-void generateThread(char *file)
+void createFirstThread(void)
 {
-    struct threadDescriptor *thread = kalloc(sizeof(struct threadDescriptor));
-
-    // thread file name
-    strcpy(thread->name, file);
-    // context set up
-    memset((void *)&(thread->context), 0x0, sizeof(struct context));
-    thread->context.rip = 0x0; // (uint64)load_elf
-    thread->context.eflags = 0x206;
+    
 }
 
 void threadScheluder(void)
 {
+    if (!list_size(threadList))
+        return;
+    if (!threadRunning) {
+        createFirstThread();
+        return;
+    }
 }
