@@ -1,7 +1,7 @@
 #ifndef _PROTOTYPES_H_
 #define _PROTOTYPES_H_
 
-#include "types_shortcut.h"
+#include "typedef.h"
 #include "linkedList.h"
 
 void *memset(void *ptr, uint8 value, size_t size);

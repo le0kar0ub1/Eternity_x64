@@ -50,6 +50,7 @@ void kernelMapping(void)
 void userSpaceAccess_RemapVMM(void)
 {
     /* add a pdpt at pml4[1] for user access */
+    /* allow user access from root to page and fire user space */
 }
 
 void pageFault_handler(struct frame *frame)

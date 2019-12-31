@@ -23,7 +23,7 @@ void init_pmm(void)
     pmmEnd = (uint64)(pmmStart + PMM_SIZE);
 }
 
-physaddr frame_allocator(uint64 size)
+physaddr_t frame_allocator(uint64 size)
 {
     if (size < 0x1)
         return (0x0);
@@ -32,16 +32,16 @@ physaddr frame_allocator(uint64 size)
 }
 
 /* allocate consecutive frame & set the bit in bitmapManager */
-physaddr allocate_frame(uint frameRequest)
+physaddr_t allocate_frame(uint frameRequest)
 {
     uint64 block = find_free_frame(frameRequest);
     SETBITMAP(block, frameRequest);
-    return ((physaddr)(block * FRAME_SIZE) + pmmStart);
+    return ((physaddr_t)(block * FRAME_SIZE) + pmmStart);
 }
 
 
 /* free the frame & clear the bit in bitmapManager */
-void free_frame(physaddr addr)
+void free_frame(physaddr_t addr)
 {
     if (!IS_PAGE_ALIGNED(addr))
         return;

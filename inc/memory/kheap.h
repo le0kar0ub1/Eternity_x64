@@ -15,9 +15,9 @@ struct kheap {
 
 #define SIZEOF_KHEAPBLOCK sizeof(struct kheap)
 
-void kfree(virtaddr ptr);
+void kfree(virtaddr_t ptr);
 void init_kalloc(void);
-virtaddr kalloc(uint size);
+virtaddr_t kalloc(uint size);
 void dump_kheap(void);
 
 #endif

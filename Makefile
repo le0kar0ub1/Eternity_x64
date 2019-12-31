@@ -17,8 +17,9 @@ includeDir := $(addprefix -Iinc/,			\
                          	tty				\
                          	CPU				\
                          	threads       	\
+                            abstractor      \
                          	/				\
-						 	)
+    					 	)
 sourceDir := boot				\
  				drivers			\
   				lib				\

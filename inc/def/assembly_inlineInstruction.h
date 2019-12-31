@@ -52,4 +52,25 @@ static inline void interrupt(uchar vector)
     asmv("int %0" :: "i"(vector));
 }
 
+static inline uint xchg(uint volatile *addr, uint newval)
+{
+    uint res;
+
+    asm volatile("lock xchgl %0, %1;" : "+m"(*addr), "=a"(res) : "1"(newval) : "cc");
+    return (res);
+}
+
+static inline uint32 get_eflags(void)
+{
+    uint32 e;
+
+    asm volatile("pushfl; popl %0" : "=rm"(e) :: "memory");
+    return (e);
+}
+
+static inline void set_eflags(uint32 value)
+{
+    asm volatile("pushl %0; popfl" :: "g"(value) : "memory", "cc");
+}
+
 #endif

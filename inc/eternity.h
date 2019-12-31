@@ -10,7 +10,7 @@
 #include "prototypes.h"
 
 /* MACRO AND DEF HELPER */
-#include "types_shortcut.h"
+#include "typedef.h"
 #include "eternityDef.h"
 #include "compare.h"
 

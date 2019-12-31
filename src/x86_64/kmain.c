@@ -1,10 +1,14 @@
 #include "eternity.h"
-#include "ports.h"
+#include "virtualSegment.h"
+
+void init_tty(void);
+void fire_userpace(void);
 
 void kmain(void)
 {
-    // char r[10];
-    // itoa(r, cpu,2);
-    // serial_putstr(r);
+    hlt();
+    sti();
+    init_tty();
+    // fire_userspace();
     while (1) hlt();
 }

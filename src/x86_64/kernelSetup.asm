@@ -99,12 +99,6 @@ kernel_setup:
     ; init syscall handler
     ; call init_syscall
 
-    ; init tty
-    call init_tty
-
-    call fire_userspace
-
-    ; sti
     call kmain
 
 

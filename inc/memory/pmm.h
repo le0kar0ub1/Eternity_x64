@@ -32,8 +32,8 @@ enum PMM_TYPE
     PMM_TYPE_UNMAPPED = 0x7,   /* Marked as "do not map" */
 };
 
-physaddr frame_allocator(uint64);
-physaddr allocate_frame(uint);
+physaddr_t frame_allocator(uint64);
+physaddr_t allocate_frame(uint);
 uint64 find_free_frame(uint);
 void free_frame(uint64);
 void init_pmm(void);

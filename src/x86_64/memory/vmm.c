@@ -3,10 +3,10 @@
 #include "pmm.h"
 
 /* start a the end of kernel phys */
-virtaddr managerVmmStart;
-virtaddr vmmStart;
+virtaddr_t managerVmmStart;
+virtaddr_t vmmStart;
 
-virtaddr curVmmAddr;
+virtaddr_t curVmmAddr;
 
 struct vmmblock *vmmblock;
 struct vmmblock *curblock;
@@ -19,10 +19,10 @@ void dump_kpage(void)
         kprint("Page at address: %x, used: %d", vmm->page, vmm->used);
 }
 
-virtaddr kmem_request(uint size)
+virtaddr_t kmem_request(uint size)
 {
-    virtaddr page = allocate_page(size);
-    physaddr frame = frame_allocator(size);
+    virtaddr_t page = allocate_page(size);
+    physaddr_t frame = frame_allocator(size);
     mmap(page, frame, ALIGN_PAGE(size));
     return (page);
 }
@@ -40,7 +40,7 @@ void init_vmm(void)
     curVmmAddr = vmmStart + PAGE_SIZE;
 }
 
-virtaddr allocate_page(uint size)
+virtaddr_t allocate_page(uint size)
 {
     uint block = !(size % PAGE_SIZE) ? (size / PAGE_SIZE) : ((size / PAGE_SIZE) + 0x1);
     uint keep = block;
@@ -68,7 +68,7 @@ virtaddr allocate_page(uint size)
     return (vmm->page);
 }
 
-void free_page(virtaddr rect)
+void free_page(virtaddr_t rect)
 {
     uint involved;
 
@@ -83,7 +83,7 @@ void free_page(virtaddr rect)
     PANIC("Invalid pointer in free_page\n");
 }
 
-void mmap(virtaddr virt, physaddr phys, uint off)
+void mmap(virtaddr_t virt, physaddr_t phys, uint off)
 {
     uint pd = PD_INDEX(virt) - 0x1;
     uint pt = PT_INDEX(virt);

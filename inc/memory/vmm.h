@@ -7,7 +7,7 @@
 
 struct vmmblock {
     struct vmmblock *next;
-    virtaddr page;
+    virtaddr_t page;
     uint  involved;
     uint8 used;
 };
@@ -16,10 +16,10 @@ struct vmmblock {
 
 struct vmmblock *vmmblock;
 
-virtaddr allocate_page(uint size);
-void free_page(virtaddr rect);
-virtaddr kmem_request(uint size);
-void mmap(virtaddr virt, physaddr phys, uint off);
+virtaddr_t allocate_page(uint size);
+void free_page(virtaddr_t rect);
+virtaddr_t kmem_request(uint size);
+void mmap(virtaddr_t virt, physaddr_t phys, uint off);
 void init_vmm(void);
 
 #endif

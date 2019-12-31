@@ -15,8 +15,8 @@ extern uint64 __KERNEL_PHYS_END;
 #define V2P(x) ((uint64)x - (uint64)(&__KERNEL_VIRT_BASE))
 #define P2V(x) ((uint64)x + (uint64)(&__KERNEL_VIRT_BASE))
 
-typedef uintptr physaddr;
-typedef void    *virtaddr;
+typedef uintptr physaddr_t;
+typedef void    *virtaddr_t;
 
 #define K 0x400
 #define M (0x400 * K)
