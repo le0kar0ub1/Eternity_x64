@@ -20,6 +20,7 @@ enum threadState {
 
 typedef uint64 pid_t;
 
+/* representing a total context */
 struct context {
     uint64 eflags;
     uint64 r15;
@@ -62,8 +63,8 @@ struct context {
     unsigned long long  xmm0;
 };
 
-struct processDescriptor {
-    char filename[0x100];
+struct threadDescriptor {
+    char name[0x100];
     struct context context;
     pid_t pid;
     void *stack;
