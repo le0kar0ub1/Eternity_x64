@@ -22,7 +22,7 @@ virtaddr_t kalloc(uint size)
             return ((virtaddr_t)root + SIZEOF_KHEAPBLOCK);
         }
     if (kheapPageCycle + size + SIZEOF_KHEAPBLOCK > PAGE_SIZE) {
-        new = kmem_request(size);
+        new = kmem_request(size + SIZEOF_KHEAPBLOCK);
         root->next = (virtaddr_t)new;
     } else
         root->next = (virtaddr_t)root + root->size + SIZEOF_KHEAPBLOCK;

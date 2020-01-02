@@ -27,6 +27,7 @@ struct pageTable {
     uint64 pdt[PAGE_ENTRY_NBR];
     uint64 pt_kernel_static[PAGE_ENTRY_NBR];
     uint64 pt_kernel_dynamic[PAGE_ENTRY_NBR - 0x1][PAGE_ENTRY_NBR];
+    uint64 pt_kernel_specific[PAGE_ENTRY_NBR];
     uint64 pt_user[PAGE_ENTRY_NBR];
 };
 

@@ -33,7 +33,7 @@ void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt);
 void *kalloc(uint size);
 void kfree(void *ptr);
 
-/* invalid a page of TLB (TLB increase speed if addr was already page) */
+/* invalid a page of TLB (TLB increase speed if addr was already paged) */
 static inline void invlpg(void *addr)
 {
     asmv("invlpg (%0)" :: "r"(addr) : "memory");

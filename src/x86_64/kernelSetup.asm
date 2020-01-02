@@ -23,7 +23,7 @@ extern init_timer
 extern init_keyboard
 extern init_pci
 extern init_rtc
-extern init_process
+extern init_threads
 extern init_syscall
 
 extern fire_userspace
@@ -94,7 +94,7 @@ kernel_setup:
     call init_rtc
 
     ; init porcessus
-    ; call init_process
+    ; call init_threads
 
     ; init syscall handler
     ; call init_syscall

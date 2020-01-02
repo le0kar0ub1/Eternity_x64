@@ -22,12 +22,12 @@ void init_tss(uint32 idx, uint64 kss, uint64 kstack_pointer)
     // Note that we usually set tss's esp to 0 when booting our os, however, we need to set it to the real esp when we've switched to usermode because
     // the CPU needs to know what esp to use when usermode app is calling a kernel function(aka system call), that's why we have a function below called tss_set_stack
     kernel_tss.esp0 = kstack_pointer;
-    kernel_tss.cs = 0x0b;
-    kernel_tss.ds = 0x13;
-    kernel_tss.es = 0x13;
-    kernel_tss.fs = 0x13;
-    kernel_tss.gs = 0x13;
-    kernel_tss.ss = 0x13;
+    kernel_tss.cs = 0x8;
+    kernel_tss.ds = 0x10;
+    kernel_tss.es = 0x10;
+    kernel_tss.fs = 0x10;
+    kernel_tss.gs = 0x10;
+    kernel_tss.ss = 0x10;
     flush_tss();
 }
 

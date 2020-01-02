@@ -23,7 +23,6 @@ isr:
     %assign i (i + 1)
 %endrep
 
-
 interrupt_catch:
     pushfq       ; push flags
     push rdi    ; save base registers
@@ -47,7 +46,9 @@ interrupt_catch:
 
     mov rdi, rsp        ; stack pointer use for struct frame
     cld
+    call swapgsCheckUp
     call interrupts_handler ; rax contain return value of syscall
+    call swapgsCheckUp
     std
     mov r10, rax
 
@@ -74,3 +75,11 @@ interrupt_catch:
 
     add rsp, 0x10   ; Clean error code and int nbr
     iretq           ; Return from interrupt
+
+
+swapgsCheckUp:
+	cmp QWORD [rsp], 0x8
+	je noSwapgs
+	swapgs
+noSwapgs:
+    ret

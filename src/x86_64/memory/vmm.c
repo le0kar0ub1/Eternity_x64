@@ -13,6 +13,9 @@ struct vmmblock *curblock;
 
 extern struct pageTable *kpage; // mmap working needed
 
+uint64 cycleManagerPage;
+uint64 managerPageNumber;
+
 void dump_kpage(void)
 {
     for (struct vmmblock *vmm = vmmblock; vmm; vmm = vmm->next)
@@ -35,9 +38,19 @@ void init_vmm(void)
     mmap(vmmblock, frame_allocator(PAGE_SIZE), PAGE_SIZE);
     vmmblock->next = NULL;
     vmmblock->used = false;
+    vmmblock->involved = 0x1;
     vmmblock->page = vmmStart + SIZEOF_VMMBLOCK;
     curblock = vmmblock;
     curVmmAddr = vmmStart + PAGE_SIZE;
+    cycleManagerPage = 0x1;
+    managerPageNumber = 0x1;
+}
+
+void newManagerSpace(void)
+{
+    cycleManagerPage = 0x0;
+    mmap(vmmblock + (managerPageNumber * PAGE_SIZE), frame_allocator(PAGE_SIZE), PAGE_SIZE);
+    managerPageNumber += 0x1;
 }
 
 virtaddr_t allocate_page(uint size)
@@ -46,14 +59,20 @@ virtaddr_t allocate_page(uint size)
     uint keep = block;
     struct vmmblock *vmm = vmmblock;
 
-    for (; block == 0x1 && vmm; vmm = vmm->next)
-        if (!vmm->used) {
+    /* if free page exist */
+    for (; vmm; vmm = vmm->next) {
+        if (!vmm->used && vmm->involved == block) {
             vmm->used = true;
             return (vmm->page);
         }
+    }
+    /* check if we need a new page to manage page X) */
+    if (cycleManagerPage + block + 1 > PAGE_SIZE / SIZEOF_VMMBLOCK)
+        newManagerSpace();
     vmm = curblock;
+    /* else allocate new page */
     for (; block != 0x0; block--) {
-        curblock->next = SIZEOF_VMMBLOCK + curblock;
+        curblock->next = (struct vmmblock *)((uint64)SIZEOF_VMMBLOCK + (uint64)curblock);
         curblock->page = curVmmAddr;
         if (keep == block && keep > 0x1)
             curblock->involved = keep;
@@ -65,6 +84,7 @@ virtaddr_t allocate_page(uint size)
         curVmmAddr += 0x1000;
         curblock = curblock->next;
     }
+    cycleManagerPage += block;
     return (vmm->page);
 }
 
@@ -89,7 +109,7 @@ void mmap(virtaddr_t virt, physaddr_t phys, uint off)
     uint pt = PT_INDEX(virt);
     off /= PAGE_SIZE;
     for (; off > 0x0 && pt < PAGE_ENTRY_NBR;) {
-        kpage->pt_kernel_dynamic[pd][pt] = phys | PRESENT | WRITABLE;
+        kpage->pt_kernel_dynamic[pd][pt] = phys | PRESENT | WRITABLE | USER_ACCESSIBLE;
         pt += 0x1;
         phys += PAGE_SIZE;
         off -= 0x1;

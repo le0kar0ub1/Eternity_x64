@@ -7,7 +7,7 @@ global initLM
 
 [section .text]
 set_seg_reg:
-    mov ax, 0x0 ;GDT_start.KernelData
+    mov ax, 0x10 ;GDT_start.KernelData
     mov ds, ax              ; data segment
     mov es, ax              ; extra segment
     mov fs, ax              ; F-segment

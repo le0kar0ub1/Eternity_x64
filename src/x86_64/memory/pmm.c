@@ -27,7 +27,7 @@ physaddr_t frame_allocator(uint64 size)
 {
     if (size < 0x1)
         return (0x0);
-    uint frameRequest = ALIGN_FRAME(size);
+    uint frameRequest = ALIGN_FRAME(size) / FRAME_SIZE;
     return (allocate_frame(frameRequest));
 }
 
@@ -63,10 +63,10 @@ uint64 find_free_frame(uint frameNbr)
     for (uint64 bit = 0x0; bit < blockNbr; bit++) {
         bitstate = BITSTATE(bit);
         if (!bitstate) {
-            first = bit;
+            if (keep == frameNbr)
+                first = bit;
             frameNbr--;
         } else {
-            bitstate--;
             frameNbr = keep;
         }
         if (!frameNbr)

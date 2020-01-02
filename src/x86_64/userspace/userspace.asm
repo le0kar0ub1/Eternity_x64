@@ -13,14 +13,14 @@ fire_userspace:
     mov fs, ax
     mov gs, ax
 
-    push 0x23
+    push 0x23 ; segment user data DPL3 (0x20 + 0x3)
     push rsp
     pushfq
     
-    push 0x1B
+    push 0x1B ; segment user code DPL3 (0x18 + 0X3)
     lea rax, [userspaceJmp]
     push rax
-    iret
+    iretq
 
 userspaceJmp:
     jmp userspaceJmp
