@@ -4,9 +4,6 @@
 
 struct tss_entry kernel_tss;
 
-static uint8 kstack[0x1000];
-static uint8 iststack[0x1000];
-
 /* kernel/user space memory space switching */
 void init_tss(void)
 {
@@ -17,20 +14,32 @@ void init_tss(void)
 
     memset(&kernel_tss, 0, sizeof(struct tss_entry));
 
-    uint64 stack = (uint64)kstack + 0x1000;
+    uint64 stack = (uint64)kalloc(0x1000);
     kernel_tss.rsp0l = (uint32)stack;
     kernel_tss.rsp0h = (uint32)(stack >> 0x20);
 
-    stack = (uint64)iststack + 0x1000;
+    stack = (uint64)kalloc(0x1000);
     kernel_tss.ist1l = (uint32)stack;
     kernel_tss.ist1h = (uint32)(stack >> 0x20);
     flush_tss();
 }
 
 /* tss stack (wich stack pointer CPU must using)*/
-void set_tss_stack(uint64 kss, uint64 krsp)
+void set_tss_stack(uint64 ist, uint8 istnbr, uint64 krsp, uint8 rspnbr)
 {
-    kernel_tss.rsp0l = krsp;
-    kernel_tss.rsp0h = krsp >> 0x20;
+    uint32 *shiftRsp = (uint32 *)&(kernel_tss.rsp0l);
+    uint32 *shiftIst = (uint32 *)&(kernel_tss.ist1l);
+    if (krsp && rspnbr < 0x3) {
+        shiftRsp += (rspnbr * 0x8);
+        *shiftRsp = krsp;
+        shiftRsp += 0x4;
+        *shiftRsp = krsp >> 0x20;
+    }
+    if (ist && istnbr < 0x8) {
+        shiftIst += (istnbr * 0x8);
+        *shiftIst = krsp;
+        shiftIst += 0x4;
+        *shiftIst = krsp >> 0x20;
+    }
     flush_tss();
 }

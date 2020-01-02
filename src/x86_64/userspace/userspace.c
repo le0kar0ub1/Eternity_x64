@@ -1,3 +1,4 @@
+#include "eternity.h"
 
 void userspace(void)
 {
