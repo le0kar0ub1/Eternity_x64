@@ -1,39 +1,36 @@
 #include "tss.h"
 #include "descriptors.h"
+#include "gdt.h"
 
 struct tss_entry kernel_tss;
 
+static uint8 kstack[0x1000];
+static uint8 iststack[0x1000];
+
 /* kernel/user space memory space switching */
-void init_tss(uint32 idx, uint64 kss, uint64 kstack_pointer)
+void init_tss(void)
 {
+    uint8 gdtIdx = GDT_TSS_ENTRY;
     uint64 base = (uint64)&kernel_tss;
-    set_gdt_entry(idx, base, base + sizeof(struct tss_entry), 0xE9, 0);
-    /* Kernel tss, access(E9 = 1 11 0 1 0 0 1)
-        1   present
-        11  ring 3
-        0   should always be 1, why 0? may be this value doesn't matter at all
-        1   code?
-        0   can not be executed by ring lower or equal to DPL,
-        0   not readable
-        1   access bit, always 0, cpu set this to 1 when accessing this sector(why 0 now?)
-    */
+    set_gdt_entry(gdtIdx, base, base + sizeof(struct tss_entry), 0xE9, 0);
+    // gdt_set_entry_byBit(gdtIdx, base, sizeof(struct tss_entry) - 0x1, 0x0, 0x9, 0x3);
+
     memset(&kernel_tss, 0, sizeof(struct tss_entry));
-    kernel_tss.ss0 = kss;
-    // Note that we usually set tss's esp to 0 when booting our os, however, we need to set it to the real esp when we've switched to usermode because
-    // the CPU needs to know what esp to use when usermode app is calling a kernel function(aka system call), that's why we have a function below called tss_set_stack
-    kernel_tss.esp0 = kstack_pointer;
-    kernel_tss.cs = 0x8;
-    kernel_tss.ds = 0x10;
-    kernel_tss.es = 0x10;
-    kernel_tss.fs = 0x10;
-    kernel_tss.gs = 0x10;
-    kernel_tss.ss = 0x10;
+
+    uint64 stack = (uint64)kstack + 0x1000;
+    kernel_tss.rsp0l = (uint32)stack;
+    kernel_tss.rsp0h = (uint32)(stack >> 0x20);
+
+    stack = (uint64)iststack + 0x1000;
+    kernel_tss.ist1l = (uint32)stack;
+    kernel_tss.ist1h = (uint32)(stack >> 0x20);
     flush_tss();
 }
 
 /* tss stack (wich stack pointer CPU must using)*/
 void set_tss_stack(uint64 kss, uint64 krsp)
 {
-    kernel_tss.ss0 = kss;
-    kernel_tss.esp0 = krsp;
+    kernel_tss.rsp0l = krsp;
+    kernel_tss.rsp0h = krsp >> 0x20;
+    flush_tss();
 }

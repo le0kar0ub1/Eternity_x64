@@ -47,16 +47,16 @@ gdtUserCode: equ $ - gdt_start   ; The User code descriptor.
     dw 0x0                       ; Base (low).
     db 0x0                       ; Base (middle)
     db 11111010b                 ; Access (exec/read).
-    db 11001111b                 ; Granularity, 64 bits flag, limit19:16.
+    db 00100000b                 ; Granularity, 64 bits flag, limit19:16.
     db 0                         ; Base (high).
 
 gdtUserData: equ $ - gdt_start   ; The user data descriptor.
-    dw 0xFFFF                    ; Limit (low).
+    dw 0xFFFF                       ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 11110010b                 ; Access (read/write).
-    db 11001111b                 ; Granularity.
-    db 0                         ; Base (high).
+    db 10100000b                        ; Granularity.
+    db 0     
 
 gdtTSS: equ $ - gdt_start
     dw 0x0000       ; limit 15:0
@@ -70,3 +70,19 @@ gdtTSS: equ $ - gdt_start
     dd 0x0
     dd 0x0
 gdt_end:
+
+; gdtUserCode: equ $ - gdt_start   ; The User code descriptor.
+;     dw 0xFFFF                    ; Limit (low).
+;     dw 0x0                       ; Base (low).
+;     db 0x0                       ; Base (middle)
+;     db 11111010b                 ; Access (exec/read).
+;     db 11001111b                 ; Granularity, 64 bits flag, limit19:16.
+;     db 0                         ; Base (high).
+
+; gdtUserData: equ $ - gdt_start   ; The user data descriptor.
+;     dw 0xFFFF                    ; Limit (low).
+;     dw 0                         ; Base (low).
+;     db 0                         ; Base (middle)
+;     db 11110010b                 ; Access (read/write).
+;     db 11001111b                 ; Granularity.
+;     db 0                         ; Base (high).

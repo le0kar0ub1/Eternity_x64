@@ -1,9 +1,10 @@
 #include "eternity.h"
 #include "virtualSegment.h"
 #include "threads.h"
+#include "descriptors.h"
 
 void init_tty(void);
-void fire_userspace(void);
+void fire_userspace(void *stack);
 void init_threads(void);
 
 void test(void)
@@ -15,14 +16,14 @@ void test(void)
 
 void kmain(void)
 {
-    uint64 rsp;
-    asm volatile("mov %%rsp, %0" : "=r"(rsp));
-    set_tss_stack(0x10, rsp);
-    flush_tss();
-    sti();
-    fire_userspace();
+    // uint64 rsp;
+    // asm volatile("mov %%rsp, %0" : "=r"(rsp));
+    // sti();
+    // cli();
+    void *stack = kalloc(0x6000);
+    fire_userspace(stack);
     while (1);
-     hlt();
+    hlt();
 
     // init_tty();
     init_threads();

@@ -20,28 +20,26 @@ struct gdt_entry {
     uint8  access;
     uint8  granularity;
     uint8  base_high;
-} __attribute__((packed));
+} __packed;
 
 struct gdt_entry_bits {
-    uint limit_low: 16;
-    uint base_low : 24;
-     // attribute byte split into bitfields
-    uint accessed : 1;
-    uint read_write : 1; // readable for code, writable for data
-    uint conforming_expand_down : 1; // conforming for code, expand down for data
-    uint code : 1; // 1 for code, 0 for data
-    uint always_1 : 1; // should be 1 for everything but TSS and LDT
-    uint DPL : 2; // priviledge level
-    uint present : 1;
-     // and now into granularity
-    uint limit_high : 4;
-    uint available : 1;
-    uint null : 1; // should always be 0
-    uint big  : 1; // 32bit opcodes for code, uint32_t stack for data
-    uint gran : 1; // 1 to use 4k page addressing, 0 for byte addressing
-    uint base_high :  8;
-} __attribute__((packed));
+    uint16 lowLimit;
+    uint16 baseLow;
+    uint8  baseMid;
+    uint8  type : 4;        // segment type
+    uint8  descType : 1;    // 0 system, 1 code/data
+    uint8  dpl : 2;
+    uint8  present : 1;
+    uint8  segLimit : 4;
+    uint8  available : 1;
+    uint8  longMode : 1;           // 64 bit segment
+    uint8  db : 1;          // n.b. must be 0 in 64 bit
+    uint8  granularity : 1; // 0: bytes, 1: 4KB
+    uint8  baseHigh;
+} __packed;
 
 void set_gdt_entry(uint index, uint32 base, uint32 limit, uint8 access, uint8 granularity);
+void gdt_set_entry_byBit(uint index, uint32 base, uint32 limit, uint8 descType, uint8 type, uint8 dpl);
+
 
 #endif

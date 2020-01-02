@@ -1,7 +1,7 @@
 #ifndef _DESCRIPTORS_H
 #define _DESCRIPTORS_H
 
-#include "eternity.h"
+#include "typedef.h"
 
 #define IDT_ENTRY_SIZE  0x10
 #define IDT_ENTRY_NBR   0x100
@@ -16,7 +16,6 @@
 #define USER_DATA_SELECTOR      0x20
 #define TSS_SELECTOR            0x28
 
-
 void flush_gdt(void);
 void set_gdt_entry(uint index, uint32 base, uint32 limit, uint8 access, uint8 granularity);
 
@@ -24,6 +23,6 @@ void flush_idt(void);
 
 void flush_tss(void);
 void set_tss_stack(uint64 kss, uint64 krsp);
-void init_tss(uint32 idx, uint64 kss, uint64 kstack_pointer);
+void init_tss(void);
 
 #endif

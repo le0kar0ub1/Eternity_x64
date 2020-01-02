@@ -45,9 +45,6 @@ kernel_setup:
     call init_handler
 
     ; tss init
-    mov rdi, TSS_SELECTOR / GDT_ENTRY_SIZE ; index in gdt
-    mov rsi, 0x10
-    mov rdx, 0x0
     call init_tss
 
     ; serial port init
