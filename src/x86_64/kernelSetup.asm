@@ -44,9 +44,6 @@ kernel_setup:
     call load_idt
     call init_handler
 
-    ; tss init
-    call init_tss
-
     ; serial port init
     call init_serial
 
@@ -90,11 +87,14 @@ kernel_setup:
     ; init CMOS RTC
     call init_rtc
 
+    ; tss init
+    call init_tss
+
     ; init porcessus
     ; call init_threads
 
-    ; init syscall handler
-    ; call init_syscall
+    ;init syscall handler
+    call init_syscall
 
     call kmain
 

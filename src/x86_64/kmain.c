@@ -16,9 +16,7 @@ void test(void)
 
 void kmain(void)
 {
-    // uint64 rsp;
-    // asm volatile("mov %%rsp, %0" : "=r"(rsp));
-    // sti();
+    sti();
     // cli();
     void *stack = kalloc(0x6000);
     fire_userspace(stack);

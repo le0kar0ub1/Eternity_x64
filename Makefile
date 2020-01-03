@@ -21,6 +21,7 @@ includeDir := $(addprefix -Iinc/,			\
                          	/				\
     					 	)
 sourceDir := boot				\
+                descrciptors    \
  				drivers			\
   				lib				\
    				interrupt		\

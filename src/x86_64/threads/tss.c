@@ -27,19 +27,15 @@ void init_tss(void)
 /* tss stack (wich stack pointer CPU must using)*/
 void set_tss_stack(uint64 ist, uint8 istnbr, uint64 krsp, uint8 rspnbr)
 {
-    uint32 *shiftRsp = (uint32 *)&(kernel_tss.rsp0l);
-    uint32 *shiftIst = (uint32 *)&(kernel_tss.ist1l);
+    uint64 *shiftRsp = (uint64 *)&(kernel_tss.rsp0l);
+    uint64 *shiftIst = (uint64 *)&(kernel_tss.ist1l);
     if (krsp && rspnbr < 0x3) {
         shiftRsp += (rspnbr * 0x8);
         *shiftRsp = krsp;
-        shiftRsp += 0x4;
-        *shiftRsp = krsp >> 0x20;
     }
     if (ist && istnbr < 0x8) {
         shiftIst += (istnbr * 0x8);
         *shiftIst = krsp;
-        shiftIst += 0x4;
-        *shiftIst = krsp >> 0x20;
     }
     flush_tss();
 }
