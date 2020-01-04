@@ -90,15 +90,11 @@ kernel_setup:
     ; tss init
     call init_tss
 
-    ; init porcessus
-    ; call init_threads
-
-    ;init syscall handler
+    ; init syscall handler
     call init_syscall
 
+
     call kmain
-
-
 
     ; print 'OKAY' if all comes good
     cli

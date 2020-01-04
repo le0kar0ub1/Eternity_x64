@@ -21,7 +21,7 @@ void set_gdt_entry(uint index, uint32 base, uint32 limit, uint8 access, uint8 gr
 
 void flush_idt(void);
 
-void flush_tss(void);
+void flush_tss(uint8);
 void set_tss_stack(uint64 ist, uint8 istnbr, uint64 krsp, uint8 rspnbr);
 void init_tss(void);
 

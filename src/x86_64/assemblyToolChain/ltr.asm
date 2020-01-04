@@ -6,6 +6,6 @@ global flush_tss
 
 [section .text]
 flush_tss:
-    mov ax, TSS_SELECTOR
+    mov rax, rdi
     ltr ax
     ret

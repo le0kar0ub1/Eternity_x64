@@ -4,6 +4,6 @@ void fireSyscall(uint64 vector);
 
 void userspace(void)
 {
-    fireSyscall(0x0);
+    // fireSyscall(0x0);
     while (1);
 }

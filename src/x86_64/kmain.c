@@ -18,14 +18,14 @@ void kmain(void)
 {
     sti();
     // cli();
-    void *stack = kalloc(0x6000);
+    void *stack = kalloc(0x2000);
     fire_userspace(stack);
     while (1);
     hlt();
 
+    // init_threads();
     // init_tty();
-    init_threads();
-    generateThread_fromRoutine(test, "kernel thread");
+    // generateThread_fromRoutine(test, "Userspace thread");
     kprint("OUTSIDE THREAD\n");
     while (1) hlt();
 }

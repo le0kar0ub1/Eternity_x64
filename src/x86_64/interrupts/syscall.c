@@ -4,6 +4,8 @@
 
 void syscall_handler(struct frame *frame)
 {
+    kprint("IN SYSCALL HANDLER\n");
+    while (1);
     switch (frame->rax) {
         case SYSCALL_READ:
             kprint("SYSCALL_READ\n");

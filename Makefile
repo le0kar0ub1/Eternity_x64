@@ -15,7 +15,7 @@ includeDir := $(addprefix -Iinc/,			\
                          	lib				\
                          	system			\
                          	tty				\
-                         	CPU				\
+                         	processor		\
                          	threads       	\
                             abstractor      \
                          	/				\
@@ -26,7 +26,7 @@ sourceDir := boot				\
   				lib				\
    				interrupt		\
     			memory			\
-	 			CPU				\
+	 		    processor		\
 	  			network			\
 	   			system			\
 	    		tty				\

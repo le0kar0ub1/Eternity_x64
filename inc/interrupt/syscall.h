@@ -280,9 +280,9 @@
 #define SYSCALL_SPLICE                  275
 #define SYSCALL_TEE                     276
 #define SYSCALL_SYNC_FILE_RANGE         277
-#define SYSCALL_VMSPLICE                278
-#define SYSCALL_MOVE_PAGES              279
-#define SYSCALL_UTIMENSAT               280
+#define SYSCALL_VMSPLICE                278#define MSR_IA32_STAR   0xc0000081
+#define MSR_IA32_LSTAR  0xc0000082
+#define MSR_IA32_FMASK  0xc00000840
 #define SYSCALL_EPOLL_PWAIT             281
 #define SYSCALL_SIGNALFD                282
 #define SYSCALL_TIMERFD_CREATE          283

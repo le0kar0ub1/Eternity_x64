@@ -22,8 +22,6 @@
 #include "tty.h"
 #include "kconfig.h"
 
-#define syscall int 0x80
-
 void PANIC(char const *panic, ...) __noreturn;
 void kmain(void) __noreturn;
 

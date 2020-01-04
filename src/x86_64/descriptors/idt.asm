@@ -37,7 +37,8 @@ handler_in_idt:
     add rdi, (0x80 * IDT_ENTRY_SIZE) + 5   ;  system call get the classical int number 0x80
     mov BYTE [rdi], 0xEE ; DPL 3
     ; then mapp the used IST
-    mov BYTE [rdi - 0x1], 0x1 ; IST 1 selected
+    dec rdi
+    mov BYTE [rdi], 0x1 ; IST 1 selected
 
     baseRegPop
     ret

@@ -51,6 +51,8 @@ void userSpaceAccess_RemapVMM(void)
 {
     /* add a pdpt at pml4[1] for user access */
     /* allow user access from root to page and fire user space */
+    for (uint16 i = 0; i < PAGE_ENTRY_NBR; i++)
+        kpage->pt_user[i] = (FOURKIB_PAGESIZE * i) | PRESENT | WRITABLE | USER_ACCESSIBLE;
 }
 
 void pageFault_handler(struct frame *frame)

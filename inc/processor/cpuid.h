@@ -1,7 +1,7 @@
 #ifndef _CPUID_INC_
 #define _CPUID_INC_
 
-void execpuid(uint64, uint64 *, uint64 *);
+void execpuid(uint64, uint64 *rcx, uint64 *rdx);
 
 #define CPUID_ECX_SSE3    (1 << 0)
 #define CPUID_ECX_PCLMUL  (1 << 1)

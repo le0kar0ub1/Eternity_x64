@@ -16,7 +16,7 @@ struct idt_entry {
 
 struct idt_ptr {
     uint16 limit;
-    uint32 base;
+    uint64 base;
 } __packed;
 
 void set_idt_entry(uint index, uint32 base, uint32 limit, uint8 access, uint8 granularity);
