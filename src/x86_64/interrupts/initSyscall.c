@@ -11,17 +11,20 @@ void init_syscall(void)
     if (!(rdx & CPUID_EDX_SEP))
         PANIC("Syscall bad opcode during init");
 
-    uint64 star = rdmsr(MSR_IA32_STAR);
-    star &= 0x00000000ffffffff;
-    star |= (uint64)KERNEL_CODE_SELECTOR << 32;
-    star |= (uint64)((USER_CODE_SELECTOR - 16) | 3) << 48;
-    wrmsr(MSR_IA32_STAR, star);
+    /* enable syscall in EFER */
+    uint64 rd = rdmsr(0xC0000080);
+    rd |= 0x1 << MSR_SCE; // syscall enable
+    wrmsr(0xC0000080, rd);
 
-    // Write the address of the system call handler used by SYSCALL.
-    wrmsr(MSR_IA32_LSTAR, (uint64)syscall_handler);
-    hlt();
-
-    // Write the CPU flag mask used during SYSCALL.
-    wrmsr(MSR_IA32_FMASK, 0x0);
+    /* insert KERNEL CODE SELECTOR */
+    /* user code selector must be at + 16 */
+    wrmsr(MSR_IA32_SYSENTER_CS, KERNEL_CODE_SELECTOR);
+    /* insert STACK ADDRESS */
+    uint64 stack = (uint64)kalloc(0x4000);
+    wrmsr(MSR_IA32_SYSENTER_RSP, stack);
+    /* insert SYSCALL HANDLER entry point */
+    wrmsr(MSR_IA32_SYSENTER_RIP, (uint64)syscall_handler);
+    
+    /* depreceated  in 64 bits */
     register_int_handler(0x80, syscall_handler);
 }

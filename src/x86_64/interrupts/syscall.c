@@ -2,10 +2,13 @@
 #include "interrupt.h"
 #include "syscall.h"
 
+
 void syscall_handler(struct frame *frame)
 {
-    kprint("IN SYSCALL HANDLER\n");
-    while (1);
+    __asm__("push %rdx");
+    __asm__("push %rcx");
+    kprint("IN SYSCALL HANDLER int: %d\n", frame->rax);
+    hlt();
     switch (frame->rax) {
         case SYSCALL_READ:
             kprint("SYSCALL_READ\n");
@@ -14,4 +17,7 @@ void syscall_handler(struct frame *frame)
         default:
             frame->rax = 0x0;
     }
+    __asm__("pop %rcx");
+    __asm__("pop %rdx");
+    __asm__("sysexit");
 }

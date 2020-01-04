@@ -93,7 +93,6 @@ kernel_setup:
     ; init syscall handler
     call init_syscall
 
-
     call kmain
 
     ; print 'OKAY' if all comes good

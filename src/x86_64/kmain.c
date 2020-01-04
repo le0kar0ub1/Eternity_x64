@@ -17,7 +17,9 @@ void test(void)
 void kmain(void)
 {
     sti();
+    while (1) hlt();
     // cli();
+    // hlt();
     void *stack = kalloc(0x2000);
     fire_userspace(stack);
     while (1);

@@ -27,7 +27,7 @@ void init_tss(void)
     kernel_tss.ist5 = stack;
     kernel_tss.ist6 = stack;
     kernel_tss.ist7 = stack;
-    flush_tss(TSS_SELECTOR | 0x3);
+    flush_tss(TSS_SELECTOR); // | 0x3 for dpl3
 }
 
 /* tss stack (wich stack pointer CPU must using)*/
