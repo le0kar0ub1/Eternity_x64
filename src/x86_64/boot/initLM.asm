@@ -1,6 +1,6 @@
 bits 64
 
-extern stack_top
+extern kernel_stack
 extern kernel_setup
 
 global initLM
@@ -17,6 +17,6 @@ set_seg_reg:
 
 initLM:
     call set_seg_reg
-    mov rsp, stack_top      ; re-inp the stack address
+    mov rsp, kernel_stack      ; re-inp the stack address
     lea rax, [kernel_setup] ; absolute address
     call rax                ; then jump in highe half virtual memory

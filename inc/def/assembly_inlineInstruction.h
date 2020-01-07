@@ -40,6 +40,19 @@ static inline void cli(void)
     asmv("cli");
 }
 
+/* enable direction flag */
+static inline void std(void)
+{
+    asmv("std");
+}
+
+/* disable direction flag */
+static inline void cld(void)
+{
+    asmv("cld");
+}
+
+
 /* force a thread to sleep */
 static inline void pause(void)
 {

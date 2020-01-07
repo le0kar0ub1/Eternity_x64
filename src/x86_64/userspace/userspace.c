@@ -1,9 +1,10 @@
 #include "eternity.h"
+#include "syscall.h"
 
 void fireSyscall(uint64 vector);
 
 void userspace(void)
 {
-    // fireSyscall(0x0);
+    fireSyscall(SYSCALL_WRITE);
     while (1);
 }

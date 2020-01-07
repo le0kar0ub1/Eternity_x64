@@ -4,7 +4,7 @@
 bits 32
 
 [global _start]
-[global stack_top]
+[global kernel_stack]
 
 [extern gdtptr]
 [extern gdtKernelCode]
@@ -15,7 +15,7 @@ bits 32
 [section .text]
 _start:
     cli
-    mov esp, V2P(stack_top)
+    mov esp, V2P(kernel_stack)
 
     push ebx ; address struct multiboot
 
@@ -68,28 +68,33 @@ enable_paging:
     mov eax, V2P(PML4)
     mov cr3, eax
 
-    ; PAE flag
+    ; PAE flag & global flag
     mov eax, cr4
-    or eax, 0x1 << 0x5
+    or eax, (0x1 << 0x5) | (1 << 7)
     mov cr4, eax
 
-    ; set long mode in EFER MSR
+    ; set long mode in EFER MSR & NXE
     mov ecx, 0xC0000080
     rdmsr
-    or eax, 0x1 << 0x8
+    or eax, (0x1 << 0x8) | (0x1 << 0xB)
     wrmsr
 
-    ; protected mode
+    ; protected mode & paging
     mov eax, cr0
-    or eax, 0x80000000
+    or eax, (1 << 31) | (1 << 16)
     mov cr0, eax
+
+    ; flushing that
+    mov eax, cr3
+	mov cr3, eax
+
     ret
 
 [section .bss]
 align 1024
 stack_bottom:
     RESB KERNEL_STACK_SIZE
-stack_top:
+kernel_stack:
 
 global PML4
 global PDPT

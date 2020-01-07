@@ -20,18 +20,19 @@ includeDir := $(addprefix -Iinc/,			\
                             abstractor      \
                          	/				\
     					 	)
-sourceDir := boot				\
-                descrciptors    \
- 				drivers			\
-  				lib				\
-   				interrupt		\
-    			memory			\
-	 		    processor		\
-	  			network			\
-	   			system			\
-	    		tty				\
-		 		abstractor		\
-		  		CPU				\
+sourceDir := boot				    \
+                descrciptors        \
+ 				drivers			    \
+  				lib				    \
+   				interrupts   	    \
+                interrupts/syscall  \
+    			memory			    \
+	 		    processor		    \
+	  			network			    \
+	   			system			    \
+	    		tty				    \
+		 		abstractor		    \
+		  		CPU				    \
 				threads
 
 
@@ -92,8 +93,8 @@ cflags := -nostdlib		 			\
 		  -msse4.1				    \
 	  	  #-Wpadded					\
 
-asm_src := $(wildcard src/$(arch)/*.asm src/$(arch)/**/*.asm)
-c_src := $(wildcard src/$(arch)/*.c src/$(arch)/**/*.c)
+asm_src := $(wildcard src/$(arch)/*.asm src/$(arch)/**/*.asm src/$(arch)/**/**/*.asm)
+c_src := $(wildcard src/$(arch)/*.c src/$(arch)/**/*.c src/$(arch)/**/**/*.c)
 
 objects := $(patsubst src/$(arch)/%.asm, build/arch/$(arch)/%.o, $(asm_src)) \
 	   $(patsubst src/%.c, build/arch/%.o, $(c_src))

@@ -19,6 +19,7 @@ extern init_pmm
 extern init_kpaging
 extern init_vmm
 extern init_kalloc
+extern init_simd
 extern init_timer
 extern init_keyboard
 extern init_pci
@@ -75,6 +76,9 @@ kernel_setup:
     ; init kheap allocation
     call init_kalloc
 
+    ; init SIMD
+    call init_simd
+
     ; init PIT timer
     call init_timer
 
@@ -90,8 +94,8 @@ kernel_setup:
     ; tss init
     call init_tss
 
-    ; init syscall handler
-    ; call init_syscall
+    ; ; init syscall handler
+    call init_syscall
 
     call kmain
 
