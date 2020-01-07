@@ -16,6 +16,7 @@ void test(void)
 
 void kmain(void)
 {
+    kprint("IN KMAIN\n");
     sti();
     while (1) hlt();
     // cli();

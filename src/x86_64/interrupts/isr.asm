@@ -78,8 +78,8 @@ interrupt_catch:
 
 
 swapgsCheckUp:
-	cmp QWORD [rsp], 0x8
-	je noSwapgs
-	swapgs
+    cmp QWORD [rsp], 0x8
+    je noSwapgs
+    swapgs
 noSwapgs:
     ret

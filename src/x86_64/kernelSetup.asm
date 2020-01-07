@@ -91,7 +91,7 @@ kernel_setup:
     call init_tss
 
     ; init syscall handler
-    call init_syscall
+    ; call init_syscall
 
     call kmain
 
