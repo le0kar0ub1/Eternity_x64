@@ -8,6 +8,6 @@ void register_syscall_handler(uint64, void *);
 void syscall_register_init(void);
 
 /* syscalls */
-int64 syscall_write(char c);
+int64 syscall_write(uint64 sz, char *s, uint64 fd);
 
 #endif

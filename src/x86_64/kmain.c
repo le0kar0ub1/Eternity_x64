@@ -14,16 +14,12 @@ void test(void)
     while (1);
 }
 
-
-void syscall_enable(void);
 void kmain(void)
 {
-    // sti();
     void *stack = kalloc(0x2000);
-    kprint("IN KMAIN\n");
     fire_userspace(stack);
-    while (1);
-    hlt();
+    
+    while (1) hlt();
 
     // init_threads();
     // init_tty();

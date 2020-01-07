@@ -65,9 +65,5 @@ syscall_table:
 
 [section .text]
 register_syscall_handler:
-    mov rdx, syscall_table
-    mov rax, 0x8
-    mul rdi
-    add rdx, rdi
-    mov QWORD [rdx], rsi
+    mov QWORD [syscall_table + (rdi * 0x8)], rsi
     ret

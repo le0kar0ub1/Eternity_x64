@@ -14,11 +14,11 @@ extern PANIC
 syscall_handler:
     ; System don't manage the stack switch so
     ; we must load a kernel stack and then reload the user stack after
-    mov rdx, rsp ; user stack
+    mov r10, rsp ; user stack
     mov rsp, kernel_syscall_stack_address
 
     push QWORD (USER_DATA_SELECTOR | 0x3) ; dpl3
-    push QWORD rdx ; user stack
+    push QWORD r10 ; user stack
     push QWORD r11 ; also flags
     push QWORD (USER_CODE_SELECTOR | 0x3) ; dpl3
     push QWORD rcx ; also rip
@@ -28,10 +28,6 @@ syscall_handler:
 
     ; for it... we don't need to save register when syscall occured normally
     ; but i find that is most proper and easy for developpers
-hg:
-    hlt
-    jmp hg
-
     push rdi
     push rsi
     push rbx
@@ -43,9 +39,9 @@ hg:
     push r15
 
     cmp rax, x86_MAX_SYSCALL
-    jb syscallCrashed
+    jae syscallCrashed
 
-    mov rax, [syscall_table + (rax * 0x8)] ; pointer on handler
+    mov rax, QWORD [syscall_table + (rax * 0x8)] ; pointer on handler
     cmp rax, 0x0
     je syscallCrashed
 
