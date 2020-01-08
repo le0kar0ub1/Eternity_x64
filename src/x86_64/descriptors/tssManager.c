@@ -11,24 +11,15 @@ extern uint64 gdt_size;
 
 void set_tss_entry(void)
 {
-    struct gdt_tss_entry *ptr = (struct gdt_tss_entry *)(&gdt_start + TSS_SELECTOR);
-    // ptr[0x2] = tss_addr[0x0];
-    // ptr[0x3] = tss_addr[0x1];
-    // ptr[0x4] = tss_addr[0x2];
-    // ptr[0x5] = 0x89; // Present | Executable | Accessed
-    // ptr[0x7] = tss_addr[0x3];
-    // ptr[0x8] = tss_addr[0x4];
-    // ptr[0x9] = tss_addr[0x5];
-    // ptr[0xA] = tss_addr[0x6];
-    // ptr[0xB] = tss_addr[0x7];
+    struct gdt_tss_entry *ptr = (struct gdt_tss_entry *)((uint64)&gdt_start + TSS_SELECTOR);
 
-    ptr->lowlimit = sizeof(struct gdt_tss_entry) - 0x1;
+    ptr->lowlimit = (uint64)&tss_size;
     ptr->lowbase = ((uint64)&tss);
-    ptr->type = 0x9; // 386 TSS
+    ptr->type = 0x9;
     ptr->dpl = 0x0;
     ptr->pres = 0x1;
     ptr->highlimit = 0x0;
-    ptr->gran = 0x0;
+    ptr->gran = 0x1;
     ptr->highbase = ((uint64)&tss) >> 0x18;
 }
 

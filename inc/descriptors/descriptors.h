@@ -7,7 +7,7 @@
 #define IDT_ENTRY_NBR   0x100
 
 #define GDT_ENTRY_SIZE 0x8
-#define GDT_ENTRY_NBR  0x5
+#define GDT_ENTRY_NBR  0x6
 
 #define NULL_SELECTOR           0x00
 #define KERNEL_CODE_SELECTOR    0x08

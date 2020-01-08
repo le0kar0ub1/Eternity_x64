@@ -121,8 +121,13 @@ run:
 	@$(qemuarch) $(qemuflags) -serial stdio #run with KVM module (set in BIOS)
 
 info:
-	@$(qemuarch) $(qemuflags) -d int,cpu_reset --no-reboot -monitor stdio
+	@$(qemuarch) $(qemuflags)           \
+            -d int,cpu_reset            \
+            --no-reboot                 \
+            -monitor stdio
 
+gdbdebug:
+	@$(qemuarch) $(qemuflags) -monitor stdio -no-reboot -gdb tcp::9090 -S
 
 debug:
 	@-echo -e "\033[36mrunning in debug mode...\033[0m"

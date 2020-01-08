@@ -37,11 +37,6 @@ handler_in_idt:
     add rdi, (0x80 * IDT_ENTRY_SIZE) + 5 ; system call get the classical int number 0x80
     mov BYTE [rdi], 0xEE ; DPL 3
 
-    ; use IST for double fault handling
-    ; mov rdi, idt
-    ; add rdi, (0x8 * IDT_ENTRY_SIZE) + 4
-    ; mov BYTE [rdi], 0x1
-
     baseRegPop
     ret
 
@@ -55,8 +50,9 @@ idt_start:
     %rep 256
         dw 0x0          ; offset Low 16 bits of ISR
         dw KERNEL_CODE_SELECTOR
-        db 0x0          ; IST (Interrupt stack table offset)
-        db 0x8F         ; Present, ring-0, 32-bits interrupt gate
+        ; we use IST mechanism for all interrupt
+        db 0x1          ; IST (Interrupt stack table offset)
+        db 0x8E         ; Present, ring-0, 32-bits interrupt gate
         dw 0x0          ; offset middle 16 bits of ISR
         dd 0x0          ; offset high 32 bits of ISR
         dd 0x0          ; reserved

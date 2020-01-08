@@ -8,12 +8,14 @@ global init_syscall
 global register_syscall_handler
 global syscall_table
 
+extern init_int0x80
 extern syscall_register_init
 extern syscall_handler
 extern PANIC
 
 [section .text]
 init_syscall:
+    call init_int0x80
     ; Check that syscall and sysret are actually available, else crash...
     mov eax, MSR_IA32_BASE
     xor ecx, ecx

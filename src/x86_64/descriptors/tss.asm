@@ -26,6 +26,7 @@ interrupt_stack_table:
     DW tss_size ; I/O Map Base Address
 tss_size: equ $ - tss - 1
 
+; btw, alloc two stack for that, we have a lot of memory :)
 [section .bss]
-istn_stack: RESB 0x1000
-rspn_stack: RESB 0x1000
+istn_stack: RESB 0x2000
+rspn_stack: RESB 0x2000

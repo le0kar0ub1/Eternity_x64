@@ -19,8 +19,7 @@ fire_userspace:
     mov gs, ax
 
     push (USER_DATA_SELECTOR | 0x3) ; segment user data DPL3
-    push rdi
-    ; push rsp
+    push user_stack
     pushfq
     pop rax
     or rax, IOPLBL | IOPLBH ; DPL 3
@@ -30,4 +29,8 @@ fire_userspace:
     push (USER_CODE_SELECTOR | 0x3) ; segment user code DPL3
     lea rax, [userspace]
     push rax
+
     iretq ; use iret to jump into usermode
+
+[section .bss]
+user_stack: RESB 0x2000

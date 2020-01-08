@@ -16,21 +16,15 @@ void register_int_handler(int inbr, void *fnct)
 
 void unregister_int_handler(int inbr)
 {
+    if (inbr > 0x1F)
+        return;
     int_handler[inbr] = NULL;
 }
-
-// bool interrupt_checkout(struct frame *frame)
-// {
-//     frame->int_num = 0x0;
-//     return (false);
-// }
 
 void interrupts_handler(struct frame *frame)
 {
     if (int_handler[frame->int_num])
         (int_handler[frame->int_num])(frame);
-    // else if (interrupt_checkout(frame))
-    //     return;
     else
         exceptions_handler(frame->int_num);
 }

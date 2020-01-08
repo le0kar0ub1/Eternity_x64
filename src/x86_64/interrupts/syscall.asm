@@ -4,6 +4,7 @@
 bits 64
 
 global syscall_handler
+global syscallCrashed
 
 extern syscall_table
 extern PANIC
@@ -15,7 +16,7 @@ syscall_handler:
     ; System don't manage the stack switch so
     ; we must load a kernel stack and then reload the user stack after
     mov r10, rsp ; user stack
-    mov rsp, kernel_syscall_stack_address
+    mov rsp, kernel_syscall_stack
 
     push QWORD (USER_DATA_SELECTOR | 0x3) ; dpl3
     push QWORD r10 ; user stack
@@ -72,6 +73,3 @@ syscallCrashed:
 
 [section .bss]
 kernel_syscall_stack: RESB 0x1000
-
-[section .data]
-kernel_syscall_stack_address DQ kernel_syscall_stack

@@ -4,7 +4,7 @@
 #include "descriptors.h"
 
 void init_tty(void);
-void fire_userspace(void *stack);
+void fire_userspace(void);
 void init_threads(void);
 
 void test(void)
@@ -16,13 +16,9 @@ void test(void)
 
 void kmain(void)
 {
-    void *stack = kalloc(0x2000);
-    sti();
-    while (1);
-    fire_userspace(stack);
-
+    init_tty();
+    fire_userspace();
     // init_threads();
-    // init_tty();
     // generateThread_fromRoutine(test, "Userspace thread");
     kprint("OUTSIDE THREAD\n");
     while (1) hlt();

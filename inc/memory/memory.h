@@ -43,7 +43,7 @@ static inline void invlpg(void *addr)
 static inline uintptr read_cr2(void)
 {
     uintptr out;
-    asmv("mov %%cr3, %0" : "=a"(out));
+    asmv("mov %%cr2, %0" : "=a"(out));
     return (out);
 }
 
