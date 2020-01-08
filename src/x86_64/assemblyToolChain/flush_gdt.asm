@@ -6,14 +6,9 @@ global flush_gdt
 
 [section .text]
 flush_gdt:
-    mov rax, rdi
-    lgdt [rax]
-
-    mov ax, KERNEL_DATA_SELECTOR
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-
+    sub rsp, 0xA
+    mov WORD [rsp], si
+    mov QWORD [rsp + 0x2], rdi
+    lgdt [rsp]
+    add rsp, 0xA
     ret

@@ -49,7 +49,10 @@ ldflags_debug := --cref			\
 	   	 		#--relocatable	\
 
 nasm := nasm
-asflags := -felf64 $(includeDir)
+asflags :=  -felf64         \
+            $(includeDir)   \
+            -w+all          \
+            -Werror
 
 qemuarch := qemu-system-x86_64
 qemu_networking :=   -net nic,vlan=0,model=rtl8139 -net user,vlan=0 #-net nic,model=rtl8139 -net user #-netdev user,id=n1 -device rtl8139,netdev=n1

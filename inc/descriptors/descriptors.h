@@ -16,7 +16,7 @@
 #define USER_DATA_SELECTOR      0x20
 #define TSS_SELECTOR            0x28
 
-void flush_gdt(void);
+void flush_gdt(uint64 gdt, uint64 size);
 void set_gdt_entry(uint index, uint32 base, uint32 limit, uint8 access, uint8 granularity);
 
 void flush_idt(void);

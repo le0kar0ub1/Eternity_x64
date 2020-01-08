@@ -1,6 +1,8 @@
 %include "memory.inc"
 %include "boot.inc"
 
+[extern tss_size]
+
 [global gdt]
 [global gdt_start]
 
@@ -12,6 +14,7 @@
 
 [global gdt_end]
 [global gdtptr]
+[global gdt_size]
 
 [section .rodata]
 gdtptr:
@@ -27,7 +30,7 @@ gdt_start:
     dd 0x0
 
 gdtKernelCode: equ $ - gdt_start ; The Kernel code descriptor.
-    dw 0xFFFF                         ; Limit (low).
+    dw 0xFFFF                    ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 10011010b                 ; Access (exec/read).
@@ -35,7 +38,7 @@ gdtKernelCode: equ $ - gdt_start ; The Kernel code descriptor.
     db 0                         ; Base (high).
 
 gdtKernelData: equ $ - gdt_start ; The Kernel data descriptor.
-    dw 0xFFFF                         ; Limit (low).
+    dw 0xFFFF                    ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 10010010b                 ; Access (read/write).
@@ -51,38 +54,26 @@ gdtUserCode: equ $ - gdt_start   ; The User code descriptor.
     db 0                         ; Base (high).
 
 gdtUserData: equ $ - gdt_start   ; The user data descriptor.
-    dw 0xFFFF                       ; Limit (low).
+    dw 0xFFFF                    ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 11110010b                 ; Access (read/write).
-    db 10100000b                        ; Granularity.
+    db 10100000b                 ; Granularity.
     db 0     
 
+; TSS is quite different from other descriptors (base is the address of our TSS)
 gdtTSS: equ $ - gdt_start
-    dw 0x0000       ; limit 15:0
-    dw 0x0000       ; base 15:0
-    db 0x00         ; base 23:16
-    db 11101001b    ; P(1) DPL(11) 0 C(1) E(0) W(0) 1
-    db 10000000b    ; G(1) 00 AVL(0) limit 19:16
-    db 0x00         ; base 31:24
+    dw tss_size                 ; Limit
+	dw 0x0                      ; Base (bytes 0-2)
+	db 0x0                      ; Base (byte 3)
+	db 10001001b                ; Type, present
+	db 10000000b                ; Misc
+	db 0x0                      ; Base (byte 4)
+	dd 0x0                      ; Base (bytes 5-8)
+	dd 0x0                      ; Zero / reserved
 
     ; NULL SELECTOR
     dd 0x0
     dd 0x0
 gdt_end:
-
-; gdtUserCode: equ $ - gdt_start   ; The User code descriptor.
-;     dw 0xFFFF                    ; Limit (low).
-;     dw 0x0                       ; Base (low).
-;     db 0x0                       ; Base (middle)
-;     db 11111010b                 ; Access (exec/read).
-;     db 11001111b                 ; Granularity, 64 bits flag, limit19:16.
-;     db 0                         ; Base (high).
-
-; gdtUserData: equ $ - gdt_start   ; The user data descriptor.
-;     dw 0xFFFF                    ; Limit (low).
-;     dw 0                         ; Base (low).
-;     db 0                         ; Base (middle)
-;     db 11110010b                 ; Access (read/write).
-;     db 11001111b                 ; Granularity.
-;     db 0                         ; Base (high).
+gdt_size: equ gdt_end - gdt_start

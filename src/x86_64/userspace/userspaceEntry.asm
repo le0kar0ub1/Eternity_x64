@@ -1,4 +1,5 @@
 %include "descriptors.inc"
+%include "rflags.inc"
 
 bits 64
 
@@ -22,7 +23,8 @@ fire_userspace:
     ; push rsp
     pushfq
     pop rax
-    or rax , 0x3000 ; DPL 3
+    or rax, IOPLBL | IOPLBH ; DPL 3
+    ; or rax, IF
     push rax
 
     push (USER_CODE_SELECTOR | 0x3) ; segment user code DPL3

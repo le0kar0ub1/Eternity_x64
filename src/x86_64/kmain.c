@@ -18,8 +18,6 @@ void kmain(void)
 {
     void *stack = kalloc(0x2000);
     fire_userspace(stack);
-    
-    while (1) hlt();
 
     // init_threads();
     // init_tty();

@@ -4,7 +4,7 @@ global fireSyscall
 global write
 
 [section .text]
-fireSyscall:
+fsyscall:
     mov rax, rdi
     mov rdi, rsi
     mov rsi, rdx

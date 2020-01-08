@@ -32,13 +32,15 @@ handler_in_idt:
     cmp rcx, 0x0
     jne handler_in_idt
 
-    ; system call mapped for userspace utilization
+    ; system call as int 0x80 mapped for userspace utilization
     mov rdi, idt
     add rdi, (0x80 * IDT_ENTRY_SIZE) + 5   ;  system call get the classical int number 0x80
     mov BYTE [rdi], 0xEE ; DPL 3
-    ; then mapp the used IST
-    dec rdi
-    mov BYTE [rdi], 0x1 ; IST 1 selected
+
+    ; use IST for double fault handling
+    ; mov rdi, idt
+    ; add rdi, (0x8 * IDT_ENTRY_SIZE) + 4
+    ; mov BYTE [rdi], 0x1
 
     baseRegPop
     ret
