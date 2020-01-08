@@ -34,7 +34,7 @@ handler_in_idt:
 
     ; system call as int 0x80 mapped for userspace utilization
     mov rdi, idt
-    add rdi, (0x80 * IDT_ENTRY_SIZE) + 5   ;  system call get the classical int number 0x80
+    add rdi, (0x80 * IDT_ENTRY_SIZE) + 5 ; system call get the classical int number 0x80
     mov BYTE [rdi], 0xEE ; DPL 3
 
     ; use IST for double fault handling
@@ -56,7 +56,7 @@ idt_start:
         dw 0x0          ; offset Low 16 bits of ISR
         dw KERNEL_CODE_SELECTOR
         db 0x0          ; IST (Interrupt stack table offset)
-        db 0x8E         ; Present, ring-0, 32-bits interrupt gate
+        db 0x8F         ; Present, ring-0, 32-bits interrupt gate
         dw 0x0          ; offset middle 16 bits of ISR
         dd 0x0          ; offset high 32 bits of ISR
         dd 0x0          ; reserved

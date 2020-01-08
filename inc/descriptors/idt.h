@@ -14,6 +14,17 @@ struct idt_entry {
     uint32 zero;     // reserved
 } __packed;
 
+#define IDR_PRESENT (1 << 0x7)
+
+#define IDT_DPL0    ((1 << 0x5) * 0)
+#define IDT_DPL1    ((1 << 0x5) * 1)
+#define IDT_DPL2    ((1 << 0x5) * 2)
+#define IDT_DPL3    ((1 << 0x5) * 3)
+
+#define IDR_TASK_GATE  0x5
+#define IDT_INT_GATE   0xE
+#define IDT_TRAP_GATE  0xF
+
 struct idt_ptr {
     uint16 limit;
     uint64 base;

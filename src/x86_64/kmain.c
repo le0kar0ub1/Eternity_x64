@@ -17,6 +17,8 @@ void test(void)
 void kmain(void)
 {
     void *stack = kalloc(0x2000);
+    sti();
+    while (1);
     fire_userspace(stack);
 
     // init_threads();

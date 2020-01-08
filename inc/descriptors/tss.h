@@ -20,6 +20,27 @@ struct tss_entry {
     uint64 reserved2;
     uint16 reserved3;
     uint16 ioMapBaseAddr;
-};
+} __packed;
+
+/* the gdt tss entry is 128B long */
+struct gdt_tss_entry {
+    uint64 lowlimit  : 16; // segment extent (lsb)
+
+    uint64 lowbase   : 24; // segment base address (lsb)
+
+    uint64 type      : 5;  // segment type
+    uint64 dpl       : 2;  // segment descriptor priority level
+    uint64 pres      : 1;  // segment descriptor present
+
+    uint64 highlimit : 4;  // segment extent (msb)
+    uint64 xx1       : 3;  // avl, long and def32 (not used)
+    uint64 gran      : 1;  // limit granularity (byte/page)
+
+    uint64 highbase  : 40; // segment base address (msb)
+
+    uint64 xx2       : 8;  // reserved
+    uint64 zero      : 5;  // must be zero
+    uint64 xx3       : 19; // reserved
+} __packed;
 
 #endif

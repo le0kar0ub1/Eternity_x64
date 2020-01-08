@@ -3,8 +3,6 @@
 
 #include "typedef.h"
 
-// typedef uint64 rflags
-
 #define CF         (1 <<  0)  /* Carry Flag */
 #define RES1       (1 <<  1)  /* Reserved */
 #define PF         (1 <<  2)  /* Parity Flag */

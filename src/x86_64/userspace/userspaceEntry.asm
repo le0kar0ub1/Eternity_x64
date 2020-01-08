@@ -24,7 +24,7 @@ fire_userspace:
     pushfq
     pop rax
     or rax, IOPLBL | IOPLBH ; DPL 3
-    ; or rax, IF
+    or rax, IF
     push rax
 
     push (USER_CODE_SELECTOR | 0x3) ; segment user code DPL3
