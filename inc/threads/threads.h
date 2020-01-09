@@ -38,7 +38,9 @@ struct threadDescriptor {
 void init_threads(void);
 void generateThread_fromRoutine(void *function, char const *name);
 void generateThread(char *file);
+void cpuContextDump(struct cpuState *);
 void threadListDump(void);
+void threadDump(struct threadDescriptor *);
 
 pid_t new_pid(void);
 

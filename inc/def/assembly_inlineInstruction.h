@@ -73,17 +73,17 @@ static inline uint xchg(uint volatile *addr, uint newval)
     return (res);
 }
 
-static inline uint32 get_eflags(void)
+static inline uint64 get_rflags(void)
 {
-    uint32 e;
+    uint64 e;
 
-    asm volatile("pushfl; popl %0" : "=rm"(e) :: "memory");
+    asm volatile("pushfq; pop %0" : "=rm"(e) :: "memory");
     return (e);
 }
 
-static inline void set_eflags(uint32 value)
+static inline void set_rflags(uint64 value)
 {
-    asm volatile("pushl %0; popfl" :: "g"(value) : "memory", "cc");
+    asm volatile("push %0; popfq" :: "g"(value) : "memory", "cc");
 }
 
 #endif

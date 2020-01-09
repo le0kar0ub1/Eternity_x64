@@ -8,10 +8,11 @@ void contextSwitch(struct cpuState *new)
 {
     struct cpuState *context = getCpuContext();
     memcpy((void *)context, (void *)new, sizeof(struct cpuState));
-    /*                          */
-    /* HERE COME THE CR3 SWITCH */
-    /*                          */
+
+    // threadDump(struct threadDescriptor *thread)
+    // cpuContextDump(context);
+
+    pic_eoi(IRQ0);
     // user_contextSwitch(context);
-    pic_eoi(0x0);
     kernel_contextSwitch(context);
 }

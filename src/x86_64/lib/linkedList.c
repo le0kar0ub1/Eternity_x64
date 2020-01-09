@@ -3,13 +3,16 @@
 
 list_t *list_create(void)
 {
-    list_t * list = kalloc(sizeof(list_t));
+    list_t *list = kalloc(sizeof(list_t));
+    list->head = kalloc(sizeof(listnode_t));
+    list->tail = kalloc(sizeof(listnode_t));
+    list->size = 0x0;
     return (list);
 }
 
 uint32 list_size(list_t *list)
 {
-    if(!list)
+    if (!list)
         return (0);
     return (list->size);
 }
@@ -17,9 +20,9 @@ uint32 list_size(list_t *list)
 void *list_remove_node(list_t *list, listnode_t *node)
 {
     void *item = node->item;
-    if(list->head == node)
+    if (list->head == node)
         return (list_remove_front(list));
-    else if(list->tail == node)
+    else if (list->tail == node)
         return (list_remove_back(list));
     else {
         node->next->prev = node->prev;
@@ -30,30 +33,32 @@ void *list_remove_node(list_t *list, listnode_t *node)
     return (item);
 }
 
+#include "eternity.h"
 listnode_t *list_insert_front(list_t *list, void *item)
 {
-    listnode_t *t = kalloc(sizeof(listnode_t));
-    list->head->prev = t;
-    t->next = list->head;
-    t->item = item;
+    listnode_t *new = kalloc(sizeof(listnode_t));
 
-    if(!list->head)
-        list->tail = t;
+    list->head->prev = new;
+    new->next = list->head;
+    new->item = item;
 
-    list->head = t;
+    if (!list->head)
+        list->tail = new;
+
+    list->head = new;
     list->size++;
-    return (t);
+    return (new);
 }
 
 void list_insert_back(list_t *list, void *item)
 {
     listnode_t *t = kalloc(sizeof(listnode_t));
     t->prev = list->tail;
-    if(list->tail)
+    if (list->tail)
         list->tail->next = t;
     t->item = item;
 
-    if(!list->head)
+    if (!list->head)
         list->head = t;
 
     list->tail = t;
@@ -62,12 +67,12 @@ void list_insert_back(list_t *list, void *item)
 
 void *list_remove_front(list_t *list)
 {
-    if(!list->head)
+    if (!list->head)
         return (NULL);
     listnode_t *t = list->head;
     void *item = t->item;
     list->head = t->next;
-    if(list->head)
+    if (list->head)
         list->head->prev = NULL;
     kfree(t);
     list->size--;
@@ -76,7 +81,7 @@ void *list_remove_front(list_t *list)
 
 void *list_remove_back(list_t *list)
 {
-    if(!list->head)
+    if (!list->head)
         return (NULL);
     listnode_t *t = list->tail;
     void *item = t ->item;
@@ -95,11 +100,11 @@ void list_push(list_t *list, void *item)
 
 listnode_t *list_pop(list_t *list)
 {
-    if(!list->head)
+    if (!list->head)
         return (NULL);
     listnode_t *t = list->tail;
     list->tail = t->prev;
-    if(list->tail)
+    if (list->tail)
         list->tail->next = NULL;
     list->size--;
     return t;
@@ -107,14 +112,14 @@ listnode_t *list_pop(list_t *list)
 
 void *list_peek_front(list_t *list)
 {
-    if(!list->head)
+    if (!list->head)
         return (NULL);
     return (list->head->item);
 }
 
 void *list_peek_back(list_t *list)
 {
-    if(!list->tail)
+    if (!list->tail)
         return (NULL);
     return (list->tail->item);
 }
@@ -124,7 +129,7 @@ int list_contain(list_t *list, void *item)
 {
     int idx = 0;
     list_foreach(listnode, list) {
-        if(listnode->item == item)
+        if (listnode->item == item)
             return (idx);
         idx++;
     }
@@ -133,11 +138,11 @@ int list_contain(list_t *list, void *item)
 
 listnode_t *list_get_node_by_index(list_t *list, int index)
 {
-    if(index < 0 || index >= (int)list_size(list))
+    if (index < 0 || index >= (int)list_size(list))
         return (NULL);
     int curr = 0;
     list_foreach(listnode, list) {
-        if(index == curr)
+        if (index == curr)
             return (listnode);
         curr++;
     }

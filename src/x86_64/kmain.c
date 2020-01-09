@@ -5,21 +5,31 @@
 
 void init_tty(void);
 void fire_userspace(void);
-void init_threads(void);
 
-void test(void)
+void userspaceRoot(void)
 {
-    while (1);
-    kprint("INSIDE THREAD\n");
-    while (1);
+    while (1)
+        kprint("first\n");
+}
+
+void scnd(void)
+{
+    while (1) 
+        kprint("second\n");
 }
 
 void kmain(void)
 {
-    init_tty();
-    fire_userspace();
-    // init_threads();
-    // generateThread_fromRoutine(test, "Userspace thread");
-    kprint("OUTSIDE THREAD\n");
-    while (1) hlt();
+    // init_tty();
+    // sti();
+    // fire_userspace();
+    // cli();
+    init_threads();
+    // sti();
+    generateThread_fromRoutine(userspaceRoot, "userspace root");
+    generateThread_fromRoutine(scnd, "test second");
+    threadListDump();
+    while(1);
+    while (1)
+       kprint("OUTSIDE\n");
 }

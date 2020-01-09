@@ -1,5 +1,5 @@
 #include "eternity.h"
-#include "CPUdescriptor.h"
+#include "cpuDescriptor.h"
 
 // static struct cpu_descriptor cpus[KCONFIG_MAX_CPUS];
 

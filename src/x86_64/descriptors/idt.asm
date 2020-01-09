@@ -35,7 +35,7 @@ handler_in_idt:
     ; system call as int 0x80 mapped for userspace utilization
     mov rdi, idt
     add rdi, (0x80 * IDT_ENTRY_SIZE) + 5 ; system call get the classical int number 0x80
-    mov BYTE [rdi], 0xEE ; DPL 3
+    mov BYTE [rdi], 0x8E ; DPL 3
 
     baseRegPop
     ret
