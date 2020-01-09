@@ -13,6 +13,6 @@ void contextSwitch(struct cpuState *new)
     // cpuContextDump(context);
 
     pic_eoi(IRQ0);
-    // user_contextSwitch(context);
-    kernel_contextSwitch(context);
+    user_contextSwitch(context);
+    // kernel_contextSwitch(context);
 }

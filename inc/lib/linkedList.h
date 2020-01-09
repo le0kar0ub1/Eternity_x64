@@ -9,7 +9,7 @@ typedef struct listnode {
     void            *item;
 } listnode_t;
 
-typedef struct list{
+typedef struct list {
     listnode_t *head;
     listnode_t *tail;
     uint64_t   size;

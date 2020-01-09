@@ -1,7 +1,11 @@
+%include "syscall.inc"
+
 bits 64
 
 global fireSyscall
 global write
+global exec
+global exit
 
 [section .text]
 fsyscall:
@@ -14,6 +18,16 @@ fsyscall:
     ret
 
 write:
-    mov rax, 0x1
+    mov rax, SYSCALL_WRITE
+    syscall
+    ret
+
+exec:
+    mov rax, SYSCALL_EXEC
+    syscall
+    ret
+
+exit:
+    mov rax, SYSCALL_EXIT
     syscall
     ret

@@ -96,11 +96,15 @@ cflags := -nostdlib		 			\
 		  -msse4.1				    \
 	  	  #-Wpadded					\
 
-asm_src := $(wildcard src/$(arch)/*.asm src/$(arch)/**/*.asm src/$(arch)/**/**/*.asm)
-c_src := $(wildcard src/$(arch)/*.c src/$(arch)/**/*.c src/$(arch)/**/**/*.c)
+asm_src := $(wildcard   src/$(arch)/*.asm       \
+                        src/$(arch)/**/*.asm	\
+                        src/$(arch)/**/**/*.asm)
+c_src := $(wildcard     src/$(arch)/*.c         \
+                        src/$(arch)/**/*.c		\
+                        src/$(arch)/**/**/*.c)
 
-objects := $(patsubst src/$(arch)/%.asm, build/arch/$(arch)/%.o, $(asm_src)) \
-	   $(patsubst src/%.c, build/arch/%.o, $(c_src))
+objects := 	$(patsubst src/$(arch)/%.asm, build/arch/$(arch)/%.o, $(asm_src)) 		\
+			$(patsubst src/$(arch)/%.c, build/arch/$(arch)/%.o, $(c_src))
 
 .PHONY: all clean fclean run debug info
 

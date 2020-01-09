@@ -28,7 +28,6 @@ struct threadDescriptor {
     char name[0x100];
     pid_t pid;
     listnode_t *listIdx;
-    void *stack;
     uint32 state;
     uint32 lifeCycle;
     void *pdpt;
@@ -38,8 +37,8 @@ struct threadDescriptor {
 void init_threads(void);
 void generateThread_fromRoutine(void *function, char const *name);
 void generateThread(char *file);
-void cpuContextDump(struct cpuState *);
 void threadListDump(void);
+void cpuContextDump(struct cpuState *);
 void threadDump(struct threadDescriptor *);
 
 pid_t new_pid(void);

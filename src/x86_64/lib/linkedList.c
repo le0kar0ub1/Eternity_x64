@@ -4,10 +4,21 @@
 list_t *list_create(void)
 {
     list_t *list = kalloc(sizeof(list_t));
-    list->head = kalloc(sizeof(listnode_t));
-    list->tail = kalloc(sizeof(listnode_t));
+    list->head = NULL;
+    list->tail = NULL;
     list->size = 0x0;
     return (list);
+}
+
+listnode_t *list_init(list_t *list, listnode_t *new, void *item)
+{
+    list->head = new;
+    list->tail = new;
+    list->size++;
+    new->prev = NULL;
+    new->item = item;
+    new->next = NULL;
+    return (new);
 }
 
 uint32 list_size(list_t *list)
@@ -33,36 +44,38 @@ void *list_remove_node(list_t *list, listnode_t *node)
     return (item);
 }
 
-#include "eternity.h"
 listnode_t *list_insert_front(list_t *list, void *item)
 {
     listnode_t *new = kalloc(sizeof(listnode_t));
 
-    list->head->prev = new;
+    /* then init the list if */
+    if (!list->head && !list->tail)
+        return (list_init(list, new, item));
+    
     new->next = list->head;
     new->item = item;
-
-    if (!list->head)
-        list->tail = new;
+    new->prev = NULL;
 
     list->head = new;
     list->size++;
     return (new);
 }
 
-void list_insert_back(list_t *list, void *item)
+listnode_t *list_insert_back(list_t *list, void *item)
 {
-    listnode_t *t = kalloc(sizeof(listnode_t));
-    t->prev = list->tail;
-    if (list->tail)
-        list->tail->next = t;
-    t->item = item;
+    listnode_t *new = kalloc(sizeof(listnode_t));
 
-    if (!list->head)
-        list->head = t;
+    /* then init the list if */
+    if (!list->head && !list->tail)
+        return (list_init(list, new, item));
+    
+    new->prev = list->tail;
+    new->item = item;
+    new->next = NULL;
 
-    list->tail = t;
+    list->tail = new;
     list->size++;
+    return (new);
 }
 
 void *list_remove_front(list_t *list)

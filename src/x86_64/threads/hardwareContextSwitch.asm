@@ -1,4 +1,5 @@
 %include "descriptors.inc"
+%include "rflags.inc"
 
 bits 64
 
@@ -79,7 +80,6 @@ user_contextSwitch:
     mov es, ax
     mov fs, ax
     mov gs, ax
-    ; SWITCH SEGMENTS
 
     ; DATA SELECTOR
     push QWORD (USER_DATA_SELECTOR | 0x3)
@@ -87,10 +87,11 @@ user_contextSwitch:
     mov rax, QWORD [rdi + 0x30]
     push rax
     ; rflags
-    pushfq
-    pop rax
     mov rax, QWORD [rdi + 0xB0]
+    or rax, IOPLBL | IOPLBH
     push rax
+    popfq
+    pushfq
 
     push QWORD (USER_CODE_SELECTOR | 0x3)
     ; RIP

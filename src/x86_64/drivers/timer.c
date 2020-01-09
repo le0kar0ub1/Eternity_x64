@@ -20,8 +20,10 @@ void timer_handler(struct frame *frame)
     struct functionWakeUp *list = functionWakeUp;
     for (; list; list = list->next) {
         if (++list->current == list->cs) {
-            list->fnct();
+            /* set to 0 now bcs when this trigger a context switch, there is no come back here... */
             list->current = 0x0;
+            /* then call the function */
+            list->fnct();
         }
     }
     pic_eoi(IRQ0);

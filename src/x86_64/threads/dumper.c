@@ -22,7 +22,7 @@ void threadDump(struct threadDescriptor *thread)
     kprint("Thread descriptor:\n");
     kprint("    : name  : %s\n", thread->name);
     kprint("    : pid   : %l\n", thread->pid);
-    kprint("    : stack : %x\n", thread->stack);
+    kprint("    : stack : %x\n", thread->context.rsp);
     kprint("    : state : %d\n", thread->state);
     kprint("    : life  : %d\n", thread->lifeCycle);
 }

@@ -35,9 +35,10 @@ void strcat(char *s1, char const *s2);
 
 /* Linked list stolen library management */
 list_t *list_create(void);
+listnode_t *list_init(list_t *list, listnode_t *new, void *item);
 uint32 list_size(list_t *list);
 listnode_t *list_insert_front(list_t *list, void *item);
-void list_insert_back(list_t *list, void *item);
+listnode_t *list_insert_back(list_t *list, void *item);
 void *list_remove_node(list_t *list, listnode_t *node);
 void *list_remove_front(list_t *list);
 void *list_remove_back(list_t *list);
