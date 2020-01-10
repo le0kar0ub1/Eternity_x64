@@ -12,20 +12,6 @@ global user_contextSwitch
 kernel_contextSwitch:
     cmp rdi, 0x0
     je contextSwitchCrash
-    mov rbx, QWORD [rdi + 0x8]
-    mov rcx, QWORD [rdi + 0x10]
-    mov rdx, QWORD [rdi + 0x18]
-    mov rsi, QWORD [rdi + 0x20]
-
-    mov r8,  QWORD [rdi + 0x38]
-    mov r9,  QWORD [rdi + 0x40]
-    mov r10, QWORD [rdi + 0x48]
-    mov r11, QWORD [rdi + 0x50]
-    mov r12, QWORD [rdi + 0x58]
-    mov r13, QWORD [rdi + 0x60]
-    mov r14, QWORD [rdi + 0x68]
-    mov r15, QWORD [rdi + 0x70]
-
     ; SWITCH SEGMENTS
     mov ax, KERNEL_DATA_SELECTOR
     mov ds, ax
@@ -33,13 +19,28 @@ kernel_contextSwitch:
     mov fs, ax
     mov gs, ax
 
+    mov r15, QWORD [rdi + 0x20]
+    mov r14, QWORD [rdi + 0x28]
+    mov r13, QWORD [rdi + 0x30]
+    mov r12, QWORD [rdi + 0x38]
+    mov r11, QWORD [rdi + 0x40]
+    mov r10, QWORD [rdi + 0x48]
+    mov r9,  QWORD [rdi + 0x50]
+    mov r8,  QWORD [rdi + 0x58]
+
+    mov rcx, QWORD [rdi + 0x68]
+    mov rdx, QWORD [rdi + 0x70]
+    mov rbx, QWORD [rdi + 0x78]
+    mov rsi, QWORD [rdi + 0x80]
+
+
     ; DATA SELECTOR
     push QWORD KERNEL_DATA_SELECTOR
     ; RSP
-    mov rax, QWORD [rdi + 0x30]
+    mov rax, QWORD [rdi + 0xC0]
     push rax
     ; rflags
-    mov rax, QWORD [rdi + 0xB0]
+    mov rax, QWORD [rdi + 0xB8]
     push rax
     popfq
     pushfq
@@ -50,30 +51,16 @@ kernel_contextSwitch:
     push rax
 
     ; RBP
-    mov rbp, QWORD [rdi + 0xB8]
+    mov rbp, QWORD [rdi + 0x90]
     ; RAX/RDI
-    mov rax, QWORD [rdi]
-    mov rdi, QWORD [rdi + 0x28]
+    mov rax, QWORD [rdi + 0x60]
+    mov rdi, QWORD [rdi + 0x88]
 
     iretq
 
 user_contextSwitch:
     cmp rdi, 0x0
     je contextSwitchCrash
-    mov rbx, QWORD [rdi + 0x8]
-    mov rcx, QWORD [rdi + 0x10]
-    mov rdx, QWORD [rdi + 0x18]
-    mov rsi, QWORD [rdi + 0x20]
-
-    mov r8,  QWORD [rdi + 0x38]
-    mov r9,  QWORD [rdi + 0x40]
-    mov r10, QWORD [rdi + 0x48]
-    mov r11, QWORD [rdi + 0x50]
-    mov r12, QWORD [rdi + 0x58]
-    mov r13, QWORD [rdi + 0x60]
-    mov r14, QWORD [rdi + 0x68]
-    mov r15, QWORD [rdi + 0x70]
-
     ; SWITCH SEGMENTS
     mov ax, (USER_DATA_SELECTOR | 0x3)
     mov ds, ax
@@ -81,10 +68,25 @@ user_contextSwitch:
     mov fs, ax
     mov gs, ax
 
+    mov r15, QWORD [rdi + 0x20]
+    mov r14, QWORD [rdi + 0x28]
+    mov r13, QWORD [rdi + 0x30]
+    mov r12, QWORD [rdi + 0x38]
+    mov r11, QWORD [rdi + 0x40]
+    mov r10, QWORD [rdi + 0x48]
+    mov r9,  QWORD [rdi + 0x50]
+    mov r8,  QWORD [rdi + 0x58]
+
+    mov rcx, QWORD [rdi + 0x68]
+    mov rdx, QWORD [rdi + 0x70]
+    mov rbx, QWORD [rdi + 0x78]
+    mov rsi, QWORD [rdi + 0x80]
+
+
     ; DATA SELECTOR
     push QWORD (USER_DATA_SELECTOR | 0x3)
     ; RSP
-    mov rax, QWORD [rdi + 0x30]
+    mov rax, QWORD [rdi + 0xC0]
     push rax
     ; rflags
     mov rax, QWORD [rdi + 0xB0]
@@ -99,10 +101,10 @@ user_contextSwitch:
     push rax
 
     ; RBP
-    mov rbp, QWORD [rdi + 0xB8]
+    mov rbp, QWORD [rdi + 0x90]
     ; RAX/RDI
-    mov rax, QWORD [rdi]
-    mov rdi, QWORD [rdi + 0x28]
+    mov rax, QWORD [rdi + 0x60]
+    mov rdi, QWORD [rdi + 0x88]
 
     iretq
 

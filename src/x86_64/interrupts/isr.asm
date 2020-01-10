@@ -24,20 +24,25 @@ isr:
 %endrep
 
 interrupt_catch:
-    pushfq       ; push flags
+    push rbp
     push rdi    ; save base registers
     push rsi
     push rbx
     push rdx
     push rcx
     push rax
+    push r8
+    push r9
     push r10
+    push r11
+    push r12
+    push r13
+    push r14
+    push r15
 
     mov rax, ds ; Save segment registers
     push rax
     mov rax, es
-    push rax
-    mov rax, ss
     push rax
     mov rax, fs
     push rax
@@ -57,21 +62,26 @@ interrupt_catch:
     pop rax
     mov fs, rax
     pop rax
-    mov ss, rax
-    pop rax
     mov es, rax
     pop rax
     mov ds, rax
 
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
     mov rax, r10    ; ret value of syscall
     pop r10
+    pop r9
+    pop r8
     pop rcx         ; clean rax
     pop rcx
     pop rdx
     pop rbx
     pop rsi
     pop rdi
-    popfq
+    pop rbp
 
     add rsp, 0x10   ; Clean error code and int nbr
     iretq           ; Return from interrupt

@@ -11,6 +11,8 @@ void kmain(void)
 {
     // init_tty();
     // fire_userspace();
+    sti();
+    while (1);
     init_threads();
     generateThread_fromRoutine(userspace, "userspace root");
     sti();

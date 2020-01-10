@@ -66,19 +66,35 @@ enum x86_64_interrupts
 struct frame {
     uintptr gs;
     uintptr fs;
-    uintptr ss;
     uintptr es;
     uintptr ds;
+
+    uintptr r15;
+    uintptr r14;
+    uintptr r13;
+    uintptr r12;
+    uintptr r11;
     uintptr r10;
+    uintptr r9;
+    uintptr r8;
+
     uintptr rax;
     uintptr rcx;
     uintptr rdx;
     uintptr rbx;
     uintptr rsi;
     uintptr rdi;
-    uintptr flags;
+
+    uintptr rbp;
+
     uintptr int_num;
     uintptr error;
+
+    uintptr rip;
+    uintptr cs;
+    uintptr rflags;
+    uintptr userrsp;
+    uintptr ss;
 };
 
 /* declaration functions */
