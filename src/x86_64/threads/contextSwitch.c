@@ -4,10 +4,10 @@
 
 extern struct threadDescriptor *threadRunning;
 
-void contextSwitch(struct cpuState *new)
+void contextSwitch(struct cpuContext *new)
 {
-    struct cpuState *context = getCpuContext();
-    memcpy((void *)context, (void *)new, sizeof(struct cpuState));
+    struct cpuContext *context = getCpuContext();
+    memcpy((void *)context, (void *)new, sizeof(struct cpuContext));
 
     // threadDump(threadRunning);
     // cpuContextDump(context);

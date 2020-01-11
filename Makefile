@@ -137,6 +137,12 @@ debug:
 	@-echo -e "\033[36mrunning in debug mode...\033[0m"
 	@$(qemuarch) $(qemuflags) -monitor stdio -no-reboot -s -S
 
+disassemble: $(kernel)
+	@objdump --no-show-raw-insn -d -Mintel $(kernel) | source-highlight -s asm -f esc256 | less -eRiMX
+
+symbols: $(kernel)
+	@readelf $(kernel) -s | less
+
 iso: $(iso)
 
 $(iso): $(kernel) $(grub_cfg)
@@ -145,7 +151,7 @@ $(iso): $(kernel) $(grub_cfg)
 	@cp $(grub_cfg) build/isofiles/boot/grub
 	@grub-mkrescue -o $(iso) build/isofiles 2> /dev/null
 	@rm -r build/isofiles
-	@-echo -e "\033[37m      ISO   $@\033[0m"
+	@-echo -e "\033[37m     GRUB   $@\033[0m"
 
 $(kernel): $(objects) $(linker_script)
 	@$(ld) $(ldflags) -T $(linker_script) -o $(kernel) $(objects)

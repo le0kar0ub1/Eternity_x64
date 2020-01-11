@@ -27,7 +27,7 @@ void threadDump(struct threadDescriptor *thread)
     kprint("    : life  : %d\n", thread->lifeCycle);
 }
 
-void cpuContextDump(struct cpuState *state)
+void cpuContextDump(struct cpuContext *state)
 {
     kprint("Processor context:\n");
     kprint("    | rax : %l | rbx : %l | rcx : %l\n", state->rax, state->rbx, state->rcx);

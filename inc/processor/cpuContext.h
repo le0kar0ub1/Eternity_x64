@@ -3,10 +3,10 @@
 
 #include "eternity.h"
 
-struct cpuState *getCpuContext(void);
+struct cpuContext *getCpuContext(void);
 
 /* STRUCT REPRESENTING A CPU STATE (CONTEXT) */
-struct cpuState {
+struct cpuContext {
     uint64 gs;      // 0x0
     uint64 fs;      // 0x8
     uint64 es;      // 0x10

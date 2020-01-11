@@ -1,7 +1,7 @@
 #ifndef MULTIBOOT_HEADER
 #define MULTIBOOT_HEADER
 
-void get_multiboot_info(ulong addr);
+void get_multiboot_info(uintptr addr);
 
 /* How many bytes from the start of the file we search for the header.  */
 #define MULTIBOOT_SEARCH            32768 // 1 << 15
@@ -73,20 +73,6 @@ typedef unsigned char       multiboot_uint8_t;
 typedef unsigned short      multiboot_uint16_t;
 typedef unsigned int        multiboot_uint32_t;
 typedef unsigned long long  multiboot_uint64_t;
-
-typedef struct multiboot_mmap_entry multiboot_memory_map_t;
-
-/* personnal struct compiled with all other informations multiboot */
-struct multiboot_info
-{
-    uint32 mem_lower; // kilo bytes
-    uint32 mem_upper; // kilo bytes
-    char const *cmd_line;
-    char const *bootloader; // bootloader name
-    multiboot_memory_map_t const *mmap_start; // memory map -> obviously 0x0
-    multiboot_memory_map_t const *mmap_end; // memory end map
-    size_t entry;
-} multiboot_info;
 
 struct multiboot_header
 {

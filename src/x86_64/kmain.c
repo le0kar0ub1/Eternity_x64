@@ -14,23 +14,16 @@ void yo(void)
     // exit(0);
 }
 
-void ya(void)
-{
-    kprint("thread yaaaaaaaa\n");
-    while (1);
-}
-
 void kmain(void)
 {
     // init_tty();
-    // sti();
+    sti();
+    while (1);
     // fire_userspace();
-    // while (1);
     init_threads();
     // generateThread_fromRoutine(userspace, "userspace root");
     generateThread_fromRoutine(yo, "yoyo les amis");
-    // generateThread_fromRoutine(ya, "yoyo les amis");
     sti();
-    /* unreachable code bcs the userspace thread will be fired and no return are possible */
+    /* unreachable code bcs the root userspace thread will be fired and no return are possible */
     while (0x1);
 }

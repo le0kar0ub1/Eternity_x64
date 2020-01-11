@@ -1,6 +1,6 @@
 #include "eternity.h"
 #include "interrupt.h"
-#include "cpuState.h"
+#include "cpuContext.h"
 #include "threads.h"
 #include "ports.h"
 #include "pic.h"
@@ -66,7 +66,7 @@ void exceptions_handler(struct frame *frame)
     kprint("%l\n", frame->rax);
     while(1);
     vga_set_attrib(VGA_WHITE, VGA_BLACK);
-    cpuContextDump((struct cpuState *)frame);
+    cpuContextDump((struct cpuContext *)frame);
     serial_kprint("Faulting address: %x\n", frame->rip);
     hlt();
 }

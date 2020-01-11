@@ -5,9 +5,9 @@ extern list_t *threadList;
 
 struct threadDescriptor *threadRunning = NULL;
 
-struct cpuState savedContext;
+struct cpuContext savedContext;
 
-struct cpuState *getCpuContext(void)
+struct cpuContext *getCpuContext(void)
 {
     return (&savedContext);
 }
@@ -25,7 +25,7 @@ void threadScheluder(void)
         list_remove_node(threadList, threadRunning->listIdx);
     /* or save the cpu context inside the thread context */
     else
-        memcpy((void *)&(threadRunning->context), (void *)&savedContext, sizeof(struct cpuState));
+        memcpy((void *)&(threadRunning->context), (void *)&savedContext, sizeof(struct cpuContext));
     
     if (!((threadRunning->listIdx)->next))
         threadRunning = list_peek_front(threadList); // cycle from start

@@ -12,18 +12,25 @@ void dump_kheap(void)
     kprint("\n");
 }
 
+virtaddr_t find_free_block(struct kheap **root, uint size)
+{
+    for (; (*root)->next; (*root) = (*root)->next) {
+        if ((*root)->size <= size && !(*root)->used) {
+            (*root)->used = true;
+            return ((virtaddr_t)(*root) + SIZEOF_KHEAPBLOCK);
+        }
+    }
+    return ((virtaddr_t)-1);
+}
+
 virtaddr_t kalloc(uint size)
 {
     if (!size)
         return (NULL);
     struct kheap *root = kheap;
     virtaddr_t new; // if all mem consumed;
-    for (; root->next; root = root->next) {
-        if (root->size <= size && !root->used) {
-            root->used = true;
-            return ((virtaddr_t)root + SIZEOF_KHEAPBLOCK);
-        }
-    }
+    if ((new = find_free_block(&root, size)) != (virtaddr_t)-1)
+        return (new);
     if (kheapPageCycle + size + SIZEOF_KHEAPBLOCK > PAGE_SIZE * pageAllocated) {
         new = kmem_request(size + SIZEOF_KHEAPBLOCK);
         root->next = (virtaddr_t)(new);
@@ -39,29 +46,6 @@ virtaddr_t kalloc(uint size)
     return ((virtaddr_t)((uint64)root + SIZEOF_KHEAPBLOCK));
 }
 
-void testkalloc(void)
-{
-    kalloc(0x2000);
-    dump_kheap();
-    kalloc(0x17);
-    dump_kheap();
-    kalloc(0x2000);
-    dump_kheap();;
-    kalloc(0x93);
-    dump_kheap();
-    kalloc(0x30);
-    dump_kheap();
-    kalloc(0x4000);
-    dump_kheap();
-    kalloc(0x10000);
-    dump_kheap();
-    kalloc(0x400);
-    dump_kheap();
-    kalloc(0x180);
-    dump_kheap();
-    while(1);
-}
-
 void init_kalloc(void)
 {
     virtaddr_t begin = kmem_request(PAGE_SIZE);
@@ -71,7 +55,6 @@ void init_kalloc(void)
     kheap->used = false;
     kheapPageCycle = kheap->size + SIZEOF_KHEAPBLOCK;
     pageAllocated = 0x1;
-    // testkalloc();
 }
 
 /* for the moment just let the segment & set size to 0 == free */
@@ -85,5 +68,5 @@ void kfree(virtaddr_t ptr)
             return;
         }
     }
-    PANIC("Invalid pointer in kfree\n");
+    PANIC("Invalid pointer in free request: %x\n", ptr);
 }

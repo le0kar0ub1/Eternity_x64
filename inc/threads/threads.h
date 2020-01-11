@@ -3,7 +3,7 @@
 
 #include "eternity.h"
 #include "scheluder.h"
-#include "cpuState.h"
+#include "cpuContext.h"
 
 #define SCHED_TOLERANCE 5
 
@@ -31,22 +31,22 @@ struct threadDescriptor {
     void *pdpt;
     uint32 state;
     uint32 lifeCycle;
-    struct cpuState context;
+    struct cpuContext context;
 } __packed;
 
 void init_threads(void);
 void generateThread_fromRoutine(void *function, char const *name);
 void generateThread(char *file);
 void threadListDump(void);
-void cpuContextDump(struct cpuState *);
+void cpuContextDump(struct cpuContext *);
 void threadDump(struct threadDescriptor *);
 
 pid_t new_pid(void);
 
-void contextSwitch(struct cpuState *new);
-struct cpuState *getCpuContext(void);
+void contextSwitch(struct cpuContext *new);
+struct cpuContext *getCpuContext(void);
 
-void user_contextSwitch(struct cpuState *);
-void kernel_contextSwitch(struct cpuState *);
+void user_contextSwitch(struct cpuContext *);
+void kernel_contextSwitch(struct cpuContext *);
 
 #endif

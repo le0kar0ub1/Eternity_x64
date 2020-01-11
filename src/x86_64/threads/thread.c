@@ -30,7 +30,7 @@ void generateThread_fromRoutine(void *function, char const *name)
     strcpy(thread->name, name);
     thread->pid = new_pid();
     // context set up
-    memset((void *)(&(thread->context)), 0x0, sizeof(struct cpuState));
+    memset((void *)(&(thread->context)), 0x0, sizeof(struct cpuContext));
     thread->context.rip = (uint64)function; 
     thread->context.rflags = 0x286; // Interruptible | Present | Res1 | Carry
     setDefaultSegmentContext(thread);
@@ -59,7 +59,7 @@ void generateThread(char *file)
     strcpy(thread->name, file);
     thread->pid = new_pid();
     // context set up
-    memset((void *)(&(thread->context)), 0x0, sizeof(struct cpuState));
+    memset((void *)(&(thread->context)), 0x0, sizeof(struct cpuContext));
     thread->context.rip = (uint64)0x0; // ELF_LOADER(file) 
     thread->context.rflags = 0x286; //IF | RES1 | PF; // interruptible
     setDefaultSegmentContext(thread);
