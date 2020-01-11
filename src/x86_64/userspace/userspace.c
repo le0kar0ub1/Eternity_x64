@@ -4,18 +4,17 @@
 
 void fireSyscall(uint64 vector, ...);
 
-void proc(void)
+void test(void)
 {
     char s[30] = "inside second process\n";
     write(strlen(s), (char *)&s, 1);
-    while(1);
+    exit(0);
 }
 
 void userspace(void)
 {
-    char s[30] = "hello from userspace\n";
+    char s[21] = "hello from userspace\n";
     write(strlen(s), (char *)&s, 1);
-    exec(proc, "procn");
     while (1);
-    exit(0);
+    exec(test, "test");
 }

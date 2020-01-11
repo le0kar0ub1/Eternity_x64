@@ -5,7 +5,8 @@
 
 /* PORT serial to managing communication */
 #define COM1 0x3f8 /* COM1 */
-void serial_putstr(char *s);
+void serial_kprint(char const *format, ...);
+void serial_putstr(char const *s);
 void write_serial(char a);
 char read_serial(void);
 

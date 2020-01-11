@@ -23,6 +23,9 @@ void threadScheluder(void)
     /* Remove Zombie thread */
     if (threadRunning->state == THREAD_ZOMBIE)
         list_remove_node(threadList, threadRunning->listIdx);
+    /* or save the cpu context inside the thread context */
+    else
+        memcpy((void *)&(threadRunning->context), (void *)&savedContext, sizeof(struct cpuState));
     
     if (!((threadRunning->listIdx)->next))
         threadRunning = list_peek_front(threadList); // cycle from start

@@ -2,6 +2,7 @@
 #include "pic.h"
 #include "interrupt.h"
 #include "timer.h"
+#include "cpuState.h"
 
 /* list of function call all x sec */
 struct functionWakeUp *functionWakeUp;
@@ -16,6 +17,9 @@ void timer_handler(struct frame *frame)
         ticks++;
         subTicks = 0x0;
     }
+    /* current cpu context update each 0.1 sec */
+    struct cpuState *context = getCpuContext();
+    memcpy(context, frame, sizeof(struct frame) & sizeof(struct cpuState));
     frame->rax = 0x0;
     struct functionWakeUp *list = functionWakeUp;
     for (; list; list = list->next) {

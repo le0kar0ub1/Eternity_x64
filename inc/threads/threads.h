@@ -28,9 +28,9 @@ struct threadDescriptor {
     char name[0x100];
     pid_t pid;
     listnode_t *listIdx;
+    void *pdpt;
     uint32 state;
     uint32 lifeCycle;
-    void *pdpt;
     struct cpuState context;
 } __packed;
 

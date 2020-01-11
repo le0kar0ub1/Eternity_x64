@@ -9,10 +9,10 @@ void contextSwitch(struct cpuState *new)
     struct cpuState *context = getCpuContext();
     memcpy((void *)context, (void *)new, sizeof(struct cpuState));
 
-    // threadDump(struct threadDescriptor *thread)
+    // threadDump(threadRunning);
     // cpuContextDump(context);
 
-    pic_eoi(IRQ0);
-    user_contextSwitch(context);
-    // kernel_contextSwitch(context);
+    // pic_eoi(IRQ0);
+    // user_contextSwitch(context);
+    kernel_contextSwitch(context);
 }

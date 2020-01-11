@@ -25,7 +25,8 @@ syscall_handler:
     push QWORD rcx ; also rip
 
     ; kernel syscall stack can handle interrupts
-    sti
+    ; sti
+    cli ; occured big problem if handler interrupt during system call.... IDK why
 
     ; for it... we don't need to save register when syscall occured normally
     ; but i find that is most proper and easy for developpers

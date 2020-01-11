@@ -25,7 +25,7 @@ void write_serial(char a)
     outb(COM1,a);
 }
 
-void serial_putstr(char *s)
+void serial_putstr(char const *s)
 {
     for (int i = 0x0; s[i]; i++)
         write_serial(s[i]);

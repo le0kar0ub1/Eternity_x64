@@ -22,7 +22,9 @@
 #include "tty.h"
 #include "kconfig.h"
 
+/* Kernel Panic */
 void PANIC(char const *panic, ...) __noreturn;
+/* Kernel main  */
 void kmain(void) __noreturn;
 
 /* facilities */

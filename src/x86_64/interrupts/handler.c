@@ -26,5 +26,5 @@ void interrupts_handler(struct frame *frame)
     if (int_handler[frame->int_num])
         (int_handler[frame->int_num])(frame);
     else
-        exceptions_handler(frame->int_num);
+        exceptions_handler(frame);
 }

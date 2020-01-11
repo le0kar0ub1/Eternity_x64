@@ -64,11 +64,11 @@ void pageFault_handler(struct frame *frame)
      kprint("Page Fault at address : %x\n", fault_addr);
      /* error num pushed by CPU give info on page fault */
      if (!(frame->error & ERR_PF_PRES))
-         kprint("NO present in memory\n");
-     if (frame->error & ERR_PF_RW)
-         kprint("RDONLY\n");
-     if (frame->error & ERR_PF_USER)
-         kprint("CPU user-mode\n");
+         kprint("No present in memory\n");
+     if (!(frame->error & ERR_PF_RW))
+         kprint("Page is read only\n");
+     if (!(frame->error & ERR_PF_USER))
+         kprint("Kernel page access\n");
      if (frame->error & ERR_PF_RES)
          kprint("Overwritten CPU-reserved bits of page entry\n");
      if (frame->error & ERR_PF_INST)

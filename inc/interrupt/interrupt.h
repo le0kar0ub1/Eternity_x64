@@ -100,7 +100,7 @@ struct frame {
 /* declaration functions */
 void syscall_handler(struct frame *frame);
 void init_syscall(void);
-void exceptions_handler(uintptr int_num);
+void exceptions_handler(struct frame *frame);
 void register_int_handler(int nbr, void *fnct);
 
 #endif

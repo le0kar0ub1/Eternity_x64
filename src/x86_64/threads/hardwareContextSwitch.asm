@@ -53,9 +53,12 @@ kernel_contextSwitch:
     ; RBP
     mov rbp, QWORD [rdi + 0x90]
     ; RAX/RDI
-    mov rax, QWORD [rdi + 0x60]
     mov rdi, QWORD [rdi + 0x88]
 
+    ; PIC EOI
+    mov al, 0xA0
+    out 0x20, al
+    mov rax, QWORD [rdi + 0x60]
     iretq
 
 user_contextSwitch:
@@ -89,7 +92,7 @@ user_contextSwitch:
     mov rax, QWORD [rdi + 0xC0]
     push rax
     ; rflags
-    mov rax, QWORD [rdi + 0xB0]
+    mov rax, QWORD [rdi + 0xB8]
     or rax, IOPLBL | IOPLBH
     push rax
     popfq
@@ -103,9 +106,12 @@ user_contextSwitch:
     ; RBP
     mov rbp, QWORD [rdi + 0x90]
     ; RAX/RDI
-    mov rax, QWORD [rdi + 0x60]
     mov rdi, QWORD [rdi + 0x88]
 
+    ; PIC EOI
+    mov al, 0xA0
+    out 0x20, al
+    mov rax, QWORD [rdi + 0x60]
     iretq
 
 

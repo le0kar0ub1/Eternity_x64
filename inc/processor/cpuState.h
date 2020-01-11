@@ -3,6 +3,8 @@
 
 #include "eternity.h"
 
+struct cpuState *getCpuContext(void);
+
 /* STRUCT REPRESENTING A CPU STATE (CONTEXT) */
 struct cpuState {
     uint64 gs;      // 0x0

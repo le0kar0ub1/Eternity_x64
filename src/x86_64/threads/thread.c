@@ -32,7 +32,7 @@ void generateThread_fromRoutine(void *function, char const *name)
     // context set up
     memset((void *)(&(thread->context)), 0x0, sizeof(struct cpuState));
     thread->context.rip = (uint64)function; 
-    thread->context.rflags = 0x286; //IF | RES1 | PF; // interruptible
+    thread->context.rflags = 0x286; // Interruptible | Present | Res1 | Carry
     setDefaultSegmentContext(thread);
     // thread memory set up
     uint64 stack = (uint64)kalloc(0x1000 * 0x2);

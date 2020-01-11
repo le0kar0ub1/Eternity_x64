@@ -3,11 +3,13 @@
 
 struct kheap *kheap;
 uint64 kheapPageCycle;
+uint64 pageAllocated;
 
 void dump_kheap(void)
 {
     for (struct kheap *root = kheap; root; root = root->next)
         kprint("BLOCK at %x sizeof %x used %d\n", (uint64)root + SIZEOF_KHEAPBLOCK, root->size, root->used);
+    kprint("\n");
 }
 
 virtaddr_t kalloc(uint size)
@@ -16,21 +18,48 @@ virtaddr_t kalloc(uint size)
         return (NULL);
     struct kheap *root = kheap;
     virtaddr_t new; // if all mem consumed;
-    for (; root->next; root = root->next)
+    for (; root->next; root = root->next) {
         if (root->size <= size && !root->used) {
             root->used = true;
             return ((virtaddr_t)root + SIZEOF_KHEAPBLOCK);
         }
-    if (kheapPageCycle + size + SIZEOF_KHEAPBLOCK > PAGE_SIZE) {
+    }
+    if (kheapPageCycle + size + SIZEOF_KHEAPBLOCK > PAGE_SIZE * pageAllocated) {
         new = kmem_request(size + SIZEOF_KHEAPBLOCK);
-        root->next = (virtaddr_t)new;
+        root->next = (virtaddr_t)(new);
+        kheapPageCycle = 0x0;
+        pageAllocated = ALIGN_FRAME(size + SIZEOF_KHEAPBLOCK) / PAGE_SIZE;
     } else
         root->next = (virtaddr_t)root + root->size + SIZEOF_KHEAPBLOCK;
-    root->next->next = NULL;
-    root->next->size = size;
-    root->next->used = true;
-    kheapPageCycle += root->next->size + SIZEOF_KHEAPBLOCK;
-    return ((virtaddr_t)root->next + SIZEOF_KHEAPBLOCK);
+    root = root->next;
+    root->next = NULL;
+    root->size = size;
+    root->used = true;
+    kheapPageCycle += size + SIZEOF_KHEAPBLOCK;
+    return ((virtaddr_t)((uint64)root + SIZEOF_KHEAPBLOCK));
+}
+
+void testkalloc(void)
+{
+    kalloc(0x2000);
+    dump_kheap();
+    kalloc(0x17);
+    dump_kheap();
+    kalloc(0x2000);
+    dump_kheap();;
+    kalloc(0x93);
+    dump_kheap();
+    kalloc(0x30);
+    dump_kheap();
+    kalloc(0x4000);
+    dump_kheap();
+    kalloc(0x10000);
+    dump_kheap();
+    kalloc(0x400);
+    dump_kheap();
+    kalloc(0x180);
+    dump_kheap();
+    while(1);
 }
 
 void init_kalloc(void)
@@ -41,6 +70,8 @@ void init_kalloc(void)
     kheap->size = 0x10;
     kheap->used = false;
     kheapPageCycle = kheap->size + SIZEOF_KHEAPBLOCK;
+    pageAllocated = 0x1;
+    // testkalloc();
 }
 
 /* for the moment just let the segment & set size to 0 == free */

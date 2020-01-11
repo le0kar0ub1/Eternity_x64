@@ -1,5 +1,9 @@
 #include "eternity.h"
 #include "interrupt.h"
+#include "cpuState.h"
+#include "threads.h"
+#include "ports.h"
+#include "pic.h"
 
 char const *exception_message[MAX_INT] =
 {
@@ -50,14 +54,19 @@ void PANIC(char const *panic, ...)
     while (1) hlt();
 }
 
-void exceptions_handler(uintptr int_num)
+void exceptions_handler(struct frame *frame)
 {
     /* if this is not an exception, kick it */
-    if (int_num > 0x1F)
+    if (frame->int_num > 0x1F)
         return;
+    cli();
     vga_set_attrib(VGA_RED, VGA_BLACK);
     /* Kernel panic, reboot progress... */
-    kprint("Internal Panic: %s\n", exception_message[int_num]);
-    cli();
+    kprint("\nKernel Panic: %s\n", exception_message[frame->int_num]);
+    kprint("%l\n", frame->rax);
+    while(1);
+    vga_set_attrib(VGA_WHITE, VGA_BLACK);
+    cpuContextDump((struct cpuState *)frame);
+    serial_kprint("Faulting address: %x\n", frame->rip);
     hlt();
 }
