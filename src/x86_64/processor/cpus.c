@@ -1,13 +1,9 @@
 #include "eternity.h"
 #include "cpuDescriptor.h"
 
-// static struct cpu_descriptor cpus[KCONFIG_MAX_CPUS];
+struct cpu *cpus[KCONFIG_MAX_CPUS] = {0};
 
-// bool get_chip_multithreading(int *chip_max_threads)
-// {
-//
-// }
-
-void init_cpu_info(void)
+void init_cpu(void)
 {
+
 }

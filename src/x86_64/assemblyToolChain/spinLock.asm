@@ -4,17 +4,17 @@ global spinLock_releaseLock
 bits 64
 
 [section .text]
-spinLock_acquireLock:
+spin_lock:
     lock bts QWORD [rdi], 0x0        ;Attempt to acquire the lock (in case lock is uncontended)
-    jc .spin_with_pause
+    jc .spin_retry
     ret
  
-.spin_with_pause:
+.spin_retry:
     pause                      ; Tell CPU we're spinning
     test QWORD [rdi], 0x1      ; Is the lock free?
-    jnz .spin_with_pause       ; no, wait
-    jmp spinLock_acquireLock   ; retry
+    jnz .spin_retry       ; no, wait
+    jmp spin_lock   ; retry
  
-spinLock_releaseLock:
+spin_unlock:
     mov QWORD [rdi], 0x0
     ret

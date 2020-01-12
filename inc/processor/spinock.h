@@ -4,34 +4,62 @@
 #include "eternity.h"
 #include "atomic.h"
 
-typedef uint spinlockState;
+typedef volatile uint64_t spinlock_t;
 
 #define SPINLOCK_LOCK   0x0
 #define SPINLOCK_UNLOCK 0x1
 
-struct spin_rwlock
-{
-    int volatile readcount;
-    spinlockState resource_access;
-    spinlockState readcount_access;
-    spinlockState service_queue;
-};
+typedef volatile struct {
+    atomic64_t readers;
+    spinlock_t rd_lock;
+    spinlock_t wr_lock;
+} rwspinlock_t;
 
-/* SPINLOCK MANAGING WITH ATOMIC EXCHANGE */
-/* OSDEV WIKI FOR MORE INFORMATION */
-static inline void spinlock_init(spinlockState *state)
+void spin_lock(volatile spinlock_t *lock);
+void spin_unlock(volatile spinlock_t *lock);
+
+#define spin_lock_irqsave(lock, rflags) ({ \
+    rflags = read_rflags(); \
+    cli(); \
+    spin_lock(lock); })
+
+#define spin_unlock_irqsave(lock, rflags) ({ \
+    spin_unlock(lock); \
+    write_rflags(rflags); })
+
+static inline void spin_init(volatile spinlock_t *lock)
 {
-    *state = SPINLOCK_LOCK;
+    *lock = 0;
 }
 
-static inline void spinlock_acquire(spinlockState *state)
+static inline void read_spin_lock(volatile rwspinlock_t *lock)
 {
-    while (atomic_exchange(state, SPINLOCK_UNLOCK) != 0);
+    spin_lock(&lock->rd_lock);
+    uint64_t readers = atomic_inc_read64(&lock->readers);
+    if (readers == 1)
+        spin_lock(&lock->wr_lock);
+    preempt_inc();
+    spin_unlock(&lock->rd_lock);
 }
 
-static inline void spinlock_release(spinlockState *state)
+static inline void read_spin_unlock(volatile rwspinlock_t *lock)
 {
-    atomic_exchange(state, SPINLOCK_LOCK);
+    spin_lock(&lock->rd_lock);
+    uint64_t readers = atomic_dec_read64(&lock->readers);
+    if (readers == 0)
+        spin_unlock(&lock->wr_lock);
+    preempt_dec();
+    spin_unlock(&lock->rd_lock);
+}
+
+static inline void write_spin_lock(volatile rwspinlock_t *lock)
+{
+    spin_lock(&lock->wr_lock);
+}
+
+static inline void write_spin_unlock(volatile rwspinlock_t *lock)
+{
+    spin_unlock(&lock->wr_lock);
 }
 
 #endif

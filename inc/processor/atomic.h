@@ -4,6 +4,11 @@
 #include "typedef.h"
 #include "assembly_inlineInstruction.h"
 
+typedef volatile uint32 atomic32_t;
+typedef volatile uint64 atomic64_t;
+
+typedef atomic32_t kref_t;
+
 #define atomic_xadd(P, V)      __sync_fetch_and_add((P), (V))
 #define cmpxchg(P, O, N)       __sync_val_compare_and_swap((P), (O), (N))
 #define atomic_inc(P)          __sync_add_and_fetch((P), 1)
@@ -62,5 +67,72 @@ static inline uint atomic_exchange(volatile uint *ptr, uint value)
 {
     return (xchg(ptr, value));
 }
+
+static inline uint32 atomic_read32(atomic32_t *var)
+{
+    return __atomic_load_n(var, __ATOMIC_SEQ_CST);
+}
+
+static inline uint32 atomic_inc_read32(atomic32_t *var)
+{
+    return __atomic_add_fetch(var, 1, __ATOMIC_SEQ_CST);
+}
+
+static inline uint32 atomic_dec_read32(atomic32_t *var)
+{
+    return __atomic_sub_fetch(var, 1, __ATOMIC_SEQ_CST);
+}
+
+static inline void atomic_write32(atomic32_t *var, uint32 val)
+{
+    __atomic_store_n(var, val, __ATOMIC_SEQ_CST);
+}
+
+
+static inline uint64 atomic_read64(atomic64_t *var)
+{
+    return __atomic_load_n(var, __ATOMIC_SEQ_CST);
+}
+
+static inline uint64 atomic_inc_read64(atomic64_t *var)
+{
+    return __atomic_add_fetch(var, 1, __ATOMIC_SEQ_CST);
+}
+
+static inline uint64 atomic_dec_read64(atomic64_t *var)
+{
+    return __atomic_sub_fetch(var, 1, __ATOMIC_SEQ_CST);
+}
+
+static inline void atomic_write64(atomic64_t *var, uint32 val)
+{
+    __atomic_store_n(var, val, __ATOMIC_SEQ_CST);
+}
+
+static inline void kref_inc(kref_t *k)
+{
+    atomic_inc_read32(k);
+}
+
+static inline void kref_dec(kref_t *k)
+{
+    atomic_dec_read32(k);
+}
+
+static inline uint32 kref_inc_read(kref_t *k)
+{
+    return atomic_inc_read32(k);
+}
+
+static inline uint32 kref_dec_read(kref_t *k)
+{
+    return atomic_dec_read32(k);
+}
+
+static inline uint32 kref_read(kref_t *k)
+{
+    return atomic_read32(k);
+}
+
 
 #endif

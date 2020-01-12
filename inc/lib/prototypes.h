@@ -3,11 +3,14 @@
 
 #include "typedef.h"
 #include "linkedList.h"
+#include "kconfig.h"
 
 void *memset(void *ptr, uint8 value, size_t size);
 void *memsetw(void *ptr, uint16 value, size_t size);
 void *memsetd(void *ptr, uint32 value, size_t size);
 void *memsetq(void *ptr, uint64 value, size_t size);
+
+bool memcmp(void *x, void *y, size_t size);
 
 void *memcpy(void *dest, void *src, size_t size);
 void *memcpyw(void *dest, void *src, size_t size);
@@ -16,6 +19,7 @@ void *memcpyq(void *dest, void *src, size_t size);
 
 void kprint(char const *format, ...);
 void kvprint(char const *format, va_list ap);
+void verbose_log(char const *format, va_list ap);
 
 /* A PART OF CLASSICAL LIB STDLIB.H */
 uint64 rand_uintptr(void);

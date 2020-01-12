@@ -20,7 +20,6 @@ void timer_handler(struct frame *frame)
     /* current cpu context update each 0.1 sec */
     struct cpuContext *context = getCpuContext();
     memcpy(context, frame, sizeof(struct frame) & sizeof(struct cpuContext));
-    frame->rax = 0x0;
     struct functionWakeUp *list = functionWakeUp;
     for (; list; list = list->next) {
         if (++list->current == list->cs) {

@@ -1,6 +1,8 @@
 #ifndef _ASSEMBLY_INLINE_INSTRUCTION_H_
 #define _ASSEMBLY_INLINE_INSTRUCTION_H_
 
+#include "stdint.h"
+
 #define asmv __asm__ volatile
 
 /* nbr of cpu ticks from last reset */
@@ -69,7 +71,7 @@ static inline uint xchg(uint volatile *addr, uint newval)
 {
     uint res;
 
-    asm volatile("lock xchgl %0, %1;" : "+m"(*addr), "=a"(res) : "1"(newval) : "cc");
+    asmv("lock xchgl %0, %1;" : "+m"(*addr), "=a"(res) : "1"(newval) : "cc");
     return (res);
 }
 
@@ -77,13 +79,33 @@ static inline uint64 get_rflags(void)
 {
     uint64 e;
 
-    asm volatile("pushfq; pop %0" : "=rm"(e) :: "memory");
+    asmv("pushfq; pop %0" : "=rm"(e) :: "memory");
     return (e);
 }
 
 static inline void set_rflags(uint64 value)
 {
-    asm volatile("push %0; popfq" :: "g"(value) : "memory", "cc");
+    asmv("push %0; popfq" :: "g"(value) : "memory", "cc");
+}
+
+static inline uint64 read_rflags(void)
+{
+    return (__builtin_ia32_readeflags_u64());
+}
+
+static inline void write_rflags(uint64 rflags)
+{
+    __builtin_ia32_writeeflags_u64(rflags);
+}
+
+static inline void preempt_inc(void)
+{
+    asmv("lock incl %%gs:0x18" :: );
+}
+
+static inline void preempt_dec(void)
+{
+    asmv("lock decl %%gs:0x18" :: );
 }
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef _TYPES_SHORTCUT_H_
 #define _TYPES_SHORTCUT_H_
 
+#include "stdint.h"
+
 /* Defines some shortcuts types. */
 typedef unsigned char       uchar;
 typedef unsigned short      ushort;

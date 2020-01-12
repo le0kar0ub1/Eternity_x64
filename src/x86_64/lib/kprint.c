@@ -179,3 +179,17 @@ void kvprint(char const *format, va_list ap)
         }
     }
 }
+
+void verbose_log(char const *format, va_list ap)
+{
+    #if VERBOSE_RUN
+        for (int i = 0x0; format[i] ; i++) {
+            if (format[i] != '%')
+                putchar(format[i]);
+            else {
+                i++;
+                switch_types(format, ap, &i);
+            }
+        }
+    #endif
+}

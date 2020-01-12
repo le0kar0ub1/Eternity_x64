@@ -14,6 +14,7 @@ extern init_tss
 extern init_serial
 extern init_vga
 extern init_pic
+extern get_multiboot_tag
 extern init_pf_handler
 extern init_pmm
 extern init_kpaging
@@ -26,8 +27,7 @@ extern init_pci
 extern init_rtc
 extern init_threads
 extern init_syscall
-
-extern fire_userspace
+extern init_acpi
 
 extern init_tty
 
@@ -57,9 +57,9 @@ kernel_setup:
     ; PIC init
     call init_pic
 
-    ; pop rdi
-    ; extern get_multiboot_tag
-    ; call get_multiboot_tag
+    ; get multiboot information provided
+    pop rdi
+    call get_multiboot_tag
 
     ; register page fault handler
     call init_pf_handler
@@ -94,10 +94,14 @@ kernel_setup:
     ; tss init
     call init_tss
 
-    ; ; init syscall handler
+    ; init syscall handler
     call init_syscall
 
-    call kmain
+    ; init ACPI
+    call init_acpi
+
+
+    call kmain ; __no_return
 
     ; print 'OKAY' if all comes good
     cli
