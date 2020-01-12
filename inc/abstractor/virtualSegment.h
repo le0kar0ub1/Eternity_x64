@@ -3,9 +3,9 @@
 
 #include "eternity.h"
 
-#define VSEG_RDWR
-#define VSEG_PRES
-#define VSEG_
+// #define VSEG_RDWR
+// #define VSEG_PRES
+// #define VSEG_
 
 struct vseg
 {

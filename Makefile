@@ -5,6 +5,8 @@ iso := build/eternity-$(arch).iso
 linker_script := src/link.ld
 grub_cfg := src/grub.cfg
 
+rootSourceDir	:= src/$(arch)/
+
 includeDir := $(addprefix -Iinc/,			\
                          	descriptors		\
                          	boot			\
@@ -20,8 +22,10 @@ includeDir := $(addprefix -Iinc/,			\
                             abstractor      \
                          	/				\
     					 	)
-sourceDir := boot				    \
-                descrciptors        \
+sourceDir := 	/					\
+				boot				\
+				assemblyToolChain	\
+                descriptors        	\
  				drivers			    \
   				lib				    \
    				interrupts   	    \
@@ -32,7 +36,7 @@ sourceDir := boot				    \
 	   			system			    \
 	    		tty				    \
 		 		abstractor		    \
-		  		CPU				    \
+				userspace			\
 				threads
 
 
@@ -45,8 +49,8 @@ ldflags := -n						\
 	   	  #$(ldflags_debug)
 
 ldflags_debug := --cref			\
-	   	 		#--print-map	\
-	   	 		#--relocatable	\
+	   	 		--print-map		\
+	   	 		--relocatable	\
 
 nasm := nasm
 asflags :=  -felf64         \
@@ -62,11 +66,10 @@ qemu_basic_device := -usb		\
 		     -device usb-mouse  \
 		     -device usb-tablet \
 		     -soundhw pcspk
-		     #-no-kvm-irqchip
 
 qemuflags := -cdrom $(iso)        \
 	         -enable-kvm          \
-			 #-m 4G                \
+			 -m 4G                \
 		     #-boot menu=on        \
 		     #$(qemu_basic_device)
 	     	 #-full-screen
@@ -81,7 +84,7 @@ cflags := -nostdlib		 			\
 	  	  -Wnested-externs 	 		\
 	  	  -Winline 		 			\
 	  	  --std=gnu11 		 		\
-	  	  $(includeDir) 	         	\
+	  	  $(includeDir) 	        \
 	  	  -Wuninitialized        	\
           -Wno-missing-braces    	\
 	      -ffreestanding         	\
@@ -96,17 +99,14 @@ cflags := -nostdlib		 			\
 		  -msse4.1				    \
 	  	  #-Wpadded					\
 
-asm_src := $(wildcard   src/$(arch)/*.asm       \
-                        src/$(arch)/**/*.asm	\
-                        src/$(arch)/**/**/*.asm)
-c_src := $(wildcard     src/$(arch)/*.c         \
-                        src/$(arch)/**/*.c		\
-                        src/$(arch)/**/**/*.c)
+asm_src :=	$(wildcard $(addsuffix /*.asm, $(addprefix $(rootSourceDir), $(sourceDir))))
+
+c_src	:=	$(wildcard $(addsuffix /*.c, $(addprefix $(rootSourceDir), $(sourceDir))))
 
 objects := 	$(patsubst src/$(arch)/%.asm, build/arch/$(arch)/%.o, $(asm_src)) 		\
 			$(patsubst src/$(arch)/%.c, build/arch/$(arch)/%.o, $(c_src))
 
-.PHONY: all clean fclean run debug info
+.PHONY: all clean fclean run debug info gdbdebug disassemble symbols
 
 all: $(kernel) $(iso)
 

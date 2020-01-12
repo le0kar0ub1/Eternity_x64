@@ -32,8 +32,7 @@ void threadScheluder(void)
     else
         threadRunning = (threadRunning->listIdx)->next->item; // next thread
     /* if all thread have been exited then crash... */
-    if (!threadRunning)
-        PANIC("No thread left, userspace has crashed...\n");
+    fatalAssert(threadRunning);
 
 /* do the context switch */
 switchExec:
