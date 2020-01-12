@@ -14,7 +14,7 @@
 #include "eternityDef.h"
 #include "compare.h"
 
-/* personnal headers */
+/* kernel headers */
 #include "vga.h"
 #include "bitfield.h"
 #include "assembly_inlineInstruction.h"
@@ -31,7 +31,7 @@ void kmain(void) __noreturn;
 static inline void debug(uint64 arg)
 {
     kprint("debug address: %x\n", arg);
-    hlt();
+    while (1) hlt();
 }
 
 static inline void fromCstToWr(char const *s, char *new)

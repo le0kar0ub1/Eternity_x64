@@ -15,7 +15,7 @@ void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
 {
     uint64 addr;
 
-    addr = (((0x1 << 0x9) - (0x1 << 0x8)) & pml4) > 0 ? 0xffff000000000000 : 0;
+    addr = (((0x1 << 0x9) - (0x1 << 0x8)) & pml4) > 0x0 ? 0xffff000000000000 : 0x0;
     addr += pml4 << 0x27;
     addr += pdpt << 0x1E;
     addr += pdt  << 0x15;
@@ -65,9 +65,9 @@ void pageFault_handler(struct frame *frame)
      /* error num pushed by CPU give info on page fault */
      if (!(frame->error & ERR_PF_PRES))
          kprint("No present in memory\n");
-     if (!(frame->error & ERR_PF_RW))
+     if ((frame->error & ERR_PF_RW))
          kprint("Page is read only\n");
-     if (!(frame->error & ERR_PF_USER))
+     if ((frame->error & ERR_PF_USER))
          kprint("Kernel page access\n");
      if (frame->error & ERR_PF_RES)
          kprint("Overwritten CPU-reserved bits of page entry\n");

@@ -3,6 +3,10 @@
 
 #include "eternity.h"
 
+#define VSEG_RDWR
+#define VSEG_PRES
+#define VSEG_
+
 struct vseg
 {
     virtaddr_t start;
