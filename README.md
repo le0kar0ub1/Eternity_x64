@@ -12,7 +12,6 @@
 ## BUILD:
     - make
 
-
 ## RUN:
     - make run
 _Eternity is running with KVM module, if this can't be set on your computer delete the flags "-enable-kvm" in (quemuflags) Makefile._
@@ -31,12 +30,16 @@ _Eternity is running with KVM module, if this can't be set on your computer dele
     - 4KIB Paging
     - PMM manager
     - VMM manager
-    - PIT timer
-    - RTC (Real Time Clock)
+    - PCI
+    - PIT
+    - RTC
     - Keyboard driver
+    - Threading
+    - Userspace (root thread | no thread)
+    - Syscall
 
-## EPILOGUE:
-    - project is in development
+## EPILOGUE
+_Eternity is in development._
 
 sure you want the QEMU technical documentation:
 https://qemu.weilnetz.de/doc/qemu-doc.html

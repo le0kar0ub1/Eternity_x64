@@ -22,7 +22,7 @@ void kmain(void)
     // fire_userspace();
     init_threads();
     // generateThread_fromRoutine(userspace, "userspace root");
-    generateThread_fromRoutine(yo, "yoyo les amis");
+    generateThread_fromRoutine(yo, "root thread");
     sti();
     /* unreachable code bcs the root userspace thread will be fired and no return are possible */
     while (0x1);
