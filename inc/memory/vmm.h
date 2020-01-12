@@ -5,6 +5,8 @@
 #include "eternity.h"
 #include "sysdef.h"
 
+#define MMU_PAGE_UNMAP 0x0
+
 struct vmmblock {
     struct vmmblock *next;
     virtaddr_t page;

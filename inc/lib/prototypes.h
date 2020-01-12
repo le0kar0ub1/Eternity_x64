@@ -17,9 +17,14 @@ void *memcpyw(void *dest, void *src, size_t size);
 void *memcpyd(void *dest, void *src, size_t size);
 void *memcpyq(void *dest, void *src, size_t size);
 
+void __kprint(char const *format, va_list ap);
+
 void kprint(char const *format, ...);
-void kvprint(char const *format, va_list ap);
-void verbose_log(char const *format, va_list ap);
+void verbose_log(char const *format, ...);
+static inline void kvprint(char const *format, va_list ap)
+{
+    __kprint(format, ap);
+}
 
 /* A PART OF CLASSICAL LIB STDLIB.H */
 uint64 rand_uintptr(void);

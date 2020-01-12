@@ -17,6 +17,7 @@ typedef volatile struct {
 
 void spin_lock(volatile spinlock_t *lock);
 void spin_unlock(volatile spinlock_t *lock);
+bool spin_unfatal_lock(volatile spinlock_t *lock);
 
 #define spin_lock_irqsave(lock, rflags) ({ \
     rflags = read_rflags(); \

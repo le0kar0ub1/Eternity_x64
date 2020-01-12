@@ -33,15 +33,18 @@ void init_kpaging(void)
 /* same mapping as the first done at boot but with a static and dynamic kernel part */
 void kernelMapping(void)
 {
+    kprint("sizeof %d\n", sizeof(struct pageTable));
+    memset(kpage, 0x0, sizeof(struct pageTable));
     kpage->pml4[KERNEL_PML4_ENTRY] = (uint64)(kpage->pdpt) | PRESENT | WRITABLE | USER_ACCESSIBLE;
     kpage->pml4[0x0]               = (uint64)(kpage->pdpt) | PRESENT | WRITABLE | USER_ACCESSIBLE; // low pmm access
 
-    kpage->pdpt[KERNEL_PDPT_ENTRY] = (uint64)(kpage->pdt) | PRESENT | WRITABLE | USER_ACCESSIBLE;
-    kpage->pdpt[0x0]               = (uint64)(kpage->pdt) | PRESENT | WRITABLE | USER_ACCESSIBLE;
+    kpage->pdpt[KERNEL_PDPT_ENTRY]       = (uint64)(kpage->pdt_kernel) | PRESENT | WRITABLE | USER_ACCESSIBLE;
+    kpage->pdpt[KERNEL_PDPT_ENTRY - 0x1] = (uint64)(kpage->pdt_spec)   | PRESENT | WRITABLE | USER_ACCESSIBLE;
+    kpage->pdpt[0x0]                     = (uint64)(kpage->pdt_kernel) | PRESENT | WRITABLE | USER_ACCESSIBLE;
 
-    kpage->pdt[KERNEL_STATIC_PDT_ENTRY]    = (uint64)(kpage->pt_kernel_static) | PRESENT | WRITABLE | USER_ACCESSIBLE;
+    kpage->pdt_kernel[KERNEL_STATIC_PDT_ENTRY] = (uint64)(kpage->pt_kernel_static) | PRESENT | WRITABLE | USER_ACCESSIBLE;
     for (uint16 i = KERNEL_STATIC_PDT_ENTRY + 0x1; i < PAGE_ENTRY_NBR; i++)
-        kpage->pdt[i] = (uint64)(kpage->pt_kernel_dynamic[i - 0x1]) | PRESENT | WRITABLE | USER_ACCESSIBLE;
+        kpage->pdt_kernel[i] = (uint64)(kpage->pt_kernel_dynamic[i - 0x1]) | PRESENT | WRITABLE | USER_ACCESSIBLE;
 
     for (uint16 i = 0; i < PAGE_ENTRY_NBR; i++)
         kpage->pt_kernel_static[i] = (FOURKIB_PAGESIZE * i) | PRESENT | WRITABLE | USER_ACCESSIBLE; // | GLOBAL_PAGE;

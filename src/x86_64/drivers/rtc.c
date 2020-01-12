@@ -112,7 +112,6 @@ char *get_cmos_rtc_time(void)
         strcat(ret, min);
     } else
         strcat(ret, "00");
-
     return (ret);
 }
 

@@ -1,5 +1,8 @@
 #include "eternity.h"
 #include "stdarg.h"
+#include "spinock.h"
+
+spinlock_t kprint_spinlock;
 
 long power(long max, int power)
 {
@@ -152,44 +155,37 @@ void switch_types(char const *format, va_list ap, int *i)
     }
 }
 
+void __kprint(char const *format, va_list ap)
+{
+    for (int i = 0x0; format[i] ; i++) {
+        if (format[i] != '%')
+            putchar(format[i]);
+        else {
+            i++;
+            switch_types(format, ap, &i);
+        }
+    }
+}
+
 void kprint(char const *format, ...)
 {
     va_list ap;
 
     va_start(ap, format);
-    for (int i = 0x0; format[i] ; i++) {
-        if (format[i] != '%')
-            putchar(format[i]);
-        else {
-            i++;
-            switch_types(format, ap, &i);
-        }
-    }
+    bool islocked = spin_unfatal_lock(&kprint_spinlock);
+    __kprint(format, ap);
+    if (islocked)
+        spin_unlock(&kprint_spinlock);
     va_end(ap);
 }
 
-void kvprint(char const *format, va_list ap)
-{
-    for (int i = 0x0; format[i] ; i++) {
-        if (format[i] != '%')
-            putchar(format[i]);
-        else {
-            i++;
-            switch_types(format, ap, &i);
-        }
-    }
-}
-
-void verbose_log(char const *format, va_list ap)
+void verbose_log(char const *format, ...)
 {
     #if VERBOSE_RUN
-        for (int i = 0x0; format[i] ; i++) {
-            if (format[i] != '%')
-                putchar(format[i]);
-            else {
-                i++;
-                switch_types(format, ap, &i);
-            }
-        }
+        va_list ap;
+
+        va_start(ap, format);
+        __kprint(format, ap);
+        va_end(ap);
     #endif
 }
