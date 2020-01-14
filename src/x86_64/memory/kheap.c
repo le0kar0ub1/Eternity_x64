@@ -32,7 +32,7 @@ virtaddr_t kalloc(uint size)
     if ((new = find_free_block(&root, size)) != (virtaddr_t)-1)
         return (new);
     if (kheapPageCycle + size + SIZEOF_KHEAPBLOCK > PAGE_SIZE * pageAllocated) {
-        new = kmem_request(size + SIZEOF_KHEAPBLOCK);
+        // new = kmem_request(size + SIZEOF_KHEAPBLOCK);
         root->next = (virtaddr_t)(new);
         kheapPageCycle = 0x0;
         pageAllocated = ALIGN_FRAME(size + SIZEOF_KHEAPBLOCK) / PAGE_SIZE;
@@ -48,7 +48,7 @@ virtaddr_t kalloc(uint size)
 
 void init_kalloc(void)
 {
-    virtaddr_t begin = kmem_request(PAGE_SIZE);
+    virtaddr_t begin; // = kmem_request(PAGE_SIZE);
     kheap = (struct kheap *)begin;
     kheap->next = NULL;
     kheap->size = 0x10;

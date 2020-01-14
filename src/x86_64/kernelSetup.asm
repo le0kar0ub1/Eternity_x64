@@ -51,8 +51,6 @@ kernel_setup:
     ; VGA driver init
     call init_vga
 
-    ; print hello from eternity
-    call helloFromEternity
 
     ; PIC init
     call init_pic
@@ -71,15 +69,14 @@ kernel_setup:
     call init_paging
 jmp okay
 
-    ; init new kpaging with static/dynamic part
-    call init_kpaging
-
     ; init vmm
-    call init_vmm
-
+    ; call init_vmm
 
     ; init kheap allocation
     call init_kalloc
+
+    ; print hello from eternity
+    call helloFromEternity
 
     ; init SIMD
     call init_simd

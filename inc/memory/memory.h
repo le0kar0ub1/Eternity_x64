@@ -2,8 +2,7 @@
 #define _MEMORY_H_
 
 #include "eternity.h"
-/* https://os.phil-opp.com/paging-introduction/ */
-/* http://www.jamesmolloy.co.uk/tutorial_html/6.-Paging.html */
+#include "pagedef.h"
 
 extern uint64 __KERNEL_VIRT_BASE;
 extern uint64 __KERNEL_VIRT_LINK;
@@ -24,6 +23,7 @@ typedef void    *virtaddr_t;
 
 #define LOAD_PHYS_ADDR      (&__KERNEL_PHYS_START)
 #define LOAD_VIRT_ADDR      (&__KERNEL_VIRT_LINK)
+#define KERN_VIRT_BASE      (&__KERNEL_VIRT_BASE)
 #define PHYS_MM_START_USED  (ALIGN_PAGE((uint64)&__KERNEL_PHYS_END))
 
 /* paging memory */
@@ -32,7 +32,9 @@ void map_memory(ulong addr);
 void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt);
 void *kalloc(uint size);
 void kfree(void *ptr);
-virtaddr_t dumb_kalloc(uint64 size);
+/* boostrap */
+virtaddr_t boostrap_kalloc(uint64 size);
+virtaddr_t boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
 
 /* invalid a page of TLB (TLB increase speed if addr was already paged) */
 static inline void invlpg(void *addr)

@@ -5,16 +5,16 @@
 
 typedef struct __pml4_entry__
 {
-    uint64 Present : 1;              // Must be 1, region invalid if 0.
-    uint64 ReadWrite : 1;            // If 0, writes not allowed.
-    uint64 UserSupervisor : 1;       // If 0, user-mode accesses not allowed.
+    uint64 present : 1;              // Must be 1, region invalid if 0.
+    uint64 rw : 1;            // If 0, writes not allowed.
+    uint64 supervisor : 1;       // If 0, user-mode accesses not allowed.
     uint64 PageWriteThrough : 1;     // Determines the memory type used to access PT.
     uint64 PageCacheDisable : 1;     // Determines the memory type used to access PT.
     uint64 Accessed : 1;             // If 0, this entry has not been used for translation.
     uint64 Ignored1 : 1;
-    uint64 PageSize : 1;             // If 1, this entry maps a 2MB page.
+    uint64 pagesize : 1;             // If 1, this entry maps a 2MB page.
     uint64 Ignored2 : 4;
-    uint64 PageFrameNumber : 36;     // The page frame number of the PT of this PDE.
+    uint64 frame : 36;     // The page frame number of the PT of this PDE.
     uint64 Reserved : 4;
     uint64 Ignored3 : 11;
     uint64 ExecuteDisable : 1;       // If 1, instruction fetches not allowed.
@@ -22,16 +22,16 @@ typedef struct __pml4_entry__
 
 typedef struct __pdpt_entry__
 {
-    uint64 Present : 1;              // Must be 1, region invalid if 0.
-    uint64 ReadWrite : 1;            // If 0, writes not allowed.
-    uint64 UserSupervisor : 1;       // If 0, user-mode accesses not allowed.
+    uint64 present : 1;              // Must be 1, region invalid if 0.
+    uint64 rw : 1;            // If 0, writes not allowed.
+    uint64 supervisor : 1;       // If 0, user-mode accesses not allowed.
     uint64 PageWriteThrough : 1;     // Determines the memory type used to access PT.
     uint64 PageCacheDisable : 1;     // Determines the memory type used to access PT.
     uint64 Accessed : 1;             // If 0, this entry has not been used for translation.
     uint64 Ignored1 : 1;
-    uint64 PageSize : 1;             // If 1, this entry maps a 2MB page.
+    uint64 pagesize : 1;             // If 1, this entry maps a 2MB page.
     uint64 Ignored2 : 4;
-    uint64 PageFrameNumber : 36;     // The page frame number of the PT of this PDE.
+    uint64 frame : 36;     // The page frame number of the PT of this PDE.
     uint64 Reserved : 4;
     uint64 Ignored3 : 11;
     uint64 ExecuteDisable : 1;       // If 1, instruction fetches not allowed.
@@ -39,16 +39,16 @@ typedef struct __pdpt_entry__
 
 typedef struct __pd_entry__
 {
-    uint64 Present : 1;              // Must be 1, region invalid if 0.
-    uint64 ReadWrite : 1;            // If 0, writes not allowed.
-    uint64 UserSupervisor : 1;       // If 0, user-mode accesses not allowed.
+    uint64 present : 1;              // Must be 1, region invalid if 0.
+    uint64 rw : 1;            // If 0, writes not allowed.
+    uint64 supervisor : 1;       // If 0, user-mode accesses not allowed.
     uint64 PageWriteThrough : 1;     // Determines the memory type used to access PT.
     uint64 PageCacheDisable : 1;     // Determines the memory type used to access PT.
     uint64 Accessed : 1;             // If 0, this entry has not been used for translation.
     uint64 Ignored1 : 1;
-    uint64 PageSize : 1;             // If 1, this entry maps a 2MB page.
+    uint64 pagesize : 1;             // If 1, this entry maps a 2MB page.
     uint64 Ignored2 : 4;
-    uint64 PageFrameNumber : 36;     // The page frame number of the PT of this PDE.
+    uint64 frame : 36;     // The page frame number of the PT of this PDE.
     uint64 Reserved : 4;
     uint64 Ignored3 : 11;
     uint64 ExecuteDisable : 1;       // If 1, instruction fetches not allowed.
@@ -56,16 +56,16 @@ typedef struct __pd_entry__
 
 typedef struct __pt_entry__
 {
-    uint64 Present : 1;              // Must be 1, region invalid if 0.
-    uint64 ReadWrite : 1;            // If 0, writes not allowed.
-    uint64 UserSupervisor : 1;       // If 0, user-mode accesses not allowed.
+    uint64 present : 1;              // Must be 1, region invalid if 0.
+    uint64 rw : 1;            // If 0, writes not allowed.
+    uint64 supervisor : 1;       // If 0, user-mode accesses not allowed.
     uint64 PageWriteThrough : 1;     // Determines the memory type used to access PT.
     uint64 PageCacheDisable : 1;     // Determines the memory type used to access PT.
     uint64 Accessed : 1;             // If 0, this entry has not been used for translation.
     uint64 Ignored1 : 1;
-    uint64 PageSize : 1;             // If 1, this entry maps a 2MB page.
+    uint64 pagesize : 1;             // If 1, this entry maps a 2MB page.
     uint64 Ignored2 : 4;
-    uint64 PageFrameNumber : 36;     // The page frame number of the PT of this PDE.
+    uint64 frame : 36;     // The page frame number of the PT of this PDE.
     uint64 Reserved : 4;
     uint64 Ignored3 : 11;
     uint64 ExecuteDisable : 1;       // If 1, instruction fetches not allowed.

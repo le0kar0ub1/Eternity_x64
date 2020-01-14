@@ -5,17 +5,6 @@
 #include "eternity.h"
 #include "sysdef.h"
 
-#define MMU_PAGE_UNMAP 0x0
-
-struct vmmblock {
-    struct vmmblock *next;
-    virtaddr_t page;
-    uint  involved;
-    uint8 used;
-};
-
-#define SIZEOF_VMMBLOCK sizeof(struct vmmblock)
-
 struct vmmblock *vmmblock;
 
 virtaddr_t allocate_page(uint size);
