@@ -50,21 +50,19 @@ interrupt_catch:
     push rax
 
     mov rdi, rsp        ; stack pointer use for struct frame
-    cld
     call swapgsCheckUp
     call interrupts_handler ; rax contain return value of syscall
     call swapgsCheckUp
-    std
     mov r10, rax
 
     pop rax
-    mov gs, rax
+    mov gs, ax
     pop rax
-    mov fs, rax
+    mov fs, ax
     pop rax
-    mov es, rax
+    mov es, ax
     pop rax
-    mov ds, rax
+    mov ds, ax
 
     pop r15
     pop r14

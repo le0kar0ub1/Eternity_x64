@@ -38,10 +38,10 @@
 #define unexpected(x) __builtin_expect((x), 0)
 #define __optimize(x) __attribute__((optimize(x)))
 
-#define ALIGN(x, y)        (((x) + ((y) - 1)) & ~((y) - 1))
-
 #define PAGE_SIZE  0x1000
-#define FRAME_SIZE  0x1000
+#define FRAME_SIZE 0x1000
+
+#define ALIGN(x, y)        (((x) + ((y) - 1)) & ~((y) - 1))
 #define ALIGN_PAGE(x)      (ALIGN(x, PAGE_SIZE))
 #define ALIGN_FRAME(x)     (ALIGN(x, FRAME_SIZE))
 #define IS_PAGE_ALIGNED(x) (!((uintptr)(x) & (PAGE_SIZE - 0x1)))

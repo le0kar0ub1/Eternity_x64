@@ -63,10 +63,10 @@ void exceptions_handler(struct frame *frame)
     vga_set_attrib(VGA_RED, VGA_BLACK);
     /* Kernel panic, reboot progress... */
     kprint("\nKernel Panic: %s\n", exception_message[frame->int_num]);
-    kprint("%l\n", frame->rax);
-    while(1);
-    vga_set_attrib(VGA_WHITE, VGA_BLACK);
-    cpuContextDump((struct cpuContext *)frame);
-    serial_kprint("Faulting address: %x\n", frame->rip);
+    kprint("yayayaya %l\n", (uint64)frame->rax);
     hlt();
+    while(1);
+    cpuContextDump((struct cpuContext *)frame);
+    vga_set_attrib(VGA_WHITE, VGA_BLACK);
+    serial_kprint("Faulting address: %x\n", frame->rip);
 }

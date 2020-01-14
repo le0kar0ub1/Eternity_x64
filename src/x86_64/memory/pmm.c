@@ -9,17 +9,17 @@ extern uint64 __KERNEL_PHYS_END;
 uint64 pmmStart;
 uint64 pmmEnd;
 /* a bitmap who manage pmm static memory */
-uint8 *bitmapManager = (uint8 *)(&__KERNEL_PHYS_END);
+uint8 *bitmap = (uint8 *)(&__KERNEL_PHYS_END);
 uint64 blockNbr;
 
 /* pmm initialization */
 void init_pmm(void)
 {
     blockNbr = PMM_SIZE / FRAME_SIZE;
-    bitmapManager = (uint8 *)ALIGN_FRAME((uint64)bitmapManager);
-    memset(bitmapManager, 0x0, blockNbr);
+    bitmap = (uint8 *)ALIGN_FRAME((uint64)bitmap);
+    memset(bitmap, 0x0, blockNbr);
     /* start pmm at next aligned address after bitmap */
-    pmmStart = (uint64)ALIGN_FRAME(((uint64)(bitmapManager + blockNbr)));
+    pmmStart = (uint64)ALIGN_FRAME(((uint64)(bitmap + blockNbr)));
     pmmEnd = (uint64)(pmmStart + PMM_SIZE);
 }
 
@@ -31,7 +31,7 @@ physaddr_t frame_allocator(uint64 size)
     return (allocate_frame(frameRequest));
 }
 
-/* allocate consecutive frame & set the bit in bitmapManager */
+/* allocate consecutive frame & set the bit in bitmap */
 physaddr_t allocate_frame(uint frameRequest)
 {
     uint64 block = find_free_frame(frameRequest);
@@ -40,7 +40,7 @@ physaddr_t allocate_frame(uint frameRequest)
 }
 
 
-/* free the frame & clear the bit in bitmapManager */
+/* free the frame & clear the bit in bitmap */
 void free_frame(physaddr_t addr)
 {
     if (!IS_PAGE_ALIGNED(addr))

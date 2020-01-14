@@ -83,6 +83,7 @@ cflags := -nostdlib		 			\
 	  	  -Wextra					\
 	  	  -Wnested-externs 	 		\
 	  	  -Winline 		 			\
+          -Wpragmas                 \
 	  	  --std=gnu11 		 		\
 	  	  $(includeDir) 	        \
 	  	  -Wuninitialized        	\

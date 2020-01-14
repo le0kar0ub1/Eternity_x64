@@ -73,6 +73,8 @@ kernel_setup:
     ; init vmm
     call init_vmm
 
+    jmp okay
+
     ; init kheap allocation
     call init_kalloc
 
@@ -104,6 +106,7 @@ kernel_setup:
     call kmain ; __no_return
 
     ; print 'OKAY' if all comes good
+okay:
     cli
     mov rax, 0x2f592f412f4b2f4f
     mov QWORD [0xb8000], rax

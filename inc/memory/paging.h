@@ -21,6 +21,8 @@
 #define TWOMIB_PAGESIZE  0x200000
 #define FOURKIB_PAGESIZE 0x1000
 
+typedef struct pageTable pageTable;
+
 struct pageTable {
     uint64 pml4[PAGE_ENTRY_NBR];
     uint64 pdpt[PAGE_ENTRY_NBR];
@@ -32,7 +34,7 @@ struct pageTable {
     uint64 pt_kernel_dynamic[PAGE_ENTRY_NBR - 0x1][PAGE_ENTRY_NBR];
     uint64 pt_kernel_specific[PAGE_ENTRY_NBR];
     uint64 pt_user[PAGE_ENTRY_NBR];
-} __packed;
+} __attribute__((packed, aligned(PAGE_SIZE)));
 
 
 struct pageTable *kpage;
@@ -46,6 +48,11 @@ enum pageAttrib {
     GLOBAL_PAGE      = 0x100, // page is shared across processes (useful for kernel pages)
     STACK_GUARD_PAGE = 0x200, // page is a stack guard; together with "non present" allows for detection of stack overflows
 };
+
+static inline void tlb_quinte_flush(void)
+{
+	write_cr3(read_cr3());
+}
 
 void init_kpaging(void);
 void kernelMapping(void);

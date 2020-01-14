@@ -9,13 +9,13 @@
 #define PMM_SIZE    ((uint64)M * FRAME_SIZE)
 
 /* bitmap chirurgical operation */
-// #define SETBITMAP(addr)   (bitmapManager[addr] |= (1 << (addr % FRAME_SIZE)))
-// #define CLEARBITMAP(addr) (bitmapManager[addr] &= (~(1 << (addr % FRAME_SIZE))))
-// #define BITSTATE(addr)    ((bitmapManager[addr] >> (addr % FRAME_SIZE)) & 0x1)
+// #define SETBITMAP(addr)   (bitmap[addr] |= (1 << (addr % FRAME_SIZE)))
+// #define CLEARBITMAP(addr) (bitmap[addr] &= (~(1 << (addr % FRAME_SIZE))))
+// #define BITSTATE(addr)    ((bitmap[addr] >> (addr % FRAME_SIZE)) & 0x1)
 
-#define SETBITMAP(x, v) (bitmapManager[x] = v)
-#define CLEARBITMAP(x)  (bitmapManager[x] = 0x0)
-#define BITSTATE(x)     (bitmapManager[x])
+#define SETBITMAP(x, v) (bitmap[x] = v)
+#define CLEARBITMAP(x)  (bitmap[x] = 0x0)
+#define BITSTATE(x)     (bitmap[x])
 
 /* aligne block address */
 // #define ALIGN_BLOCK(addr) (((addr) & (MAX_ADDR_64B_SYS - (FRAME_SIZE - 0x1))) + 0x1000)

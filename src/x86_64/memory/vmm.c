@@ -111,7 +111,7 @@ void mmap(virtaddr_t virt, physaddr_t phys, uint off)
     uint16 pt = PT_INDEX(virt);
     off /= PAGE_SIZE;
     for (; off > 0x0 && pt < PAGE_ENTRY_NBR;) {
-        kpage->pt_kernel_dynamic[pd][pt] = phys | PRESENT | WRITABLE | USER_ACCESSIBLE;
+        kpage->pt_kernel_dynamic[pd][pt] = phys | PRESENT | WRITABLE | USER_ACCESSIBLE | GLOBAL_PAGE;
         pt += 0x1;
         phys += PAGE_SIZE;
         off -= 0x1;
