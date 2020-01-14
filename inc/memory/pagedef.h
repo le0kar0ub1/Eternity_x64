@@ -78,7 +78,7 @@ typedef struct __pt_entry__
 
 typedef struct __pt_t__
 {
-    pt_entry_t entry[512];
+    pt_entry_t page[512];
 } pt_t;
 
 typedef struct __pd_t__

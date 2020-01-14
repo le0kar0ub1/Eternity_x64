@@ -2,6 +2,7 @@
 #include "vmm.h"
 #include "pmm.h"
 #include "pagedef.h"
+#include "ports.h"
 
 /* define in linker script */
 extern uint64 __KERNEL_VIRT_LINK;
@@ -13,6 +14,16 @@ extern uint8 *bitmap;
 extern virtaddr_t boostrap;
 
 pml4_t *kpml4;
+
+// void mmap(virtaddr_t page, physaddr_t frame)
+// {
+//     // uint read_cr3();
+// }
+
+// void switch_pml4(pml4_t *page)
+// {
+
+// }
 
 void init_paging(void)
 {
@@ -27,6 +38,7 @@ void init_paging(void)
         boostrap_allocate_page(kpml4, (virtaddr_t)mapp, PRESENT | WRITABLE | GLOBAL_PAGE | USER_ACCESSIBLE);
         mapp += PAGE_SIZE;
     }
-
+    write_cr3(V2P(kpml4));
+    serial_kprint("OUT OF MAPPING\n");
     while (1);
 }

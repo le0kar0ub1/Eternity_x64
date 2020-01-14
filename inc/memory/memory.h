@@ -34,7 +34,7 @@ void *kalloc(uint size);
 void kfree(void *ptr);
 /* boostrap */
 virtaddr_t boostrap_kalloc(uint64 size);
-virtaddr_t boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
+void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
 
 /* invalid a page of TLB (TLB increase speed if addr was already paged) */
 static inline void invlpg(void *addr)
