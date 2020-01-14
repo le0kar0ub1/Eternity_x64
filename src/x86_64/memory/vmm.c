@@ -105,8 +105,8 @@ void free_page(virtaddr_t rect)
 
 void mmap(virtaddr_t virt, physaddr_t phys, uint off)
 {
-    uint16 pml4 = PML4_INDEX(virt);
-    uint16 pdpt = PML4_INDEX(virt);
+    // uint16 pml4 = PML4_INDEX(virt);
+    // uint16 pdpt = PML4_INDEX(virt);
     uint16 pd = PD_INDEX(virt) - 0x1;
     uint16 pt = PT_INDEX(virt);
     off /= PAGE_SIZE;

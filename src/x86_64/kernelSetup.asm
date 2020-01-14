@@ -67,13 +67,16 @@ kernel_setup:
     ; init phys memory manager
     call init_pmm
 
+    extern init_paging
+    call init_paging
+jmp okay
+
     ; init new kpaging with static/dynamic part
     call init_kpaging
 
     ; init vmm
     call init_vmm
 
-    jmp okay
 
     ; init kheap allocation
     call init_kalloc

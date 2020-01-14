@@ -7,6 +7,7 @@
 
 /* this is the total hardcode pmm available */
 #define PMM_SIZE    ((uint64)M * FRAME_SIZE)
+#define BITMAP_SIZE (PMM_SIZE / FRAME_SIZE)
 
 /* bitmap chirurgical operation */
 // #define SETBITMAP(addr)   (bitmap[addr] |= (1 << (addr % FRAME_SIZE)))

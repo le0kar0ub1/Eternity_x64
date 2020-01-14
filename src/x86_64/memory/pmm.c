@@ -1,25 +1,21 @@
 #include "pmm.h"
 #include "eternity.h"
 
-/* PMM IS MANAGED BY A BIG BITMAP */
-
-extern uint64 __KERNEL_PHYS_END;
+extern uint64 __KERNEL_VIRT_END;
 
 /* start a the end of kernel phys */
 uint64 pmmStart;
 uint64 pmmEnd;
 /* a bitmap who manage pmm static memory */
-uint8 *bitmap = (uint8 *)(&__KERNEL_PHYS_END);
-uint64 blockNbr;
+uint8 *bitmap = (uint8 *)(&__KERNEL_VIRT_END);
 
 /* pmm initialization */
 void init_pmm(void)
 {
-    blockNbr = PMM_SIZE / FRAME_SIZE;
     bitmap = (uint8 *)ALIGN_FRAME((uint64)bitmap);
-    memset(bitmap, 0x0, blockNbr);
+    memset(bitmap, 0x0, BITMAP_SIZE);
     /* start pmm at next aligned address after bitmap */
-    pmmStart = (uint64)ALIGN_FRAME(((uint64)(bitmap + blockNbr)));
+    pmmStart = (uint64)ALIGN_FRAME(((uint64)(bitmap + BITMAP_SIZE)));
     pmmEnd = (uint64)(pmmStart + PMM_SIZE);
 }
 
@@ -60,7 +56,7 @@ uint64 find_free_frame(uint frameNbr)
     uint first;
     uint bitstate;
 
-    for (uint64 bit = 0x0; bit < blockNbr; bit++) {
+    for (uint64 bit = 0x0; bit < BITMAP_SIZE; bit++) {
         bitstate = BITSTATE(bit);
         if (!bitstate) {
             if (keep == frameNbr)
@@ -81,7 +77,7 @@ uint64 free_frame_nbr(void)
 {
     uint64 res = 0x0;
 
-    for (uint64 i = 0x0; i < blockNbr; i++)
+    for (uint64 i = 0x0; i < BITMAP_SIZE; i++)
         if (!BITSTATE(i))
             res++;
     return (res);
