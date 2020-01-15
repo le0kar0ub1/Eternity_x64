@@ -32,10 +32,11 @@ void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
         pdptExistence = boostrap_kalloc(sizeof(pdpt_t));
         memset(pdptExistence, 0x0, sizeof(pdpt_t));
         root->entry[index_pml4].frame      = V2P(pdptExistence);
-        root->entry[index_pml4].present    = (flag & PRESENT) > 0x0 ? 0x1 : 0x0;
-        root->entry[index_pml4].rw         = (flag & WRITABLE) > 0x0 ? 0x1 : 0x0;
-        root->entry[index_pml4].supervisor = (flag & USER_ACCESSIBLE) > 0x0 ? 0x1 : 0x0;
-        // root->entry[index_pml4].pagesize   = (flag & HUGE_PAGE) > 0x0 ? 0x1 : 0x0;
+        root->entry[index_pml4].present    = (flag & PRESENT);
+        root->entry[index_pml4].rw         = (flag & WRITABLE);
+        root->entry[index_pml4].supervisor = (flag & USER_ACCESSIBLE);
+        root->entry[index_pml4].global     = (flag & GLOBAL_PAGE);
+        // root->entry[index_pml4].pagesize   = (flag & HUGE_PAGE);
         root->ref[index_pml4] = pdptExistence;
     }
 
@@ -44,10 +45,11 @@ void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
         pdExistence = boostrap_kalloc(sizeof(pd_t));
         memset(pdExistence, 0x0, sizeof(pd_t));
         pdptExistence->entry[index_pdpt].frame      = V2P(pdExistence);
-        pdptExistence->entry[index_pdpt].present    = (flag & PRESENT) > 0x0 ? 0x1 : 0x0;
-        pdptExistence->entry[index_pdpt].rw         = (flag & WRITABLE) > 0x0 ? 0x1 : 0x0;
-        pdptExistence->entry[index_pdpt].supervisor = (flag & USER_ACCESSIBLE) > 0x0 ? 0x1 : 0x0;
-        // pdptExistence->entry[index_pdpt].pagesize   = (flag & HUGE_PAGE) > 0x0 ? 0x1 : 0x0;
+        pdptExistence->entry[index_pdpt].present    = (flag & PRESENT);
+        pdptExistence->entry[index_pdpt].rw         = (flag & WRITABLE);
+        pdptExistence->entry[index_pdpt].supervisor = (flag & USER_ACCESSIBLE);
+        pdptExistence->entry[index_pdpt].global     = (flag & GLOBAL_PAGE);
+        // pdptExistence->entry[index_pdpt].pagesize   = (flag & HUGE_PAGE);
         pdptExistence->ref[index_pdpt] = pdExistence;
     }
 
@@ -56,18 +58,20 @@ void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
         ptExistence = boostrap_kalloc(sizeof(pt_t));
         memset(ptExistence, 0x0, sizeof(pt_t));
         pdExistence->entry[index_pd].frame      = V2P(ptExistence);
-        pdExistence->entry[index_pd].present    = (flag & PRESENT) > 0x0 ? 0x1 : 0x0;
-        pdExistence->entry[index_pd].rw         = (flag & WRITABLE) > 0x0 ? 0x1 : 0x0;
-        pdExistence->entry[index_pd].supervisor = (flag & USER_ACCESSIBLE) > 0x0 ? 0x1 : 0x0;
-        // pdExistence->entry[index_pd].pagesize   = (flag & HUGE_PAGE) > 0x0 ? 0x1 : 0x0;
+        pdExistence->entry[index_pd].present    = (flag & PRESENT);
+        pdExistence->entry[index_pd].rw         = (flag & WRITABLE);
+        pdExistence->entry[index_pd].supervisor = (flag & USER_ACCESSIBLE);
+        pdExistence->entry[index_pd].global     = (flag & GLOBAL_PAGE);
+        // pdExistence->entry[index_pd].pagesize   = (flag & HUGE_PAGE);
         pdExistence->ref[index_pd] = ptExistence;
     }
 
     pt_entry_t *page = &(ptExistence->page[index_pt]);
     if (!page->present) {
         page->frame      = frame_allocator(FRAME_SIZE);
-        page->present    = (flag & PRESENT) > 0x0 ? 0x1 : 0x0;
-        page->rw         = (flag & WRITABLE) > 0x0 ? 0x1 : 0x0;
-        page->supervisor = (flag & USER_ACCESSIBLE) > 0x0 ? 0x1 : 0x0;
+        page->present    = (flag & PRESENT);
+        page->rw         = (flag & WRITABLE);
+        page->supervisor = (flag & USER_ACCESSIBLE);
+        page->global     = (flag & GLOBAL_PAGE);
     }
 }
