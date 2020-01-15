@@ -21,7 +21,7 @@ typedef void    *virtaddr_t;
 #define M (0x400 * K)
 #define G (0x400 * M)
 
-#define LOAD_PHYS_ADDR      (&__KERNEL_PHYS_START)
+#define LOAD_PHYS_ADDR      ((uint64)&__KERNEL_PHYS_START)
 #define LOAD_VIRT_ADDR      (&__KERNEL_VIRT_LINK)
 #define KERN_VIRT_BASE      (&__KERNEL_VIRT_BASE)
 #define PHYS_MM_START_USED  (ALIGN_PAGE((uint64)&__KERNEL_PHYS_END))
@@ -35,6 +35,10 @@ void kfree(void *ptr);
 /* boostrap */
 virtaddr_t boostrap_kalloc(uint64 size);
 void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
+uintptr virtToPhys(virtaddr_t virt);
+void switch_pml4(pml4_t *page);
+void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
+void free_page(virtaddr_t virt);
 
 /* invalid a page of TLB (TLB increase speed if addr was already paged) */
 static inline void invlpg(void *addr)

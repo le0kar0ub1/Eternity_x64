@@ -81,13 +81,12 @@ enable_paging:
 
     ; protected mode & paging
     mov eax, cr0
-    or eax, (1 << 31) | (1 << 16)
+    or eax, (1 << 31) | (1 << 16) | (1 << 0)
     mov cr0, eax
 
     ; flushing that
     mov eax, cr3
 	mov cr3, eax
-
     ret
 
 [section .bss]

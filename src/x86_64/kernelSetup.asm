@@ -56,8 +56,8 @@ kernel_setup:
     call init_pic
 
     ; get multiboot information provided
-    pop rdi
-    call get_multiboot_tag
+    ; pop rdi
+    ; call get_multiboot_tag
 
     ; register page fault handler
     call init_pf_handler

@@ -3,9 +3,6 @@
 
 extern uint64 __KERNEL_VIRT_END;
 
-/* start a the end of kernel phys */
-uint64 pmmStart;
-uint64 pmmEnd;
 /* a bitmap who manage pmm static memory */
 uint8 *bitmap = (uint8 *)(&__KERNEL_VIRT_END);
 
@@ -14,9 +11,6 @@ void init_pmm(void)
 {
     bitmap = (uint8 *)ALIGN_FRAME((uint64)bitmap);
     memset(bitmap, 0x0, BITMAP_SIZE);
-    /* start pmm at next aligned address after bitmap */
-    pmmStart = (uint64)ALIGN_FRAME(((uint64)(bitmap + BITMAP_SIZE)));
-    pmmEnd = (uint64)(pmmStart + PMM_SIZE);
 }
 
 physaddr_t frame_allocator(uint64 size)
@@ -32,7 +26,7 @@ physaddr_t allocate_frame(uint frameRequest)
 {
     uint64 block = find_free_frame(frameRequest);
     SETBITMAP(block, frameRequest);
-    return ((physaddr_t)(block * FRAME_SIZE) + pmmStart);
+    return ((physaddr_t)(block * FRAME_SIZE));
 }
 
 

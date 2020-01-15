@@ -17,6 +17,6 @@ set_seg_reg:
 
 initLM:
     call set_seg_reg
-    mov rsp, kernel_stack      ; re-inp the stack address
+    mov rsp, kernel_stack   ; re-load the stack address
     lea rax, [kernel_setup] ; absolute address
-    call rax                ; then jump in highe half virtual memory
+    call rax                ; then jump in highe half

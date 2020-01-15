@@ -6,13 +6,12 @@
 #define asmv __asm__ volatile
 
 #if FATAL_ASSERT
-    #define fatalAssert(expr)   \
-            if (unexpected(!(expr))) \
-                PANIC("assert(%s) failed in %s at line %d.\n", \
-                #expr, __FILE__, __LINE__);
+    #define fatalAssert(expr) if (unexpected(!expr)) \
+    PANIC("assert(%s) failed in %s at line %d.\n", #expr, __FILE__, __LINE__);
 #else
     #define fatalAssert(expr) expr
 #endif
+
 /* PANIC IF ASSERT FAILED */
 #define assert_eq(a, b)  fatalAssert((a) == (b))
 #define assert_ne(a, b)  fatalAssert((a) != (b))

@@ -9,14 +9,15 @@
 
 extern uint64 __KERNEL_VIRT_BASE;
 #define VGA_BUFFER_ADDRESS ((uint16 *)(0xB8000 + &__KERNEL_VIRT_BASE))
+// #define VGA_BUFFER_ADDRESS ((uint16 *)(0xB8000))
 
 /* struct use to managing vga */
 struct vga
 {
-    uint8  attrib;     // AKA the color
-    uint16 *buff;     // located at physical address 0xB8000
-    uint   posx;        // current pos in vga buffer x
-    uint   posy;        // current pos in vga buffer y
+    uint8  attrib; // AKA the color
+    uint16 *buff;  // located at physical address 0xB8000
+    uint   posx;   // current pos in vga buffer x
+    uint   posy;   // current pos in vga buffer y
 };
 
 // https://en.wikipedia.org/wiki/Enumerated_type enum info
