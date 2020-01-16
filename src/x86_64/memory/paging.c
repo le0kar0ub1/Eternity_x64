@@ -1,9 +1,16 @@
-#include "eternity.h"
 #include "paging.h"
+#include "vmm.h"
 #include "pmm.h"
-#include "memory.h"
+#include "pagedef.h"
+#include "ports.h"
 
-extern uint64 __KERNEL_VIRT_SIZE;
+/* from PMM */
+extern uint8 *bitmap;
+
+/* from mem boostrap */
+extern virtaddr_t boostrap;
+
+pml4_t *kpml4;
 
 void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
 {
@@ -15,6 +22,50 @@ void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
     addr += pdt  << 0x15;
     addr += pt   << 0x0C;
     return ((void *)addr);
+}
+
+uintptr virtToPhys(virtaddr_t virt)
+{
+    pml4_t *root = (pml4_t *)read_cr3();
+    assert_ne((uint64)root, 0x0);
+
+    /* address index */
+    uint16 index_pml4 = PML4_INDEX(virt);
+    uint16 index_pdpt = PDPT_INDEX(virt);
+    uint16 index_pd   = PD_INDEX(virt);
+    uint16 index_pt   = PT_INDEX(virt);
+
+    pdpt_t *pdpt = root->ref[index_pml4];
+    assert_ne((uint64)pdpt, 0x0);
+    pd_t *pd  = pdpt->ref[index_pdpt];
+    assert_ne((uint64)pd, 0x0);
+    pt_t *pt = pd->ref[index_pd];
+    assert_ne((uint64)pt, 0x0);
+    uintptr phys = (pt->page[index_pt].frame << 12) + ((uint64)virt & (0x1000 - 0x1));
+    return (phys);
+}
+
+void switch_pml4(pml4_t *page)
+{
+    uintptr phys = virtToPhys(page);
+    write_cr3(phys);
+}
+
+void init_paging(void)
+{
+    /* init the boostrap allocator */
+    boostrap = (virtaddr_t)ALIGN_PAGE(((uint64)bitmap + BITMAP_SIZE));
+    kpml4 = (pml4_t *)ALIGN_PAGE((uint64)boostrap_kalloc(sizeof(pml4_t)));
+    memset(kpml4, 0x0, sizeof(pml4_t));
+
+    /* mapp static kernel */
+    uint64 mapp = ((uint64)KERN_VIRT_BASE);
+    uint32 pageFlags = PRESENT | WRITABLE | GLOBAL_PAGE | USER_ACCESSIBLE;
+    while (mapp < ((uint64)KERN_VIRT_BASE) + (0x4 * M)) {
+        boostrap_allocate_page(kpml4, (virtaddr_t)mapp, pageFlags);
+        mapp += PAGE_SIZE;
+    }
+    write_cr3(V2P((uint64)(kpml4)));
 }
 
 void pageFault_handler(struct frame *frame)

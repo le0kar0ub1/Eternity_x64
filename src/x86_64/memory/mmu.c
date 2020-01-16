@@ -4,21 +4,8 @@
 #include "pagedef.h"
 #include "ports.h"
 
-/* from PMM */
-extern uint8 *bitmap;
 
-/* from mem boostrap */
-extern virtaddr_t boostrap;
-
-pml4_t *kpml4;
-
-// void mmap(virtaddr_t page, physaddr_t frame, int flags)
-// {
-//     pml4_t *root = (pml4_t *)read_cr3();
-//     assert_ne((uint64)root, 0x0);
-// }
-
-uintptr virtToPhys(virtaddr_t virt)
+void mmap(virtaddr_t page, physaddr_t frame, int flags)
 {
     pml4_t *root = (pml4_t *)read_cr3();
     assert_ne((uint64)root, 0x0);
@@ -29,82 +16,51 @@ uintptr virtToPhys(virtaddr_t virt)
     uint16 index_pd   = PD_INDEX(virt);
     uint16 index_pt   = PT_INDEX(virt);
 
-    pdpt_t *pdpt = root->ref[index_pml4];
-    assert_ne((uint64)pdpt, 0x0);
-    pd_t *pd  = pdpt->ref[index_pdpt];
-    assert_ne((uint64)pd, 0x0);
-    pt_t *pt = pd->ref[index_pd];
-    assert_ne((uint64)pt, 0x0);
-    uintptr phys = pt->page[index_pt].frame;
-    return (phys);
-}
-
-void switch_pml4(pml4_t *page)
-{
-    uintptr phys = virtToPhys(page);
-    write_cr3(phys);
-}
-
-// extern uint64 PDPT;
-
-uintptr tmpvirtToPhys(virtaddr_t virt)
-{
-    pml4_t *root = kpml4;;
-    // assert_eq((uint64)root, 0x0);
-
-    /* address index */
-    uint16 index_pml4 = PML4_INDEX(virt);
-    uint16 index_pdpt = PDPT_INDEX(virt);
-    uint16 index_pd   = PD_INDEX(virt);
-    uint16 index_pt   = PT_INDEX(virt);
-
-    pdpt_t *pdpt = root->ref[index_pml4];
-    assert_ne((uint64)pdpt, 0x0);
-    pd_t *pd  = pdpt->ref[index_pdpt];
-    assert_ne((uint64)pd, 0x0);
-    pt_t *pt = pd->ref[index_pd];
-    assert_ne((uint64)pt, 0x0);
-    uintptr phys = pt->page[index_pt].frame + ((uint64)virt & (0x1000 - 0x1));
-    return (phys);
-}
-
-
-void def(void);
-void init_paging(void)
-{
-    /* init the boostrap allocator */
-    boostrap = (virtaddr_t)ALIGN_PAGE(((uint64)bitmap + BITMAP_SIZE));
-    kpml4 = (pml4_t *)ALIGN_PAGE((uint64)boostrap_kalloc(sizeof(pml4_t)));
-    memset(kpml4, 0x0, sizeof(pml4_t));
-
-    /* simple test to improve the boostrap allocator */
-    /* so now we know that we are bad X) */
-    // uint64 *new = boostrap_kalloc(512 * 8);
-    // memset(new, 0x0, 512 * 8);
-    // new[511] = V2P((uint64)&PDPT) | PRESENT | WRITABLE | GLOBAL_PAGE | USER_ACCESSIBLE;
-    // tlb_quinte_flush();
-    // write_cr3(V2P((uint64)new));
-
-    serial_kprint("Pml4 Phys: %x Virt: %x\n", V2P(kpml4), (uint64)kpml4);
-    serial_kprint("Alloc Phys: %x Virt: %x\n", V2P(boostrap), (uint64)boostrap);
-    serial_kprint("PHYS: %x -> %x\n", (&__KERNEL_PHYS_START), (&__KERNEL_PHYS_END));
-    serial_kprint("VIRT: %x -> %x\n", (&__KERNEL_VIRT_LINK), (&__KERNEL_VIRT_END));
-
-    /* mapp static kernel */
-    uint64 mapp = ((uint64)KERN_VIRT_BASE);
-    uint32 pageFlags = PRESENT | WRITABLE | GLOBAL_PAGE | USER_ACCESSIBLE;
-    while (mapp < ((uint64)KERN_VIRT_BASE) + (0xA * M)) {
-        boostrap_allocate_page(kpml4, (virtaddr_t)mapp, pageFlags);
-        mapp += PAGE_SIZE;
+    pdpt_t *pdptExistence = root->ref[index_pml4];
+    if (!pdptExistence) {
+        pdptExistence = kalloc(sizeof(pdpt_t));
+        memset(pdptExistence, 0x0, sizeof(pdpt_t));
+        root->entry[index_pml4].frame      = virtToPhys(pdptExistence) >> 12;
+        root->entry[index_pml4].present    = (flag & PRESENT) > 0 ? 1 : 0;
+        root->entry[index_pml4].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
+        root->entry[index_pml4].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
+        root->entry[index_pml4].global     = (flag & GLOBAL_PAGE) > 0 ? 1 : 0;
+        // root->entry[index_pml4].pagesize   = (flag & HUGE_PAGE) > 0 ? 1 : 0;
+        root->ref[index_pml4] = pdptExistence;
     }
-    uintptr ya = tmpvirtToPhys(def);
-    serial_kprint("inproved = %x %x %x\n", ya, V2P(def), def);
-    serial_kprint("OUT OF MAPPING\n");
-    write_cr3(V2P((uint64)(kpml4)));
-    while (1);
-}
 
-void def(void)
-{
+    pd_t *pdExistence = pdptExistence->ref[index_pdpt];
+    if (!pdExistence) {
+        pdExistence = kalloc(sizeof(pd_t));
+        memset(pdExistence, 0x0, sizeof(pd_t));
+        pdptExistence->entry[index_pdpt].frame      = virtToPhys(pdExistence) >> 12;
+        pdptExistence->entry[index_pdpt].present    = (flag & PRESENT) > 0 ? 1 : 0;
+        pdptExistence->entry[index_pdpt].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
+        pdptExistence->entry[index_pdpt].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
+        pdptExistence->entry[index_pdpt].global     = (flag & GLOBAL_PAGE) > 0 ? 1 : 0;
+        // pdptExistence->entry[index_pdpt].pagesize   = (flag & HUGE_PAGE) > 0 ? 1 : 0;
+        pdptExistence->ref[index_pdpt] = pdExistence;
+    }
 
+    pt_t *ptExistence = pdExistence->ref[index_pd];
+    if (!ptExistence) {
+        ptExistence = kalloc(sizeof(pt_t));
+        memset(ptExistence, 0x0, sizeof(pt_t));
+        pdExistence->entry[index_pd].frame      = virtToPhys(ptExistence) >> 12;
+        pdExistence->entry[index_pd].present    = (flag & PRESENT) > 0 ? 1 : 0;
+        pdExistence->entry[index_pd].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
+        pdExistence->entry[index_pd].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
+        pdExistence->entry[index_pd].global     = (flag & GLOBAL_PAGE) > 0 ? 1 : 0;
+        // pdExistence->entry[index_pd].pagesize   = (flag & HUGE_PAGE) > 0 ? 1 : 0;
+        pdExistence->ref[index_pd] = ptExistence;
+    }
+
+    pt_entry_t *page = &(ptExistence->page[index_pt]);
+    if (!page->present) {
+        page->frame      = frame >> 12;
+        page->present    = (flag & PRESENT) > 0 ? 1 : 0;
+        page->rw         = (flag & WRITABLE) > 0 ? 1 : 0;
+        page->supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
+        page->global     = (flag & GLOBAL_PAGE) > 0 ? 1 : 0;
+    }
 }

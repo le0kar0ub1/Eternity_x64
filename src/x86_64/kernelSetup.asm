@@ -15,6 +15,7 @@ extern init_serial
 extern init_vga
 extern init_pic
 extern get_multiboot_tag
+extern init_paging
 extern init_pf_handler
 extern init_pmm
 extern init_kpaging
@@ -65,7 +66,6 @@ kernel_setup:
     ; init phys memory manager
     call init_pmm
 
-    extern init_paging
     call init_paging
 jmp okay
 
@@ -105,9 +105,10 @@ jmp okay
 
     call kmain ; __no_return
 
+%include "memory.inc"
     ; print 'OKAY' if all comes good
 okay:
     cli
     mov rax, 0x2f592f412f4b2f4f
-    mov QWORD [0xb8000], rax
+    mov QWORD [KERNEL_VIRT_BASE + 0xB8000], rax
     hlt

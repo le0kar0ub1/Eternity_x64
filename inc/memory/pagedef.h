@@ -3,6 +3,8 @@
 
 #include "typedef.h"
 
+/* https://gist.github.com/mvankuipers/94e4f794c6909bd124d7eaf6e840a232 */
+
 typedef struct __pml4_entry__
 {
     uint64 present : 1;              // Must be 1, region invalid if 0.

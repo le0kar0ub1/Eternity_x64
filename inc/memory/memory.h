@@ -39,8 +39,9 @@ uintptr virtToPhys(virtaddr_t virt);
 void switch_pml4(pml4_t *page);
 void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
 void free_page(virtaddr_t virt);
+void mmap(virtaddr_t page, physaddr_t frame, int flags);
 
-/* invalid a page of TLB (TLB increase speed if addr was already paged) */
+/* invalid a page of TLB (TLB increase speed if addr was already accesses) */
 static inline void invlpg(void *addr)
 {
     asmv("invlpg (%0)" :: "r"(addr) : "memory");
