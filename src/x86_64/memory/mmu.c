@@ -69,15 +69,16 @@ uintptr tmpvirtToPhys(virtaddr_t virt)
 }
 
 
+void def(void);
 void init_paging(void)
 {
     /* init the boostrap allocator */
     boostrap = (virtaddr_t)ALIGN_PAGE(((uint64)bitmap + BITMAP_SIZE));
-    kpml4 = (pml4_t *)boostrap_kalloc(sizeof(pml4_t));
+    kpml4 = (pml4_t *)ALIGN_PAGE((uint64)boostrap_kalloc(sizeof(pml4_t)));
     memset(kpml4, 0x0, sizeof(pml4_t));
 
     /* simple test to improve the boostrap allocator */
-    /* so know we know that we are bad X) */
+    /* so now we know that we are bad X) */
     // uint64 *new = boostrap_kalloc(512 * 8);
     // memset(new, 0x0, 512 * 8);
     // new[511] = V2P((uint64)&PDPT) | PRESENT | WRITABLE | GLOBAL_PAGE | USER_ACCESSIBLE;
@@ -96,9 +97,14 @@ void init_paging(void)
         boostrap_allocate_page(kpml4, (virtaddr_t)mapp, pageFlags);
         mapp += PAGE_SIZE;
     }
-    uintptr ya = tmpvirtToPhys(init_paging);
-    serial_kprint("inproved = %x %x %x\n", ya, V2P(init_paging), init_paging);
+    uintptr ya = tmpvirtToPhys(def);
+    serial_kprint("inproved = %x %x %x\n", ya, V2P(def), def);
+    serial_kprint("OUT OF MAPPING\n");
+    write_cr3(V2P((uint64)(kpml4)));
     while (1);
-    write_cr3(V2P(((uint64)(kpml4))));
-    // serial_kprint("OUT OF MAPPING\n");
+}
+
+void def(void)
+{
+
 }

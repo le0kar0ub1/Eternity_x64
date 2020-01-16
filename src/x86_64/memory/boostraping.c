@@ -31,7 +31,7 @@ void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
     if (!pdptExistence) {
         pdptExistence = boostrap_kalloc(sizeof(pdpt_t));
         memset(pdptExistence, 0x0, sizeof(pdpt_t));
-        root->entry[index_pml4].frame      = V2P(pdptExistence);
+        root->entry[index_pml4].frame      = V2P(pdptExistence) >> 12;
         root->entry[index_pml4].present    = (flag & PRESENT);
         root->entry[index_pml4].rw         = (flag & WRITABLE);
         root->entry[index_pml4].supervisor = (flag & USER_ACCESSIBLE);
@@ -44,7 +44,7 @@ void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
     if (!pdExistence) {
         pdExistence = boostrap_kalloc(sizeof(pd_t));
         memset(pdExistence, 0x0, sizeof(pd_t));
-        pdptExistence->entry[index_pdpt].frame      = V2P(pdExistence);
+        pdptExistence->entry[index_pdpt].frame      = V2P(pdExistence) >> 12;
         pdptExistence->entry[index_pdpt].present    = (flag & PRESENT);
         pdptExistence->entry[index_pdpt].rw         = (flag & WRITABLE);
         pdptExistence->entry[index_pdpt].supervisor = (flag & USER_ACCESSIBLE);
@@ -57,7 +57,7 @@ void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
     if (!ptExistence) {
         ptExistence = boostrap_kalloc(sizeof(pt_t));
         memset(ptExistence, 0x0, sizeof(pt_t));
-        pdExistence->entry[index_pd].frame      = V2P(ptExistence);
+        pdExistence->entry[index_pd].frame      = V2P(ptExistence) >> 12;
         pdExistence->entry[index_pd].present    = (flag & PRESENT);
         pdExistence->entry[index_pd].rw         = (flag & WRITABLE);
         pdExistence->entry[index_pd].supervisor = (flag & USER_ACCESSIBLE);
@@ -68,7 +68,7 @@ void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
 
     pt_entry_t *page = &(ptExistence->page[index_pt]);
     if (!page->present) {
-        page->frame      = frame_allocator(FRAME_SIZE);
+        page->frame      = frame_allocator(FRAME_SIZE) >> 12;
         page->present    = (flag & PRESENT);
         page->rw         = (flag & WRITABLE);
         page->supervisor = (flag & USER_ACCESSIBLE);
