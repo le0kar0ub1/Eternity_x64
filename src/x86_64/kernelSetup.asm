@@ -67,10 +67,6 @@ kernel_setup:
     call init_pmm
 
     call init_paging
-jmp okay
-
-    ; init vmm
-    ; call init_vmm
 
     ; init kheap allocation
     call init_kalloc
@@ -101,7 +97,6 @@ jmp okay
 
     ; init ACPI
     call init_acpi
-
 
     call kmain ; __no_return
 

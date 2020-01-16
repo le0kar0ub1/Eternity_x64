@@ -40,6 +40,8 @@ void switch_pml4(pml4_t *page);
 void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
 void free_page(virtaddr_t virt);
 void mmap(virtaddr_t page, physaddr_t frame, int flags);
+void allocate_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, uint flag);
+void free_segment(virtaddr_t start, virtaddr_t end);
 
 /* invalid a page of TLB (TLB increase speed if addr was already accesses) */
 static inline void invlpg(void *addr)

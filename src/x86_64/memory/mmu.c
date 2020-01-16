@@ -5,7 +5,7 @@
 #include "ports.h"
 
 
-void mmap(virtaddr_t page, physaddr_t frame, int flags)
+void mmap(virtaddr_t virt, physaddr_t frame, int flag)
 {
     pml4_t *root = (pml4_t *)read_cr3();
     assert_ne((uint64)root, 0x0);
@@ -62,5 +62,29 @@ void mmap(virtaddr_t page, physaddr_t frame, int flags)
         page->rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         page->supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
         page->global     = (flag & GLOBAL_PAGE) > 0 ? 1 : 0;
+    } else {
+        PANIC("Mmap failed, address %x already mapped\n", virt);
+    }
+}
+
+void allocate_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, uint flag)
+{
+    /* clean up useless part */
+    start = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
+    end   = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
+    while (start <= end) {
+        allocate_page(root, start, flag);
+        start += PAGE_SIZE;
+    }
+}
+
+void free_segment(virtaddr_t start, virtaddr_t end)
+{
+    /* clean up useless part */
+    start = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
+    end   = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
+    while (start <= end) {
+        free_page(start);
+        start += PAGE_SIZE;
     }
 }

@@ -51,6 +51,17 @@ void switch_pml4(pml4_t *page)
     write_cr3(phys);
 }
 
+void kheap_reserved(pml4_t *root)
+{
+    uint64 mapp = KHEAP_BASE_START;
+    uint32 pageFlags = PRESENT | WRITABLE | GLOBAL_PAGE | USER_ACCESSIBLE;
+
+    while (mapp < ((uint64)KHEAP_BASE_START) + KHEAP_BASE_SIZE) {
+        boostrap_allocate_page(root, (virtaddr_t)mapp, pageFlags);
+        mapp += PAGE_SIZE;
+    }
+}
+
 void init_paging(void)
 {
     /* init the boostrap allocator */
@@ -61,10 +72,12 @@ void init_paging(void)
     /* mapp static kernel */
     uint64 mapp = ((uint64)KERN_VIRT_BASE);
     uint32 pageFlags = PRESENT | WRITABLE | GLOBAL_PAGE | USER_ACCESSIBLE;
-    while (mapp < ((uint64)KERN_VIRT_BASE) + (0x4 * M)) {
+    /* static kernel memory */
+    while (mapp < ((uint64)KERN_VIRT_BASE) + BOOSTRAP_MEMORY_SIZE) {
         boostrap_allocate_page(kpml4, (virtaddr_t)mapp, pageFlags);
         mapp += PAGE_SIZE;
     }
+    kheap_reserved(kpml4);
     write_cr3(V2P((uint64)(kpml4)));
 }
 

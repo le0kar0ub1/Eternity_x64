@@ -7,11 +7,16 @@
 #include "paging.h"
 #include "vmm.h"
 
+/*
+** easy to understand the current allocator
+** let's build a better one later
+*/
+
 struct kheap {
     struct kheap *next;
     uint size;
     bool used;
-};
+} __packed;
 
 #define SIZEOF_KHEAPBLOCK sizeof(struct kheap)
 

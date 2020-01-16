@@ -72,7 +72,6 @@ char *get_cmos_rtc_time(void)
     memset(&hour, 0x0, 3);
     memset(&min, 0x0, 3);
 
-
     if (rtc->day) {
         if (rtc->day < 10)
             strcat(ret, "0");

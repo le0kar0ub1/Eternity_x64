@@ -4,13 +4,6 @@
 #include "memory.h"
 #include "interrupt.h"
 
-/* KERNEL MAPPING INDEX VALUE */
-#define KERNEL_PML4_ENTRY 511
-#define KERNEL_PDPT_ENTRY 510
-#define KERNEL_STATIC_PDT_ENTRY    0x0
-#define KERNEL_MEMMANAGE_PDT_ENTRY 0x1
-#define KERNEL_DYNAMIC_PDT_ENTRY   0x2
-
 #define PML4_INDEX(x) ((((uint64)(x)) >> 0x27) & (PAGE_ENTRY_NBR - 0x1))
 #define PDPT_INDEX(x) ((((uint64)(x)) >> 0x1E) & (PAGE_ENTRY_NBR - 0x1))
 #define PD_INDEX(x)   ((((uint64)(x)) >> 0x15) & (PAGE_ENTRY_NBR - 0x1))

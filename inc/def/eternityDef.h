@@ -15,7 +15,7 @@
 /* PANIC IF ASSERT FAILED */
 #define assert_eq(a, b)  fatalAssert((a) == (b))
 #define assert_ne(a, b)  fatalAssert((a) != (b))
-#define assert_lg(a, b)  fatalAssert((a) < (b))
+#define assert_lt(a, b)  fatalAssert((a) < (b))
 #define assert_le(a, b)  fatalAssert((a) <= (b))
 #define assert_gt(a, b)  fatalAssert((a) > (b))
 #define assert_ge(a, b)  fatalAssert((a) > (b))
