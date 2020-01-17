@@ -52,13 +52,13 @@ kernel_contextSwitch:
 
     ; RBP
     mov rbp, QWORD [rdi + 0x90]
-    ; RAX/RDI
-    mov rdi, QWORD [rdi + 0x88]
 
     ; PIC EOI
     mov al, 0xA0
     out 0x20, al
+    ; RAX/RDI
     mov rax, QWORD [rdi + 0x60]
+    mov rdi, QWORD [rdi + 0x88]
     iretq
 
 user_contextSwitch:
@@ -105,13 +105,13 @@ user_contextSwitch:
 
     ; RBP
     mov rbp, QWORD [rdi + 0x90]
-    ; RAX/RDI
-    mov rdi, QWORD [rdi + 0x88]
 
     ; PIC EOI
     mov al, 0xA0
     out 0x20, al
+    ; RAX/RDI
     mov rax, QWORD [rdi + 0x60]
+    mov rdi, QWORD [rdi + 0x88]
     iretq
 
 

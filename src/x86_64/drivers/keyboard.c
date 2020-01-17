@@ -4,7 +4,6 @@
 
 /* Scan code set for azerty keyboard */
 /* struct keys handle by the kernel driver */
-
 static uchar const azerty_keyset[128] =
 {
     0,
@@ -172,7 +171,7 @@ void key_arrow_pressed(uchar getch)
     //     posy++;
     //     mov_cursor(posx, posy);
     // }
-    else if (getch == 77 && posx < 79) {
+    else if (getch == 77 && posx < 79) { // right arrow
         posx++;
         mov_cursor(posx, posy);
     }

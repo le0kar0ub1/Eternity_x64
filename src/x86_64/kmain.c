@@ -9,15 +9,15 @@ void userspace(void);
 
 void yo(void)
 {
-    kprint("thread yooooooo\n");
     while (1);
+    kprint("thread yooooooo\n");
     // exit(0);
 }
 
 void kmain(void)
 {
     // init_tty();
-    fire_userspace();
+    // fire_userspace();
     sti();
     while (1);
     init_threads();

@@ -6,7 +6,7 @@
 
 /* A MEMORY BOOSTRAPPER, we can't manipulate this memory later */
 
-virtaddr_t boostrap = 0x0;
+virtaddr_t boostrap;
 
 /* Used to boostrap the MMU */
 virtaddr_t boostrap_kalloc(uint64 size)

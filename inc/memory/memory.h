@@ -30,11 +30,15 @@ typedef void    *virtaddr_t;
 void identity_mapp(void);
 void map_memory(ulong addr);
 void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt);
-void *kalloc(uint size);
-void kfree(void *ptr);
 /* boostrap */
 virtaddr_t boostrap_kalloc(uint64 size);
 void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
+
+/* high level */
+void kfree(void *ptr);
+virtaddr_t kalloc(uint size);
+
+/* toolchain  */
 uintptr virtToPhys(virtaddr_t virt);
 void switch_pml4(pml4_t *page);
 void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);

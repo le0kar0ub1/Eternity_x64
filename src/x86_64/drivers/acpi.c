@@ -1,10 +1,10 @@
 #include "eternity.h"
 #include "rsdp.h"
 
-struct rsdp *rsdp = NULL; 
+struct rsdp *acpi_rsdp = NULL; 
 
 void init_acpi(void)
 {
-    rsdp = get_rsdp();
-    fatalAssert(rsdp);
+    acpi_rsdp = get_rsdp();
+    fatalAssert(acpi_rsdp);
 }

@@ -37,6 +37,7 @@ struct threadDescriptor {
 void init_threads(void);
 void generateThread_fromRoutine(void *function, char const *name);
 void generateThread(char *file);
+struct threadDescriptor *getThreadDescriptor(void);
 void threadListDump(void);
 void cpuContextDump(struct cpuContext *);
 void threadDump(struct threadDescriptor *);

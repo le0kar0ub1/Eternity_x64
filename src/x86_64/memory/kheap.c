@@ -30,7 +30,7 @@ void init_kalloc(void)
 
 virtaddr_t kheap_get_free(uint size, struct kheap *kheap)
 {
-    while (kheap) {
+    while (kheap->next) {
         if (kheap->size <= size && !kheap->used) {
             kheap->used = true;
             return ((virtaddr_t)kheap + SIZEOF_KHEAPBLOCK);

@@ -40,6 +40,6 @@ void cpuContextDump(struct cpuContext *state)
     kprint("    | rflags : %b\n", state->rflags);
     kprint("    | rip : %x\n", state->rip);
     kprint("    | rsp : %x | rbp : %x\n", state->rsp, state->rbp);
-    kprint("    | cr3 : %x\n", state->cr3);
+    kprint("    | cr3 : %x (unused)\n", state->cr3);
     // kprint("    :    xmm : %l\n", state->xmm);
 }

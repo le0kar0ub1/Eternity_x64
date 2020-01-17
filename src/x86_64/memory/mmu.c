@@ -4,7 +4,6 @@
 #include "pagedef.h"
 #include "ports.h"
 
-
 void mmap(virtaddr_t virt, physaddr_t frame, int flag)
 {
     pml4_t *root = (pml4_t *)read_cr3();

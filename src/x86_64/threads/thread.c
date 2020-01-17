@@ -23,6 +23,11 @@ void setDefaultSegmentContext(struct threadDescriptor *thread)
     thread->context.gs = (USER_DATA_SELECTOR | 0x3);
 }
 
+struct threadDescriptor *getThreadDescriptor(void)
+{
+    return (threadRunning);
+}
+
 void generateThread_fromRoutine(void *function, char const *name)
 {
     struct threadDescriptor *thread = kalloc(sizeof(struct threadDescriptor));

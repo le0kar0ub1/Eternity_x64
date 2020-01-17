@@ -99,7 +99,10 @@ void pageFault_handler(struct frame *frame)
          kprint("Overwritten CPU-reserved bits of page entry\n");
      if (frame->error & ERR_PF_INST)
          kprint("Instruction fetch\n");
-     hlt();
+    cpuContextDump((struct cpuContext *)frame);
+    vga_set_attrib(VGA_WHITE, VGA_BLACK);
+    serial_kprint("Faulting address: %x\n", frame->rip);
+    hlt();
 }
 
 void init_pf_handler(void)
