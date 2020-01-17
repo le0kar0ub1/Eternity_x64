@@ -75,30 +75,42 @@ qemuflags := -cdrom $(iso)        \
 	     	 #-full-screen
 
 gcc := ~/Personnal/OSdev/cross-gcc/x86_64-elf-4.9.1-target/bin/x86_64-elf-gcc-4.9.1
-cflags := -nostdlib		 			\
-	  	  -fno-builtin           	\
-	  	  -fno-stack-protector   	\
-	  	  -W 			 			\
-	  	  -Wall 		 			\
-	  	  -Wextra					\
-	  	  -Wnested-externs 	 		\
-	  	  -Winline 		 			\
-          -Wpragmas                 \
-	  	  --std=gnu11 		 		\
-	  	  $(includeDir) 	        \
-	  	  -Wuninitialized        	\
-          -Wno-missing-braces    	\
-	      -ffreestanding         	\
-	  	  -Wcast-align           	\
-          -Wwrite-strings        	\
-          -fno-omit-frame-pointer	\
-	  	  -mno-red-zone				\
-	  	  -g3						\
-	  	  -mcmodel=kernel 			\
-		  -nostartfiles          	\
-		  -static					\
-		  -msse4.1				    \
-	  	  #-Wpadded					\
+CFLAGS := -nostdlib		 			 		\
+	  	  -fno-builtin           	 		\
+	  	  -fno-stack-protector   	 		\
+	  	  -W 			 			 		\
+	  	  -Wall 		 			 		\
+	  	  -Wextra					 		\
+	  	  -Wnested-externs 	 		 		\
+	  	  -Winline 		 			 		\
+          -Wpragmas                  		\
+	  	  --std=gnu11 		 		 		\
+	  	  $(includeDir) 	         		\
+	  	  -Wuninitialized        	 		\
+          -Wno-missing-braces    	 		\
+	      -ffreestanding         	 		\
+	  	  -Wcast-align           	 		\
+          -Wwrite-strings        	 		\
+          -fno-omit-frame-pointer	 		\
+	  	  -mno-red-zone				 		\
+	  	  -g3						 		\
+	  	  -mcmodel=kernel 			 		\
+		  -nostartfiles          	 		\
+		  -static					 		\
+		  -msse4.1				     		\
+		  -Wparentheses						\
+		  -Wunreachable-code				\
+		  -Wunused							\
+		  -Wmissing-field-initializers		\
+ 		  -Wswitch-enum						\
+ 		  -Wshadow							\
+ 		  -Wuninitialized					\
+	  	  #-Wpadded						\
+
+CFLAGS_RESTRICT :=	-Wmissing-declarations			\
+ 		  			-Wmissing-prototypes			\
+ 		  			-Wstrict-prototypes				\
+  		  			-Werror
 
 asm_src :=	$(wildcard $(addsuffix /*.asm, $(addprefix $(rootSourceDir), $(sourceDir))))
 
@@ -165,5 +177,5 @@ build/arch/$(arch)/%.o: src/$(arch)/%.asm
 	@-echo -e "\033[34m     NASM   $@\e[0m"
 
 build/arch/%.o: src/%.c
-	@$(gcc) $(cflags) -c $< -o $@
+	@$(gcc) $(CFLAGS) -c $< -o $@
 	@-echo -e "\e[34m      GCC   $@\e[0m"

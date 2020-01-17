@@ -16,7 +16,7 @@ void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
     if (!pdptExistence) {
         pdptExistence = kalloc(sizeof(pdpt_t));
         memset(pdptExistence, 0x0, sizeof(pdpt_t));
-        root->entry[index_pml4].frame      = virtToPhys(pdptExistence) >> 12;
+        root->entry[index_pml4].frame      = virtToPhys(root, pdptExistence) >> 12;
         root->entry[index_pml4].present    = (flag & PRESENT) > 0 ? 1 : 0;
         root->entry[index_pml4].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         root->entry[index_pml4].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
@@ -29,7 +29,7 @@ void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
     if (!pdExistence) {
         pdExistence = kalloc(sizeof(pd_t));
         memset(pdExistence, 0x0, sizeof(pd_t));
-        pdptExistence->entry[index_pdpt].frame      = virtToPhys(pdExistence) >> 12;
+        pdptExistence->entry[index_pdpt].frame      = virtToPhys(root, pdExistence) >> 12;
         pdptExistence->entry[index_pdpt].present    = (flag & PRESENT) > 0 ? 1 : 0;
         pdptExistence->entry[index_pdpt].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         pdptExistence->entry[index_pdpt].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
@@ -42,7 +42,7 @@ void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
     if (!ptExistence) {
         ptExistence = kalloc(sizeof(pt_t));
         memset(ptExistence, 0x0, sizeof(pt_t));
-        pdExistence->entry[index_pd].frame      = virtToPhys(ptExistence) >> 12;
+        pdExistence->entry[index_pd].frame      = virtToPhys(root, ptExistence) >> 12;
         pdExistence->entry[index_pd].present    = (flag & PRESENT) > 0 ? 1 : 0;
         pdExistence->entry[index_pd].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         pdExistence->entry[index_pd].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
@@ -61,10 +61,9 @@ void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag)
     }
 }
 
-void free_page(virtaddr_t virt)
+void free_page(pml4_t *root, virtaddr_t virt)
 {
-    pml4_t *root = (pml4_t *)read_cr3();
-    assert_ne((uint64)root, 0x0);
+    fatalAssert(root);
 
     /* address index */
     uint16 index_pml4 = PML4_INDEX(virt);

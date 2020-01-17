@@ -4,9 +4,8 @@
 #include "pagedef.h"
 #include "ports.h"
 
-void mmap(virtaddr_t virt, physaddr_t frame, int flag)
+void mmap(pml4_t *root, virtaddr_t virt, physaddr_t frame, int flag)
 {
-    pml4_t *root = (pml4_t *)read_cr3();
     assert_ne((uint64)root, 0x0);
 
     /* address index */
@@ -19,7 +18,7 @@ void mmap(virtaddr_t virt, physaddr_t frame, int flag)
     if (!pdptExistence) {
         pdptExistence = kalloc(sizeof(pdpt_t));
         memset(pdptExistence, 0x0, sizeof(pdpt_t));
-        root->entry[index_pml4].frame      = virtToPhys(pdptExistence) >> 12;
+        root->entry[index_pml4].frame      = virtToPhys(root, pdptExistence);
         root->entry[index_pml4].present    = (flag & PRESENT) > 0 ? 1 : 0;
         root->entry[index_pml4].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         root->entry[index_pml4].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
@@ -27,12 +26,11 @@ void mmap(virtaddr_t virt, physaddr_t frame, int flag)
         // root->entry[index_pml4].pagesize   = (flag & HUGE_PAGE) > 0 ? 1 : 0;
         root->ref[index_pml4] = pdptExistence;
     }
-
     pd_t *pdExistence = pdptExistence->ref[index_pdpt];
     if (!pdExistence) {
         pdExistence = kalloc(sizeof(pd_t));
         memset(pdExistence, 0x0, sizeof(pd_t));
-        pdptExistence->entry[index_pdpt].frame      = virtToPhys(pdExistence) >> 12;
+        pdptExistence->entry[index_pdpt].frame      = virtToPhys(root, pdExistence);
         pdptExistence->entry[index_pdpt].present    = (flag & PRESENT) > 0 ? 1 : 0;
         pdptExistence->entry[index_pdpt].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         pdptExistence->entry[index_pdpt].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
@@ -45,7 +43,7 @@ void mmap(virtaddr_t virt, physaddr_t frame, int flag)
     if (!ptExistence) {
         ptExistence = kalloc(sizeof(pt_t));
         memset(ptExistence, 0x0, sizeof(pt_t));
-        pdExistence->entry[index_pd].frame      = virtToPhys(ptExistence) >> 12;
+        pdExistence->entry[index_pd].frame      = virtToPhys(root, ptExistence);
         pdExistence->entry[index_pd].present    = (flag & PRESENT) > 0 ? 1 : 0;
         pdExistence->entry[index_pd].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         pdExistence->entry[index_pd].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
@@ -56,13 +54,26 @@ void mmap(virtaddr_t virt, physaddr_t frame, int flag)
 
     pt_entry_t *page = &(ptExistence->page[index_pt]);
     if (!page->present) {
-        page->frame      = frame >> 12;
+        page->frame      = frame;
+        kprint("frame = %x   %x\n", frame, page->frame);
         page->present    = (flag & PRESENT) > 0 ? 1 : 0;
         page->rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         page->supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
         page->global     = (flag & GLOBAL_PAGE) > 0 ? 1 : 0;
     } else {
         PANIC("Mmap failed, address %x already mapped\n", virt);
+    }
+}
+
+void mmap_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, physaddr_t frame, uint flag)
+{
+    /* clean up useless part */
+    start = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
+    end   = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
+    while (start <= end) {
+        mmap(root, start, frame, flag);
+        start += PAGE_SIZE;
+        frame += FRAME_SIZE;
     }
 }
 
@@ -77,13 +88,13 @@ void allocate_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, uint flag)
     }
 }
 
-void free_segment(virtaddr_t start, virtaddr_t end)
+void free_segment(pml4_t *root, virtaddr_t start, virtaddr_t end)
 {
     /* clean up useless part */
     start = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
     end   = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
     while (start <= end) {
-        free_page(start);
+        free_page(root, start);
         start += PAGE_SIZE;
     }
 }

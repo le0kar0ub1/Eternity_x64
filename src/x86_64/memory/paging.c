@@ -3,6 +3,7 @@
 #include "pmm.h"
 #include "pagedef.h"
 #include "ports.h"
+#include "threads.h"
 
 /* from PMM */
 extern uint8 *bitmap;
@@ -24,9 +25,8 @@ void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
     return ((void *)addr);
 }
 
-uintptr virtToPhys(virtaddr_t virt)
+uintptr virtToPhys(pml4_t *root, virtaddr_t virt)
 {
-    pml4_t *root = (pml4_t *)read_cr3();
     assert_ne((uint64)root, 0x0);
 
     /* address index */
@@ -41,13 +41,13 @@ uintptr virtToPhys(virtaddr_t virt)
     assert_ne((uint64)pd, 0x0);
     pt_t *pt = pd->ref[index_pd];
     assert_ne((uint64)pt, 0x0);
-    uintptr phys = (pt->page[index_pt].frame << 12) + ((uint64)virt & (0x1000 - 0x1));
+    uintptr phys = (pt->page[index_pt].frame << 12) + PAGE_OFFSET(virt);
     return (phys);
 }
 
-void switch_pml4(pml4_t *page)
+void switch_pml4(pml4_t *root, pml4_t *new)
 {
-    uintptr phys = virtToPhys(page);
+    uintptr phys = virtToPhys(root, new);
     write_cr3(phys);
 }
 

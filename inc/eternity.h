@@ -19,6 +19,7 @@
 #include "bitfield.h"
 #include "assembly_inlineInstruction.h"
 #include "memory.h"
+#include "cpuContext.h"
 #include "tty.h"
 #include "kconfig.h"
 

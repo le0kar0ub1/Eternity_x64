@@ -28,14 +28,14 @@ void init_kalloc(void)
     kheap_curblock = kheap;
 }
 
-virtaddr_t kheap_get_free(uint size, struct kheap *kheap)
+virtaddr_t kheap_get_free(uint size, struct kheap *start)
 {
-    while (kheap->next) {
-        if (kheap->size <= size && !kheap->used) {
-            kheap->used = true;
-            return ((virtaddr_t)kheap + SIZEOF_KHEAPBLOCK);
+    while (start->next) {
+        if (start->size <= size && !start->used) {
+            start->used = true;
+            return ((virtaddr_t)start + SIZEOF_KHEAPBLOCK);
         }
-        kheap = kheap->next;
+        start = start->next;
     }
     return (NULL);
 }

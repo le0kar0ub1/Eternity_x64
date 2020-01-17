@@ -2,6 +2,7 @@
 #define _ETERNITY_DEF_H_
 
 #include "kconfig.h"
+#include "sysdef.h"
 
 #define asmv __asm__ volatile
 
@@ -44,5 +45,6 @@
 #define ALIGN_PAGE(x)      (ALIGN(x, PAGE_SIZE))
 #define ALIGN_FRAME(x)     (ALIGN(x, FRAME_SIZE))
 #define IS_PAGE_ALIGNED(x) (!((uintptr)(x) & (PAGE_SIZE - 0x1)))
+#define ROUND_DOWN(x)       (x & (MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)))
 
 #endif

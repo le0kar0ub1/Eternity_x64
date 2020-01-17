@@ -2,13 +2,8 @@
 #define _MEMORY_H_
 
 #include "eternity.h"
+#include "sysdef.h"
 #include "pagedef.h"
-
-extern uint64 __KERNEL_VIRT_BASE;
-extern uint64 __KERNEL_VIRT_LINK;
-extern uint64 __KERNEL_VIRT_END;
-extern uint64 __KERNEL_PHYS_START;
-extern uint64 __KERNEL_PHYS_END;
 
 /* page define at boot are accessed with translation */
 #define V2P(x) ((uint64)x - (uint64)(&__KERNEL_VIRT_BASE))
@@ -20,11 +15,6 @@ typedef void    *virtaddr_t;
 #define K 0x400
 #define M (0x400 * K)
 #define G (0x400 * M)
-
-#define LOAD_PHYS_ADDR      ((uint64)&__KERNEL_PHYS_START)
-#define LOAD_VIRT_ADDR      (&__KERNEL_VIRT_LINK)
-#define KERN_VIRT_BASE      (&__KERNEL_VIRT_BASE)
-#define PHYS_MM_START_USED  (ALIGN_PAGE((uint64)&__KERNEL_PHYS_END))
 
 /* paging memory */
 void identity_mapp(void);
@@ -39,13 +29,15 @@ void kfree(void *ptr);
 virtaddr_t kalloc(uint size);
 
 /* toolchain  */
-uintptr virtToPhys(virtaddr_t virt);
-void switch_pml4(pml4_t *page);
+uintptr virtToPhys(pml4_t *root, virtaddr_t virt);
+void switch_pml4(pml4_t *root, pml4_t *new);
 void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
-void free_page(virtaddr_t virt);
-void mmap(virtaddr_t page, physaddr_t frame, int flags);
+void free_page(pml4_t *root, virtaddr_t virt);
+void mmap(pml4_t *root, virtaddr_t page, physaddr_t frame, int flags);
 void allocate_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, uint flag);
-void free_segment(virtaddr_t start, virtaddr_t end);
+void mmap_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, physaddr_t frame, uint flag);
+void free_segment(pml4_t *root, virtaddr_t start, virtaddr_t end);
+virtaddr_t physical_mmap(pml4_t *root, physaddr_t phys, uint size, int flag);
 
 /* invalid a page of TLB (TLB increase speed if addr was already accesses) */
 static inline void invlpg(void *addr)

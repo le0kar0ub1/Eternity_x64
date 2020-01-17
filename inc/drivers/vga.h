@@ -3,12 +3,12 @@
 
 #include "eternity.h"
 #include "cursor.h"
+#include "sysdef.h"
 
 #define VGA_WIDTH  80
 #define VGA_HEIGHT 25
 
-extern uint64 __KERNEL_VIRT_BASE;
-#define VGA_BUFFER_ADDRESS ((uint16 *)((uint64)0xB8000 + (uint64)(&__KERNEL_VIRT_BASE)))
+#define VGA_BUFFER_ADDRESS ((uint16 *)((uint64)0xB8000 + (uint64)(KERN_VIRT_BASE)))
 
 /* struct use to managing vga */
 struct vga
