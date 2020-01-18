@@ -20,9 +20,9 @@ struct sysheap {
 
 void dump_system_heap(void);
 void init_system_alloc(void);
-virtaddr_t sysheap_get_free(struct sysheap *start);
-virtaddr_t sysheap_new_block(void);
-virtaddr_t sysalloc(void);
+virtaddr_t sysheap_get_free(struct sysheap *start, uint);
+virtaddr_t sysheap_new_block(uint);
+virtaddr_t sysalloc(uint);
 void sysfree(virtaddr_t ptr);
 
 #endif

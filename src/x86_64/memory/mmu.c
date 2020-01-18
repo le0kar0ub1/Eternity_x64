@@ -3,6 +3,7 @@
 #include "pmm.h"
 #include "pagedef.h"
 #include "ports.h"
+#include "sysheap.h"
 
 void mmap(pml4_t *root, virtaddr_t virt, physaddr_t frame, int flag)
 {
@@ -16,10 +17,9 @@ void mmap(pml4_t *root, virtaddr_t virt, physaddr_t frame, int flag)
 
     pdpt_t *pdptExistence = root->ref[index_pml4];
     if (!pdptExistence) {
-        pdptExistence = kalloc(sizeof(pdpt_t));
+        pdptExistence = sysalloc(sizeof(pdpt_t));
         memset(pdptExistence, 0x0, sizeof(pdpt_t));
         root->entry[index_pml4].frame      = virtToPhys(root, pdptExistence) >> 12;
-        kprint("DEBUG virt: %x   |  phys  %x\n", (uint64)pdptExistence, (uint64)virtToPhys(root, pdptExistence));
         root->entry[index_pml4].present    = (flag & PRESENT) > 0 ? 1 : 0;
         root->entry[index_pml4].rw         = (flag & WRITABLE) > 0 ? 1 : 0;
         root->entry[index_pml4].supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
@@ -29,7 +29,7 @@ void mmap(pml4_t *root, virtaddr_t virt, physaddr_t frame, int flag)
     }
     pd_t *pdExistence = pdptExistence->ref[index_pdpt];
     if (!pdExistence) {
-        pdExistence = kalloc(sizeof(pd_t));
+        pdExistence = sysalloc(sizeof(pd_t));
         memset(pdExistence, 0x0, sizeof(pd_t));
         pdptExistence->entry[index_pdpt].frame      = virtToPhys(root, pdExistence) >> 12;
         pdptExistence->entry[index_pdpt].present    = (flag & PRESENT) > 0 ? 1 : 0;
@@ -42,7 +42,7 @@ void mmap(pml4_t *root, virtaddr_t virt, physaddr_t frame, int flag)
 
     pt_t *ptExistence = pdExistence->ref[index_pd];
     if (!ptExistence) {
-        ptExistence = kalloc(sizeof(pt_t));
+        ptExistence = sysalloc(sizeof(pt_t));
         memset(ptExistence, 0x0, sizeof(pt_t));
         pdExistence->entry[index_pd].frame      = virtToPhys(root, ptExistence) >> 12;
         pdExistence->entry[index_pd].present    = (flag & PRESENT) > 0 ? 1 : 0;

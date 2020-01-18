@@ -21,11 +21,11 @@ void mark_pmm_as_allocated(physaddr_t start, physaddr_t end)
         end = ALIGN_FRAME(end);
     if (end > BITMAP_SIZE * FRAME_SIZE)
         PANIC("PMM request is out ouf memory\n");
-    for (uint8 tmp = (uint8)start; tmp < end / FRAME_SIZE; tmp++)
+    for (uint64 tmp = (((uint64)start) / FRAME_SIZE); tmp < end / FRAME_SIZE; tmp++)
         if (BITSTATE(tmp))
             PANIC("PMM request is already mapped\n");
-    uint8 request = end / FRAME_SIZE - start / FRAME_SIZE;
-    for (uint8 tmp = (uint8)(start / FRAME_SIZE); tmp < end / FRAME_SIZE; tmp++) {
+    uint64 request = ((uint64)end / FRAME_SIZE) - ((uint64)start / FRAME_SIZE);
+    for (uint64 tmp = (((uint64)start) / FRAME_SIZE); tmp < end / FRAME_SIZE; tmp++) {
         SETBITMAP(tmp, request);
         request = 0x1;
     }
