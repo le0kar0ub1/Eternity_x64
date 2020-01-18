@@ -34,10 +34,9 @@ virtaddr_t acpi_premap(physaddr_t phys, int size)
 {
     virtaddr_t mapped = physical_mmap(kpml4, phys, size, PRESENT | WRITABLE | GLOBAL_PAGE);
     kprint("%x\n", mapped);
-    kprint("%x %x\n", phys, (uint64)virtToPhys(kpml4, mapped));
-    uint64 *test = mapped;
-    test[0] = 0x0;
+    kprint("%x %x\n", phys, virtToPhys(kpml4, mapped));
     while (1);
+    memset(mapped, 0x0, 0x2);
     fatalAssert(mapped);
     return (mapped);
 }

@@ -51,12 +51,19 @@ void switch_pml4(pml4_t *root, pml4_t *new)
     write_cr3(phys);
 }
 
-void kheap_reserved(pml4_t *root)
+void heap_reserved(pml4_t *root)
 {
     uint64 mapp = KHEAP_BASE_START;
     uint32 pageFlags = PRESENT | WRITABLE | GLOBAL_PAGE | USER_ACCESSIBLE;
 
+    /* mapp the kheap not aligned */
     while (mapp < ((uint64)KHEAP_BASE_START) + KHEAP_BASE_SIZE) {
+        boostrap_allocate_page(root, (virtaddr_t)mapp, pageFlags);
+        mapp += PAGE_SIZE;
+    }
+    /* mapp a system memory which will be used full aligned */
+    mapp = SYSTEM_HEAP_BASE_START;
+    while (mapp < ((uint64)SYSTEM_HEAP_BASE_START) + SYSTEM_HEAP_BASE_SIZE) {
         boostrap_allocate_page(root, (virtaddr_t)mapp, pageFlags);
         mapp += PAGE_SIZE;
     }
@@ -77,7 +84,7 @@ void init_paging(void)
         boostrap_allocate_page(kpml4, (virtaddr_t)mapp, pageFlags);
         mapp += PAGE_SIZE;
     }
-    kheap_reserved(kpml4);
+    heap_reserved(kpml4);
     write_cr3(V2P((uint64)(kpml4)));
 }
 

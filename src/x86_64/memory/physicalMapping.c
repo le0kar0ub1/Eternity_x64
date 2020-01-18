@@ -32,8 +32,10 @@ virtaddr_t physical_mmap(pml4_t *root, physaddr_t phys, uint size, int flag)
 {
     if (!IS_PAGE_ALIGNED(size))
         size = ALIGN_PAGE(size);
-    uint page = size / PAGE_SIZE;
+    uint page = (size + (phys - ROUND_DOWN(phys))) / PAGE_SIZE;
 
+    /* align on the lower page */
+    phys = ROUND_DOWN(phys);
     virtaddr_t virt = fromIndexToAdrr(VMM_PHYS_MAPPING_RESERVED_PML4_INDEX, VMM_PHYS_MAPPING_RESERVED_PDPT_INDEX,
     VMM_PHYS_MAPPING_RESERVED_PD_INDEX, VMM_PHYS_MAPPING_RESERVED_PT_INDEX);
     while (page > 0x0) {

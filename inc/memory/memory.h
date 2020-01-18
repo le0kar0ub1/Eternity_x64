@@ -38,8 +38,9 @@ void allocate_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, uint flag)
 void mmap_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, physaddr_t frame, uint flag);
 void free_segment(pml4_t *root, virtaddr_t start, virtaddr_t end);
 virtaddr_t physical_mmap(pml4_t *root, physaddr_t phys, uint size, int flag);
+void mark_pmm_as_allocated(physaddr_t start, physaddr_t end);
 
-/* invalid a page of TLB (TLB increase speed if addr was already accesses) */
+/* invalid a page of TLB (TLB increase speed if addr was already accessed) */
 static inline void invlpg(void *addr)
 {
     asmv("invlpg (%0)" :: "r"(addr) : "memory");

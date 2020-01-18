@@ -21,6 +21,7 @@ extern init_pmm
 extern init_kpaging
 extern init_vmm
 extern init_kalloc
+extern init_system_alloc
 extern init_simd
 extern init_timer
 extern init_keyboard
@@ -70,6 +71,9 @@ kernel_setup:
 
     ; init kheap allocation
     call init_kalloc
+
+    ; init system allocator ALIGNED ON 0X1000
+    call init_system_alloc
 
     ; print hello from eternity
     call helloFromEternity
