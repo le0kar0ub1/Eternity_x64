@@ -6,12 +6,14 @@
 
 struct rsdt {
     struct acpi_header header;
-    uint32 *tables; // pointer is on the table
+    /* table declare with [1] to point self but contain more than 1 index */
+    uint32 tables[1];
 } __packed;
 
 struct xsdt {
     struct acpi_header header;
-    physaddr_t *tables; // pointer is on the table
+    /* table declare with [1] to point self but contain more than 1 index */
+    physaddr_t tables[1];
 } __packed;
 
 #endif

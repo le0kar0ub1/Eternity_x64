@@ -45,6 +45,10 @@ void get_multiboot_tag(uintptr addr)
             ((struct multiboot_tag_module *) tag)->mod_end,
             ((struct multiboot_tag_module *) tag)->cmdline);
             break;
+        case MULTIBOOT_TAG_TYPE_ACPI_OLD:
+            break;
+        case MULTIBOOT_TAG_TYPE_ACPI_NEW:
+            break;
         }
         /* next tag */
         tag = (struct multiboot_tag *) ((uchar const *)tag + ((tag->size + 7) & ~7));

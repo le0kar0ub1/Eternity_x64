@@ -25,6 +25,26 @@ void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
     return ((void *)addr);
 }
 
+bool isPageAlreadyMapped(pml4_t *root, virtaddr_t *virt)
+{
+    assert_ne((uint64)root, 0x0);
+
+    /* address index */
+    uint16 index_pml4 = PML4_INDEX(virt);
+    uint16 index_pdpt = PDPT_INDEX(virt);
+    uint16 index_pd   = PD_INDEX(virt);
+    uint16 index_pt   = PT_INDEX(virt);
+
+    pdpt_t *pdpt = root->ref[index_pml4];
+    assert_ne((uint64)pdpt, 0x0);
+    pd_t *pd  = pdpt->ref[index_pdpt];
+    assert_ne((uint64)pd, 0x0);
+    pt_t *pt = pd->ref[index_pd];
+    assert_ne((uint64)pt, 0x0);
+    bool ismapped = pt->page[index_pt].present;
+    return (ismapped);
+}
+
 uintptr virtToPhys(pml4_t *root, virtaddr_t virt)
 {
     assert_ne((uint64)root, 0x0);

@@ -33,12 +33,14 @@ uintptr virtToPhys(pml4_t *root, virtaddr_t virt);
 void switch_pml4(pml4_t *root, pml4_t *new);
 void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
 void free_page(pml4_t *root, virtaddr_t virt);
-void mmap(pml4_t *root, virtaddr_t page, physaddr_t frame, int flags);
+bool mmap(pml4_t *root, virtaddr_t page, physaddr_t frame, int flags);
 void allocate_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, uint flag);
-void mmap_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, physaddr_t frame, uint flag);
+bool mmap_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, physaddr_t frame, uint flag);
 void free_segment(pml4_t *root, virtaddr_t start, virtaddr_t end);
 virtaddr_t physical_mmap(pml4_t *root, physaddr_t phys, uint size, int flag);
-void mark_pmm_as_allocated(physaddr_t start, physaddr_t end);
+bool mark_pmm_as_allocated(physaddr_t start, physaddr_t end);
+bool isPageAlreadyMapped(pml4_t *root, virtaddr_t *virt);
+bool isFrameAlreadyMapped(physaddr_t phys);
 
 /* invalid a page of TLB (TLB increase speed if addr was already accessed) */
 static inline void invlpg(void *addr)

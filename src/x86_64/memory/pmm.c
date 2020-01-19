@@ -13,7 +13,15 @@ void init_pmm(void)
     memset(bitmap, 0x0, BITMAP_SIZE);
 }
 
-void mark_pmm_as_allocated(physaddr_t start, physaddr_t end)
+bool isFrameAlreadyMapped(physaddr_t phys)
+{
+    uint idx = (phys >> 12) / FRAME_SIZE;
+    if (bitmap[idx])
+        return (true);
+    return (false);
+}
+
+bool mark_pmm_as_allocated(physaddr_t start, physaddr_t end)
 {
     if (!IS_PAGE_ALIGNED(start))
         start = ROUND_DOWN(start);
@@ -23,12 +31,13 @@ void mark_pmm_as_allocated(physaddr_t start, physaddr_t end)
         PANIC("PMM request is out ouf memory\n");
     for (uint64 tmp = (((uint64)start) / FRAME_SIZE); tmp < end / FRAME_SIZE; tmp++)
         if (BITSTATE(tmp))
-            PANIC("PMM request is already mapped\n");
+            return (false);
     uint64 request = ((uint64)end / FRAME_SIZE) - ((uint64)start / FRAME_SIZE);
     for (uint64 tmp = (((uint64)start) / FRAME_SIZE); tmp < end / FRAME_SIZE; tmp++) {
         SETBITMAP(tmp, request);
         request = 0x1;
     }
+    return (true);
 }
 
 physaddr_t frame_allocator(uint64 size)

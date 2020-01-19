@@ -8,55 +8,55 @@ grub_cfg := src/grub.cfg
 rootSourceDir	:= src/$(arch)/
 
 includeDir := $(addprefix -Iinc/,			\
-                         	descriptors		\
-                         	boot			\
-                         	interrupt		\
-                         	def				\
-                         	drivers			\
-                         	memory			\
-                         	lib				\
-                         	system			\
-                         	tty				\
-                         	processor		\
-                         	threads       	\
-                            abstractor      \
-                         	/				\
+							descriptors		\
+							boot			\
+							interrupt		\
+							def				\
+							drivers			\
+							memory			\
+							lib				\
+							system			\
+							tty				\
+							processor		\
+							threads		 	\
+						   abstractor		\
+							/				\
     					 	)
 sourceDir := 	/					\
 				boot				\
 				assemblyToolChain	\
-                descriptors        	\
- 				drivers			    \
-  				lib				    \
-   				interrupts   	    \
-                interrupts/syscall  \
-    			memory			    \
-	 		    processor		    \
-	  			network			    \
-	   			system			    \
-	    		tty				    \
-		 		abstractor		    \
+				descriptors			\
+				drivers				\
+				lib					\
+				interrupts			\
+				interrupts/syscall	\
+				memory				\
+				processor			\
+				network				\
+				system				\
+				tty					\
+				abstractor			\
 				userspace			\
 				threads
 
 
 ld := ld
 ldflags := -n						\
-	   	   -nostdlib				\
-	   	   -entry=_start			\
-		   -z max-page-size=0x1000	\
-		   -g						\
-	   	  #$(ldflags_debug)
+			-nostdlib				\
+			-entry=_start			\
+			-z max-page-size=0x1000	\
+			-g						\
+			#$(ldflags_debug)
 
 ldflags_debug := --cref			\
-	   	 		--print-map		\
-	   	 		--relocatable	\
+				--print-map		\
+				--relocatable	\
 
 nasm := nasm
 asflags :=  -felf64         \
-            $(includeDir)   \
-            -w+all          \
-            -Werror
+			$(includeDir)   \
+			-w+all          \
+			-Werror
 
 qemuarch := qemu-system-x86_64
 qemu_networking :=   -net nic,vlan=0,model=rtl8139 -net user,vlan=0 #-net nic,model=rtl8139 -net user #-netdev user,id=n1 -device rtl8139,netdev=n1
@@ -69,7 +69,7 @@ qemu_basic_device := -usb		\
 
 qemuflags := -cdrom $(iso)        \
 	         -enable-kvm          \
-			 -m 4G                \
+			 -m 4G				\
 		     #-boot menu=on        \
 		     #$(qemu_basic_device)
 	     	 #-full-screen
@@ -83,7 +83,7 @@ CFLAGS := -nostdlib		 			 		\
 	  	  -Wextra					 		\
 	  	  -Wnested-externs 	 		 		\
 	  	  -Winline 		 			 		\
-          -Wpragmas                  		\
+          -Wpragmas				  		\
 	  	  --std=gnu11 		 		 		\
 	  	  $(includeDir) 	         		\
 	  	  -Wuninitialized        	 		\
@@ -140,7 +140,7 @@ run:
 info:
 	@$(qemuarch) $(qemuflags)           \
             -d int,cpu_reset            \
-            --no-reboot                 \
+            --no-reboot				 \
             -monitor stdio
 
 gdbdebug:

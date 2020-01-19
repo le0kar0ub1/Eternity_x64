@@ -1,9 +1,9 @@
 # Eternity is a x86_64 kernel
 
-**Eternity is a kernel wrote (with love) in C and x86 assembly.**
+**Eternity is a kernel wroten (with love) in C and x86 assembly.**
 
 ## DEPENDENCY:
-    - QEMU/QEMU-KVM (need setting Virtualisation in BIOS)
+    - QEMU / QEMU-KVM (Virtualisation)
 
     - NASM
 
@@ -19,7 +19,7 @@ _Eternity is running with KVM module, if this can't be set on your computer dele
 ## INTERACTION:
     - TTY (azerty keyboard only)
     - Command line ("help" in to see available commands)
-    - char '²' change the text coloration (yes, it's useless)
+    - touch '²' change the text color (yes, it's useless)
 
 ## BUILT:
     - Multiboot 2 boot
@@ -41,5 +41,4 @@ _Eternity is running with KVM module, if this can't be set on your computer dele
 ## EPILOGUE
 _Eternity is in development._
 
-sure you want the QEMU technical documentation:
-https://qemu.weilnetz.de/doc/qemu-doc.html
+sure you want the QEMU technical documentation: https://qemu.weilnetz.de/doc/qemu-doc.html

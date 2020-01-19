@@ -13,6 +13,10 @@ uint8 rsdp_checksum_isvalid(uint8 *check, size_t sz)
 
 struct rsdp *get_rsdp(void)
 {
+    /*
+    ** we have identity mapped LOAD_VIRT_ADDR -> 0x0 
+    ** then we can access these address with a simple P2V
+    */
     virtaddr_t virt = (virtaddr_t)P2V(RSDP_SEARCH_START);
     virtaddr_t end = (virtaddr_t)P2V(RSDP_SEARCH_END);
 

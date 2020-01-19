@@ -5,7 +5,7 @@
 #include "ports.h"
 #include "sysheap.h"
 
-void mmap(pml4_t *root, virtaddr_t virt, physaddr_t frame, int flag)
+bool mmap(pml4_t *root, virtaddr_t virt, physaddr_t frame, int flag)
 {
     assert_ne((uint64)root, 0x0);
 
@@ -61,20 +61,24 @@ void mmap(pml4_t *root, virtaddr_t virt, physaddr_t frame, int flag)
         page->supervisor = (flag & USER_ACCESSIBLE) > 0 ? 1 : 0;
         page->global     = (flag & GLOBAL_PAGE) > 0 ? 1 : 0;
     } else {
-        PANIC("Mmap failed, address %x already mapped\n", virt);
+        return (false);
+        verbose_log("Mmap failed, address %x already mapped\n", virt);
     }
+    return (true);
 }
 
-void mmap_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, physaddr_t frame, uint flag)
+bool mmap_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, physaddr_t frame, uint flag)
 {
     /* clean up useless part */
     start = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
     end   = (virtaddr_t)((uint64)start & (uint64)(MAX_ADDR_64B_SYS - (PAGE_SIZE - 0x1)));
     while (start <= end) {
-        mmap(root, start, frame, flag);
+        if (!mmap(root, start, frame, flag))
+            return (false);
         start += PAGE_SIZE;
         frame += FRAME_SIZE;
     }
+    return (true);
 }
 
 void allocate_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, uint flag)
