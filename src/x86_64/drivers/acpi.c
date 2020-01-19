@@ -27,16 +27,13 @@ bool acpi_checksum(struct acpi_header *header)
 }
 
 /*
-** we have got the good idea to load the kernel really high in memory 
-** and now all the system physical ptr can't be accessed directly
+** We have got the good idea to load the kernel really high in memory 
+** and now all the system ptr can't be accessed directly
+** then, we must map ptr by ptr to access them
 */
 virtaddr_t acpi_premap(physaddr_t phys, int size)
 {
     virtaddr_t mapped = physical_mmap(kpml4, phys, size, PRESENT | WRITABLE | GLOBAL_PAGE);
-    kprint("%x\n", mapped);
-    kprint("%x %x\n", phys, virtToPhys(kpml4, mapped) << 12);
-    while (1);
-    memset(mapped, 0x0, 0x2);
     fatalAssert(mapped);
     return (mapped);
 }

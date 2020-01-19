@@ -33,11 +33,13 @@ virtaddr_t physical_mmap(pml4_t *root, physaddr_t phys, uint size, int flag)
     if (!IS_PAGE_ALIGNED(size))
         size = ALIGN_PAGE(size);
     uint page = (size + (phys - ROUND_DOWN(phys))) / PAGE_SIZE;
+    uint physOffset = phys & (PAGE_SIZE - 0x1);
 
     /* align on the lower page */
     phys = ROUND_DOWN(phys);
     virtaddr_t virt = fromIndexToAdrr(VMM_PHYS_MAPPING_RESERVED_PML4_INDEX, VMM_PHYS_MAPPING_RESERVED_PDPT_INDEX,
     VMM_PHYS_MAPPING_RESERVED_PD_INDEX, VMM_PHYS_MAPPING_RESERVED_PT_INDEX);
+    virtaddr_t allocated = virt;
     while (page > 0x0) {
         mark_pmm_as_allocated(phys, phys + FRAME_SIZE);
         mmap(root, virt, phys, flag);
@@ -46,5 +48,5 @@ virtaddr_t physical_mmap(pml4_t *root, physaddr_t phys, uint size, int flag)
         virt += PAGE_SIZE;
         page -= 0x1;
     }
-    return (virt);
+    return ((virtaddr_t)((uint64)allocated + physOffset));
 }

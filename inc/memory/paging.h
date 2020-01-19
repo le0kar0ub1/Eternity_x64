@@ -8,7 +8,7 @@
 #define PDPT_INDEX(x)  ((((uint64)(x)) >> 0x1E) & (PAGE_ENTRY_NBR - 0x1))
 #define PD_INDEX(x)    ((((uint64)(x)) >> 0x15) & (PAGE_ENTRY_NBR - 0x1))
 #define PT_INDEX(x)    ((((uint64)(x)) >> 0x0C) & (PAGE_ENTRY_NBR - 0x1))
-#define PAGE_OFFSET(x) ((uint64)x & (0x1000 - 0x1))
+#define PAGE_OFFSET(x) ((uint64)x & (PAGE_SIZE - 0x1))
 
 #define PAGE_ENTRY_NBR  0x200
 
