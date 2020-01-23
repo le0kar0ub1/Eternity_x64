@@ -12,6 +12,9 @@
 typedef uintptr physaddr_t;
 typedef void    *virtaddr_t;
 
+#define MMAP_DEFAULT_KERNEL_SPACE (WRITABLE | PRESENT | GLOBAL_PAGE)
+#define MMAP_DEFAULT_USER_SPACE   (WRITABLE | PRESENT | USER_ACCESSIBLE | GLOBAL_PAGE)
+
 #define K 0x400
 #define M (0x400 * K)
 #define G (0x400 * M)
@@ -39,8 +42,10 @@ bool mmap_segment(pml4_t *root, virtaddr_t start, virtaddr_t end, physaddr_t fra
 void free_segment(pml4_t *root, virtaddr_t start, virtaddr_t end);
 virtaddr_t physical_mmap(pml4_t *root, physaddr_t phys, uint size, int flag);
 bool mark_pmm_as_allocated(physaddr_t start, physaddr_t end);
-bool isPageAlreadyMapped(pml4_t *root, virtaddr_t *virt);
+bool isPageAlreadyMapped(pml4_t *root, virtaddr_t virt);
 bool isFrameAlreadyMapped(physaddr_t phys);
+virtaddr_t get_current_pml4(void);
+void dumpPageAttrib(pml4_t *root, virtaddr_t virt);
 
 /* invalid a page of TLB (TLB increase speed if addr was already accessed) */
 static inline void invlpg(void *addr)

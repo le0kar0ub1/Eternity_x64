@@ -28,7 +28,7 @@ syscall_handler:
     ; sti
     cli ; occured big problem if handler interrupt during system call.... IDK why
 
-    ; for it... we don't need to save register when syscall occured normally
+    ; for that... we don't need to save register when syscall occured normally
     ; but i find that is most proper and easy for developpers
     push rdi
     push rsi

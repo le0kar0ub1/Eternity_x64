@@ -67,7 +67,7 @@ void acpi_read_table(struct acpi_header *head)
             acpi_mcfg = (struct acpi_mcfg *)head;
             break;
         default:
-            verbose_log("Unknow acpi signature\n");
+            // verbose_log("Unknow acpi signature\n");
             break;
     }
 }
@@ -83,17 +83,26 @@ void acpi_get_table(void)
         for (uint inc = 0x0; inc < entries; inc++) {
             uintptr physHdr = (uintptr)virtrsdt->tables[inc];
             struct acpi_header *virtHdr = acpi_premap(physHdr, 0x80);
-            acpi_print_table(virtHdr);
             acpi_read_table(virtHdr);
-            serial_kprint("phys table[%d] = %x %x\n", inc, (uint64)physHdr, (uint64)virtHdr);
+            // acpi_print_table(virtHdr);
+            // serial_kprint("phys table[%d] = %x %x\n", inc, (uint64)physHdr, (uint64)virtHdr);
         }
     } else if (acpi_rsdp->revision == RSDP_REVISION_V2) {
         struct rsdt *xsdtvirt = acpi_premap(acpi_rsdp->xsdt_address, sizeof(struct rsdt));
         acpi_map_table(&xsdtvirt->header, (physaddr_t)acpi_rsdp->xsdt_address);
+        if (!acpi_checksum(&xsdtvirt->header))
+            PANIC("ACPI checksum failed");
+        uint32 entries = ((xsdtvirt->header.length) - sizeof(struct acpi_header)) / 0x4;
+        for (uint inc = 0x0; inc < entries; inc++) {
+            uintptr physHdr = (uintptr)xsdtvirt->tables[inc];
+            struct acpi_header *virtHdr = acpi_premap(physHdr, 0x80);
+            acpi_read_table(virtHdr);
+            // acpi_print_table(virtHdr);
+            // serial_kprint("phys table[%d] = %x %x\n", inc, (uint64)physHdr, (uint64)virtHdr);
+        }
     } else {
         PANIC("APIC Invalid table");
     }
-    while(1);
 }
 
 void init_acpi(void)

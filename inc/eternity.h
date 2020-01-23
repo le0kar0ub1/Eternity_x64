@@ -13,6 +13,7 @@
 #include "typedef.h"
 #include "eternityDef.h"
 #include "compare.h"
+#include "ptrOperator.h"
 
 /* kernel headers */
 #include "vga.h"

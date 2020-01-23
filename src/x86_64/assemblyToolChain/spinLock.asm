@@ -21,7 +21,7 @@ spin_unlock:
     ret
 
 ; NO FATAL IF NO LOCK
-; deadlock never comes with this
+; deadlock never occured with this
 spin_unfatal_lock:
     lock bts QWORD [rdi], 0x0
     jc .unacquired

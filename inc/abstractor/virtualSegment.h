@@ -3,18 +3,15 @@
 
 #include "eternity.h"
 
-// #define VSEG_RDWR
-// #define VSEG_PRES
-// #define VSEG_
-
 struct vseg
 {
     virtaddr_t start;
     virtaddr_t end;
     uint64     flag;
-};
+} __packed;
 
-void vseg_increase(struct vseg *seg, uint64 size);
-void vseg_init(struct vseg *seg, virtaddr_t start, virtaddr_t end, uint64 flag);
+void vseg_increase(pml4_t *root, struct vseg *seg, uint64 size);
+struct vseg *vseg_init(pml4_t *root, virtaddr_t start, virtaddr_t end, uint64 flag);
+void vseg_free(pml4_t *root, struct vseg *seg);
 
 #endif

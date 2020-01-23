@@ -13,6 +13,14 @@ extern virtaddr_t boostrap;
 
 pml4_t *kpml4;
 
+/* GLOBAL VAR PHYS/VIRT FOR CURRENT PML4 */
+virtaddr_t currentPml4;
+
+virtaddr_t get_current_pml4(void)
+{
+    return (currentPml4);
+}
+
 void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
 {
     uint64 addr;
@@ -25,7 +33,39 @@ void *fromIndexToAdrr(uint64 pml4, uint64 pdpt, uint64 pdt, uint64 pt)
     return ((void *)addr);
 }
 
-bool isPageAlreadyMapped(pml4_t *root, virtaddr_t *virt)
+pt_entry_t *getPageFromAddress(pml4_t *root, virtaddr_t virt)
+{
+    /* address index */
+    uint16 index_pml4 = PML4_INDEX(virt);
+    uint16 index_pdpt = PDPT_INDEX(virt);
+    uint16 index_pd   = PD_INDEX(virt);
+    uint16 index_pt   = PT_INDEX(virt);
+
+    pdpt_t *pdpt = root->ref[index_pml4];
+    assert_ne((uint64)pdpt, 0x0);
+    pd_t *pd  = pdpt->ref[index_pdpt];
+    assert_ne((uint64)pd, 0x0);
+    pt_t *pt = pd->ref[index_pd];
+    assert_ne((uint64)pt, 0x0);
+    if (!pt->page[index_pt].present)
+        return (NULL);
+    return (&(pt->page[index_pt]));
+}
+
+void dumpPageAttrib(pml4_t *root, virtaddr_t virt)
+{
+    pt_entry_t *entry = getPageFromAddress(root, virt);
+    if (!entry)
+        return;
+    kprint("Page attribut %x:\n", virt);
+    kprint("    PRESENT:  %d\n", entry->present > 0 ? 1 : 0);
+    kprint("    WRITABLE: %d\n", entry->rw > 0 ? 1 : 0);
+    kprint("    KERNEL:   %d\n", entry->supervisor > 0 ? 0 : 1);
+    kprint("    GLOBAL:   %d\n", entry->global > 0 ? 1 : 0);
+
+}
+
+bool isPageAlreadyMapped(pml4_t *root, virtaddr_t virt)
 {
     assert_ne((uint64)root, 0x0);
 
@@ -69,6 +109,7 @@ void switch_pml4(pml4_t *root, pml4_t *new)
 {
     uintptr phys = virtToPhys(root, new);
     write_cr3(phys);
+    currentPml4 = (virtaddr_t)new;
 }
 
 void heap_reserved(pml4_t *root)
@@ -106,6 +147,7 @@ void init_paging(void)
     }
     heap_reserved(kpml4);
     write_cr3(V2P((uint64)(kpml4)));
+    currentPml4 = kpml4;
 }
 
 void pageFault_handler(struct frame *frame)
@@ -118,9 +160,9 @@ void pageFault_handler(struct frame *frame)
      /* error num pushed by CPU give info on page fault */
      if (!(frame->error & ERR_PF_PRES))
          kprint("No present in memory\n");
-     if ((frame->error & ERR_PF_RW))
+     if (!(frame->error & ERR_PF_RW))
          kprint("Page is read only\n");
-     if ((frame->error & ERR_PF_USER))
+     if (!(frame->error & ERR_PF_USER))
          kprint("Kernel page access\n");
      if (frame->error & ERR_PF_RES)
          kprint("Overwritten CPU-reserved bits of page entry\n");

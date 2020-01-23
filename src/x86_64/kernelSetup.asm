@@ -72,7 +72,7 @@ kernel_setup:
     ; init kheap allocation
     call init_kalloc
 
-    ; init system allocator ALIGNED ON 0X1000
+    ; init system allocator ALIGNED ON 0x1000
     call init_system_alloc
 
     ; print hello from eternity
@@ -104,7 +104,6 @@ kernel_setup:
 
     call kmain ; __no_return
 
-%include "memory.inc"
     ; print 'OKAY' if all comes good
 okay:
     cli
