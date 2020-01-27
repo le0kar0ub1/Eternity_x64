@@ -12,6 +12,7 @@ struct cpuContext *getCpuContext(void)
     return (&savedContext);
 }
 
+/* Dumb scheluder */
 void threadScheluder(void)
 {
     if (!list_size(threadList))

@@ -15,7 +15,7 @@ typedef void    *virtaddr_t;
 #define MMAP_DEFAULT_KERNEL_SPACE (WRITABLE | PRESENT | GLOBAL_PAGE)
 #define MMAP_DEFAULT_USER_SPACE   (WRITABLE | PRESENT | USER_ACCESSIBLE | GLOBAL_PAGE)
 
-#define K 0x400
+#define K (0x400)
 #define M (0x400 * K)
 #define G (0x400 * M)
 
@@ -31,7 +31,7 @@ void boostrap_allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);
 void kfree(void *ptr);
 virtaddr_t kalloc(uint size);
 
-/* toolchain  */
+/* toolchain */
 uintptr virtToPhys(pml4_t *root, virtaddr_t virt);
 void switch_pml4(pml4_t *root, pml4_t *new);
 void allocate_page(pml4_t *root, virtaddr_t virt, uint32 flag);

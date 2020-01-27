@@ -160,9 +160,9 @@ void pageFault_handler(struct frame *frame)
      /* error num pushed by CPU give info on page fault */
      if (!(frame->error & ERR_PF_PRES))
          kprint("No present in memory\n");
-     if (!(frame->error & ERR_PF_RW))
+     if ((frame->error & ERR_PF_RW))
          kprint("Page is read only\n");
-     if (!(frame->error & ERR_PF_USER))
+     if ((frame->error & ERR_PF_USER))
          kprint("Kernel page access\n");
      if (frame->error & ERR_PF_RES)
          kprint("Overwritten CPU-reserved bits of page entry\n");
@@ -170,7 +170,7 @@ void pageFault_handler(struct frame *frame)
          kprint("Instruction fetch\n");
     cpuContextDump((struct cpuContext *)frame);
     vga_set_attrib(VGA_WHITE, VGA_BLACK);
-    serial_kprint("Faulting address: %x\n", frame->rip);
+    serial_kprint("Faulting RIP address: %x\n", frame->rip);
     hlt();
 }
 

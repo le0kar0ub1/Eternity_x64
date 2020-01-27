@@ -29,5 +29,7 @@ void helloFromEternity(void)
     kprint("Initializing VMM manager...\n");
     kprint("Initializing kernel heap...\n");
     kprint("Initializing CMOS RTC...\n");
+    kprint("Initializing Threading...\n");
     kprint("Initializing TTY...\n");
+    kprint("Generating user space root tread...\n");
 }

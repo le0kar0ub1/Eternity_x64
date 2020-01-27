@@ -54,8 +54,8 @@ kernel_contextSwitch:
     mov rbp, QWORD [rdi + 0x90]
 
     ; PIC EOI
-    mov al, 0xA0
-    out 0x20, al
+    ; mov al, 0xA0
+    ; out 0x20, al
     ; RAX/RDI
     mov rax, QWORD [rdi + 0x60]
     mov rdi, QWORD [rdi + 0x88]
