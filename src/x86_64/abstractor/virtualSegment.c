@@ -19,16 +19,12 @@ void vseg_free(pml4_t *root, struct vseg *seg)
     kfree(seg);
 }
 
-#pragma GCC warning "Build me or i will become an error"
-
 /* increase virtual segment by the given size using MMAP */
 void vseg_increase(pml4_t *root, struct vseg *seg, uint64 size)
 {
     fatalAssert(IS_PAGE_ALIGNED(size));
-    virtaddr_t end = seg->end;
-    virtaddr_t new = ADD_TO_PTR(end, size);
-
-    while (IS_PTR_LT(end, new)) {
-        kprint("IS LESS THAN\n");
-    }
+    fatalAssert(root);
+    fatalAssert(seg);
+    // virtaddr_t end = seg->end;
+    // virtaddr_t new = ADD_TO_PTR(end, size);
 }

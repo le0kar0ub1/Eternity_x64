@@ -21,8 +21,7 @@ void inbuild(void)
 {
     allocate_page(get_current_pml4(), (virtaddr_t)(uint64)0xFF10000000, (uint32)MMAP_DEFAULT_USER_SPACE);
     dumpPageAttrib(get_current_pml4(), (virtaddr_t)(uint64)0xFF10000000);
-    uint64 *start = (uint64 *)(KHEAP_BASE_START);
-    uint64 a = start[10];
+    // uint64 *start = (uint64 *)(KHEAP_BASE_START);
     while (1);
     // struct vseg *seg = vseg_init((pml4_t *)get_current_pml4(), (virtaddr_t)0x10000000, (virtaddr_t)0x10001000, MMAP_DEFAULT_USER_SPACE);
     // vaspace_init((pml4_t *)get_current_pml4(), read_cr3(), seg, MMAP_DEFAULT_USER_SPACE);
