@@ -24,7 +24,7 @@ includeDir := $(addprefix -Iinc/,			\
     					 	)
 sourceDir := 	/					\
 				boot				\
-				assemblyToolChain	\
+				assemblyTools		\
 				descriptors			\
 				drivers				\
 				lib					\
@@ -67,14 +67,15 @@ qemu_basic_device := -usb		\
 		     -device usb-tablet \
 		     -soundhw pcspk
 
-qemuflags := -cdrom $(iso)        \
-	         -enable-kvm          \
-			 -m 4G				\
-		     #-boot menu=on        \
+qemuflags := -cdrom $(iso)        	\
+	         -enable-kvm          	\
+			 -m 4G					\
+		     #-boot menu=on			\
 		     #$(qemu_basic_device)
 	     	 #-full-screen
 
 gcc := ~/Personnal/OSdev/cross-gcc/x86_64-elf-4.9.1-target/bin/x86_64-elf-gcc-4.9.1
+
 CFLAGS := -nostdlib		 			 		\
 	  	  -fno-builtin           	 		\
 	  	  -fno-stack-protector   	 		\
@@ -108,9 +109,9 @@ CFLAGS := -nostdlib		 			 		\
 	  	  #-Wpadded						\
 
 CFLAGS_RESTRICT :=	-Wmissing-declarations			\
- 		  			-Wmissing-prototypes			\
- 		  			-Wstrict-prototypes				\
-  		  			-Werror
+					-Wmissing-prototypes			\
+					-Wstrict-prototypes				\
+					-Werror
 
 asm_src :=	$(wildcard $(addsuffix /*.asm, $(addprefix $(rootSourceDir), $(sourceDir))))
 
@@ -135,7 +136,7 @@ fclean:
 
 run:
 	@-echo -e "\033[36mrunning...\033[0m"
-	@$(qemuarch) $(qemuflags) -serial stdio #run with KVM module (set in BIOS)
+	@$(qemuarch) $(qemuflags) -serial stdio
 
 info:
 	@$(qemuarch) $(qemuflags)           \

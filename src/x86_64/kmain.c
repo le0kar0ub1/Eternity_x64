@@ -32,11 +32,11 @@ void inbuild(void)
 
 void kmain(void)
 {
-    // init_tty();
+    init_tty();
     // fire_userspace();
     // inbuild();
-    // sti();
-    // while (1);
+    sti();
+    while (1);
     init_threads();
     // generateThread_fromRoutine(userspace, "userspace root");
     generateThread_fromRoutine(yo, "root thread");
