@@ -1,13 +1,14 @@
-arch := x86_64
-kernel := build/eternity-$(arch).bin
-iso := build/eternity-$(arch).iso
+arch 		:= 	x86_64
+BUILD_DIR	:=	build
+kernel 		:= 	$(BUILD_DIR)/eternity-$(arch).bin
+iso 		:= 	$(BUILD_DIR)/eternity-$(arch).iso
 
-linker_script := src/link.ld
-grub_cfg := src/grub.cfg
+LINKER_SCRIPT 	:= src/link.ld
+GRUB_CFG 		:= src/grub.cfg
 
-rootSourceDir	:= src/$(arch)/
+ROOT_SOURCE_DIR	:= src/$(arch)/
 
-includeDir := $(addprefix -Iinc/,			\
+INCLUDE_DIR	 := $(addprefix -Iinc/,			\
 							descriptors		\
 							boot			\
 							interrupt		\
@@ -19,10 +20,10 @@ includeDir := $(addprefix -Iinc/,			\
 							tty				\
 							processor		\
 							threads		 	\
-						   abstractor		\
+							abstractor		\
 							/				\
-    					 	)
-sourceDir := 	/					\
+							)
+SOURCE_DIR := 	/					\
 				boot				\
 				assemblyTools		\
 				descriptors			\
@@ -41,20 +42,20 @@ sourceDir := 	/					\
 
 
 ld := ld
-ldflags := -n						\
+LDFLAGS := -n						\
 			-nostdlib				\
 			-entry=_start			\
 			-z max-page-size=0x1000	\
 			-g						\
-			#$(ldflags_debug)
+			#$(LDFALGS_DEBUG)
 
-ldflags_debug := --cref			\
+LDFALGS_DEBUG := --cref			\
 				--print-map		\
 				--relocatable	\
 
 nasm := nasm
 asflags :=  -felf64         \
-			$(includeDir)   \
+			$(INCLUDE_DIR)   \
 			-w+all          \
 			-Werror
 
@@ -84,9 +85,9 @@ CFLAGS := -nostdlib		 			 		\
 	  	  -Wextra					 		\
 	  	  -Wnested-externs 	 		 		\
 	  	  -Winline 		 			 		\
-          -Wpragmas				  		\
+          -Wpragmas				  			\
 	  	  --std=gnu11 		 		 		\
-	  	  $(includeDir) 	         		\
+	  	  $(INCLUDE_DIR) 	         		\
 	  	  -Wuninitialized        	 		\
           -Wno-missing-braces    	 		\
 	      -ffreestanding         	 		\
@@ -113,12 +114,12 @@ CFLAGS_RESTRICT :=	-Wmissing-declarations			\
 					-Wstrict-prototypes				\
 					-Werror
 
-asm_src :=	$(wildcard $(addsuffix /*.asm, $(addprefix $(rootSourceDir), $(sourceDir))))
+ASM_SRC :=	$(wildcard $(addsuffix /*.asm, $(addprefix $(ROOT_SOURCE_DIR), $(SOURCE_DIR))))
 
-c_src	:=	$(wildcard $(addsuffix /*.c, $(addprefix $(rootSourceDir), $(sourceDir))))
+C_SRC	:=	$(wildcard $(addsuffix /*.c, $(addprefix $(ROOT_SOURCE_DIR), $(SOURCE_DIR))))
 
-objects := 	$(patsubst src/$(arch)/%.asm, build/arch/$(arch)/%.o, $(asm_src)) 		\
-			$(patsubst src/$(arch)/%.c, build/arch/$(arch)/%.o, $(c_src))
+OBJECTS := 	$(patsubst src/$(arch)/%.asm, $(BUILD_DIR)/arch/$(arch)/%.o, $(ASM_SRC)) 		\
+			$(patsubst src/$(arch)/%.c, $(BUILD_DIR)/arch/$(arch)/%.o, $(C_SRC))
 
 .PHONY: all clean fclean run debug info gdbdebug disassemble symbols
 
@@ -130,8 +131,8 @@ clean:	fclean
 
 fclean:
 	@-printf "\e[1;31m"
-	@-echo -e "\033[91mcleaning build\033[0m"
-	@rm -rf build
+	@-echo -e "\033[91mcleaning $(BUILD_DIR)\033[0m"
+	@rm -rf $(BUILD_DIR)
 	@-printf "\e[0m"
 
 run:
@@ -159,24 +160,24 @@ symbols: $(kernel)
 
 iso: $(iso)
 
-$(iso): $(kernel) $(grub_cfg)
-	@mkdir -p build/isofiles/boot/grub
-	@cp $(kernel) build/isofiles/boot/kernel.bin
-	@cp $(grub_cfg) build/isofiles/boot/grub
-	@grub-mkrescue -o $(iso) build/isofiles 2> /dev/null
-	@rm -r build/isofiles
+$(iso): $(kernel) $(GRUB_CFG)
+	@mkdir -p $(BUILD_DIR)/isofiles/boot/grub
+	@cp $(kernel) $(BUILD_DIR)/isofiles/boot/kernel.bin
+	@cp $(GRUB_CFG) $(BUILD_DIR)/isofiles/boot/grub
+	@grub-mkrescue -o $(iso) $(BUILD_DIR)/isofiles 2> /dev/null
+	@rm -r $(BUILD_DIR)/isofiles
 	@-echo -e "\033[37m     GRUB   $@\033[0m"
 
-$(kernel): $(objects) $(linker_script)
-	@$(ld) $(ldflags) -T $(linker_script) -o $(kernel) $(objects)
+$(kernel): $(OBJECTS) $(LINKER_SCRIPT)
+	@$(ld) $(LDFLAGS) -T $(LINKER_SCRIPT) -o $(kernel) $(OBJECTS)
 	@-echo -e "\033[37m   LINKED   $@\033[0m"
 
-build/arch/$(arch)/%.o: src/$(arch)/%.asm
+$(BUILD_DIR)/arch/$(arch)/%.o: src/$(arch)/%.asm
 	@mkdir -p $(shell dirname $@)
-	@mkdir -p $(addprefix build/arch/$(arch)/, $(sourceDir))
+	@mkdir -p $(addprefix $(BUILD_DIR)/arch/$(arch)/, $(SOURCE_DIR))
 	@$(nasm) $(asflags) $< -o $@
 	@-echo -e "\033[34m     NASM   $@\e[0m"
 
-build/arch/%.o: src/%.c
+$(BUILD_DIR)/arch/%.o: src/%.c
 	@$(gcc) $(CFLAGS) -c $< -o $@
 	@-echo -e "\e[34m      GCC   $@\e[0m"

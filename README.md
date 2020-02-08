@@ -4,11 +4,11 @@
 
 ## DEPENDENCY:
 
-    - `qemu` / `qemu-kvm` (Virtualisation)
-    - `grub-mkrescue` and `libisoburn`
-    - `make`
-    - `nasm`
-    - `gcc` for x86_64-elf target
+    - _qemu_ / _qemu-kvm_ (Virtualisation)
+    - _grub-mkrescue_ and _libisoburn_
+    - _make_
+    - _nasm_
+    - _gcc_ for x86_64-elf target
 
 ## BUILD:
 
@@ -40,7 +40,7 @@ _Eternity is running with KVM module, if this can't be set on your computer dele
   - [ ] PS/2 Mouse
   - [X] RTC
   - [X] Timer
-- [X] Memory
+- [ ] Memory
   - [X] Physical Memory Management
   - [X] Virtual Memory Management
   - [ ] Memory Abstractor
@@ -48,11 +48,11 @@ _Eternity is running with KVM module, if this can't be set on your computer dele
 - [ ] ELF Loader
 - [X] Syscall interface and userspace (ring 3)
 - [ ] Multi process / threads
-  - [ ] Scheduling
-  - [ ] User Threads
-  - [ ] Kernel threads
+  - [ ] Basic Scheduling
+  - [X] User Threads
+  - [X] Kernel threads
   - [ ] Processes
-- [X] Initrd
+- [ ] Initrd
 - [ ] Filesystem
 
 ## EPILOGUE
