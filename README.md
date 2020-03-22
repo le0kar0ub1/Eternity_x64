@@ -4,25 +4,27 @@
 
 ## DEPENDENCY:
 
-    - _qemu_ / _qemu-kvm_ (Virtualisation)
-    - _grub-mkrescue_ and _libisoburn_
-    - _make_
-    - _nasm_
-    - _gcc_ for x86_64-elf target
+  - *qemu* / *qemu-kvm* (Virtualisation)
+  - *grub-mkrescue* and *libisoburn*
+  - *make*
+  - *nasm*
+  - *gcc* for x86_64-elf target
 
 ## BUILD:
 
-    - make
+`make`
 
 ## RUN:
 
-    - make run
+`make run`
+
 _Eternity is running with KVM module, if this can't be set on your computer delete the flags "-enable-kvm" in (quemuflags) Makefile._
 
 ## INTERACTION:
 
-    - TTY (azerty keyboard only)
-    - Command line ("help" in to see available commands)
+TTY (azerty keyboard only)
+
+Command line ("help" in to see available commands)
 
 ## ROADMAP:
 

@@ -75,7 +75,7 @@ qemuflags := -cdrom $(iso)        	\
 		     #$(qemu_basic_device)
 	     	 #-full-screen
 
-gcc := ~/Personnal/OSdev/cross-gcc/x86_64-elf-4.9.1-target/bin/x86_64-elf-gcc-4.9.1
+gcc := gcc
 
 CFLAGS := -nostdlib		 			 		\
 	  	  -fno-builtin           	 		\
@@ -96,7 +96,7 @@ CFLAGS := -nostdlib		 			 		\
           -fno-omit-frame-pointer	 		\
 	  	  -mno-red-zone				 		\
 	  	  -g3						 		\
-	  	  -mcmodel=kernel 			 		\
+	  	  -mcmodel=large 			 		\
 		  -nostartfiles          	 		\
 		  -static					 		\
 		  -msse4.1				     		\
@@ -107,6 +107,7 @@ CFLAGS := -nostdlib		 			 		\
  		  -Wswitch-enum						\
  		  -Wshadow							\
  		  -Wuninitialized					\
+		  -Wno-logical-not-parentheses		\
 	  	  #-Wpadded						\
 
 CFLAGS_RESTRICT :=	-Wmissing-declarations			\
