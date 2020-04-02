@@ -2,19 +2,19 @@
 
 **Eternity is writing (with love) in C and x86 assembly.**
 
-## DEPENDENCY:
+## DEPENDENCY
 
-  - *qemu* / *qemu-kvm* (Virtualisation)
-  - *grub-mkrescue* and *libisoburn*
-  - *make*
-  - *nasm*
-  - *gcc* for x86_64-elf target
+  - `qemu` / `qemu-kvm` (Virtualisation)
+  - `grub-mkrescue` and `libisoburn`
+  - `make`
+  - `nasm`
+  - `gcc` for x86_64-elf target
 
-## BUILD:
+## BUILD
 
 `make`
 
-## RUN:
+## RUN
 
 `make run`
 
@@ -59,6 +59,6 @@ Command line ("help" in to see available commands)
 
 ## EPILOGUE
 
-_Eternity is in development._
+_Eternity developpment has been stopped._
 
-sure you want the QEMU technical documentation: https://qemu.weilnetz.de/doc/qemu-doc.html
+sure you want the [QEMU technical documentation](https://qemu.weilnetz.de/doc/qemu-doc.html)
